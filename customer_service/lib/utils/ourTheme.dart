@@ -17,6 +17,17 @@ class OurTheme{
       selectedRowColor: _loginText,
       buttonColor: _buttonsColor,
       fontFamily: 'Roboto',
+        inputDecorationTheme: InputDecorationTheme(
+        focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Color.fromARGB(255, 96, 94, 92))
+    ),
+    enabledBorder: UnderlineInputBorder(
+    borderSide: BorderSide(color: Color.fromARGB(255, 96, 94, 92)),
+    ),
+    border: UnderlineInputBorder(
+    borderSide: BorderSide(color: Color.fromARGB(255, 96, 94, 92)),
+    ),
+        ),
     );
   }
 }
