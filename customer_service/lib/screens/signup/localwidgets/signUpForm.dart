@@ -93,7 +93,7 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
               ),
               onPressed: () async {
                 GraphQLClient _client = graphQLConfiguration.clientToQuery();
-                await _client.mutate(
+                QueryResult result = await _client.mutate(
                   MutationOptions(
                     document: gql(
                       addMutation.signUp(
@@ -104,8 +104,10 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
                     ),
                   ),
                 );
-                Navigator.of(context).pop();
-                },
+                if (!result.hasException) {
+                  Navigator.of(context).pop();
+                }
+              },
               style: ElevatedButton.styleFrom(
                 primary: Color.fromARGB(255, 133, 201, 169),
                 shape: StadiumBorder(),

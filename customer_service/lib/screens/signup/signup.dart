@@ -1,4 +1,4 @@
-import 'package:customer_service/screens/signup/localwidgets/signUpForm.dart';
+andimport 'package:customer_service/screens/signup/localwidgets/signUpForm.dart';
 import 'package:flutter/material.dart';
 
 class OurSignup extends StatelessWidget {
