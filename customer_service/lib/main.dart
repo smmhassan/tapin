@@ -21,7 +21,7 @@ void main() async {
         'message', 'Hey ! First message from Flutter. Parse is now connected');
   await firstObject.save();
 
-  print('done'); */ //Uncomment to test connection
+  print('done');  */ //Uncomment to test connection
   runApp(
       GraphQLProvider(
         client: graphQLConfiguration.client,

@@ -23,6 +23,14 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
   QueryMutation addMutation = QueryMutation();
 
   @override
+  void initState() {
+    username = TextEditingController();
+    password = TextEditingController();
+    email = TextEditingController();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       child: Column(
@@ -96,14 +104,15 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
                 QueryResult result = await _client.mutate(
                   MutationOptions(
                     document: gql(
-                      addMutation.signUp(
+                     addMutation.signUp(
                         username.text,
                         password.text,
-                        email.text,
+                        //email.text.trim(),
                       ),
                     ),
                   ),
                 );
+                print (result.exception);
                 if (!result.hasException) {
                   Navigator.of(context).pop();
                 }

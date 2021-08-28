@@ -1,24 +1,19 @@
 class QueryMutation {
 
-  String signUp(String username, String password, Object email) {
-    return """
+  String signUp(String username, String password) {
+    return '''
   mutation SignUp{
-  signUp(input: {
-  fields: {
-  username: $username,
-  password: $password,
-  email: $email,
-  }
-  }){
-  viewer{
-  user{
-  id
-  createdAt
+  signUp(input: { fields: { username: "$username", password: "$password" } } 
+ ) {
+   viewer{
+    user{
+      id
+      createdAt
   }
   sessionToken
   }
-  }
+ }
 }
-""";
+''';
   }
 }
