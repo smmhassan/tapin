@@ -11,17 +11,19 @@ class TabbedWindowListOrganization extends StatelessWidget {
    */
   final ImageProvider image;
   final String name;
+  final bool dense;
 
   const TabbedWindowListOrganization({
     Key? key,
     required this.image,
     required this.name,
+    required this.dense,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      dense: true,
+      dense: dense,
       leading: RoundImage(
         image: image,
         size: 35,

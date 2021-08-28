@@ -8,13 +8,16 @@ class NavigationDrawer extends StatelessWidget {
   final double topPadding = 80;
   final double sidePadding = 20;
   final double dividerThickness = 0.5;
+  final List<String> navList = [
+    'Dashboard',
+    'Organizations',
+    'Correspondences',
+    'Settings',
+    'Logout'
+  ];
 
-
-  final List<String> items;
-
-  const NavigationDrawer({
+  NavigationDrawer({
     Key? key,
-    required this.items,
   }) : super(key: key);
 
   @override
@@ -34,11 +37,11 @@ class NavigationDrawer extends StatelessWidget {
               right: sidePadding,
               left: sidePadding,
             ),
-            itemCount: items.length,
+            itemCount: navList.length,
             itemBuilder: (context, index) {
               return ListTile(
                 title: Text(
-                  items[index],
+                  navList[index],
                   textAlign: TextAlign.right,
                   style: TextStyle(
                     fontWeight: FontWeight.w300,
