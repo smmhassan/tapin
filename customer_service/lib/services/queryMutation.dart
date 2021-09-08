@@ -16,4 +16,39 @@ class QueryMutation {
 }
 ''';
   }
+
+  String getUser() {
+    return '''
+    query GetCurrentUser {
+      viewer {
+        sessionToken
+        user {
+          id
+          objectId
+        }
+      }
+    }
+    ''';
+  }
+
+  String signIn(String username, String password) {
+    return '''
+    mutation LogIn{
+      logIn(input: {
+        username: "$username"
+        password: "$password"
+      }){
+        viewer{
+          user{
+            id
+            createdAt
+            updatedAt
+            username
+          }
+          sessionToken
+        }
+      }
+    }
+    ''';
+  }
 }
