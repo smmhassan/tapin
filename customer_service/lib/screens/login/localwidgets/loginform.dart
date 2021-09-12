@@ -121,7 +121,11 @@ class _OurLoginFormState extends State<OurLoginForm> {
               );
               print(result.data);
               if (!result.hasException) {
-                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => UserDash(),
+                  ),
+                );
               }
             },
             style: ElevatedButton.styleFrom(

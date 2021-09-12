@@ -11,13 +11,30 @@ import '../../widgets/DashHeader.dart';
 import '../../widgets/NavigationDrawer.dart';
 import '../../widgets/AdaptiveAppBar.dart';
 
-class UserDash extends StatelessWidget {
+import 'package:customer_service/services/graphQLConf.dart';
+import "package:customer_service/services/queryMutation.dart";
+import 'package:graphql_flutter/graphql_flutter.dart';
+
+class UserDash extends StatefulWidget {
+  @override
+  _UserDashState createState() => _UserDashState();
+}
+
+class _UserDashState extends State<UserDash> {
+  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
+
+  QueryMutation addMutation = QueryMutation();
+
   final double mobileHeaderHeight = .12;
+
   final double mobileListHeight = .36;
+
   final double mobileTitleHeight = 18;
 
   final double desktopHeaderHeight = 0.15;
+
   final double desktopListHeight = 0.6;
+
   final double desktopTitleHeight = 22;
 
   final double maxContentWidth = 1200;
@@ -31,6 +48,23 @@ class UserDash extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /*GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    QueryResult result = await _client.query(
+      QueryOptions(
+        document: gql(
+          queryMutation.getUser(),
+        ),
+      ),
+    );
+    print(result.data);
+    if (!result.hasException) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => UserDash(),
+        ),
+      );
+    }*/
+
     bool narrow = MediaQuery.of(context).size.width < 600;
     bool wide = MediaQuery.of(context).size.width > 1000;
 
@@ -59,6 +93,24 @@ class UserDash extends StatelessWidget {
               ),
               child: Column(
                 children: [
+                  // backend test --------------
+                  Query(
+                    options: QueryOptions(
+                      document: gql(QueryMutation().getUser()),
+                    ),
+                    builder: (result, {refetch, fetchMore}) {
+                      print(result.data);
+                      //String username = result?.data?["user"]['username'] ?? 'error';
+                      if (result.data != null) {
+                        return Text(result.data?["viewer"]["user"]['objectId']);
+                      } else{
+                        if (result.hasException) {
+                          print(result.exception);
+                        }
+                        return Text('error');
+                      }
+                    }
+                  ),
                   // rewards and user info
                   DashHeader(
                     height: narrow ?
