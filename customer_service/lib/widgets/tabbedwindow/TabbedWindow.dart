@@ -24,6 +24,7 @@ class TabbedWindow extends StatelessWidget {
   final List<TabbedWindowList> lists;
   final double height;
   final double titleSize;
+  final String viewAllRoute;
 
   const TabbedWindow({
     Key? key,
@@ -32,6 +33,7 @@ class TabbedWindow extends StatelessWidget {
     required this.lists,
     required this.height,
     required this.titleSize,
+    required this.viewAllRoute,
   }) : super(key: key);
 
   @override
@@ -141,7 +143,9 @@ class TabbedWindow extends StatelessWidget {
                   height: buttonHeight,
                   width: buttonWidth,
                   child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, viewAllRoute);
+                      },
                       child: const Text('view all'),
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all<Color>(

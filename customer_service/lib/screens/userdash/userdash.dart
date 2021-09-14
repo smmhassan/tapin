@@ -142,6 +142,7 @@ class _UserDashState extends State<UserDash> {
                       children: [
                         // organizations window
                         TabbedWindow(
+                          viewAllRoute: '/userorganizations',
                           height: narrow ?
                             constraints.maxHeight*mobileListHeight :
                             constraints.maxHeight*desktopListHeight,
@@ -201,6 +202,7 @@ class _UserDashState extends State<UserDash> {
                         ),
                         // Correspondences window
                         TabbedWindow(
+                            viewAllRoute: '/userorganizations',
                             height: narrow ?
                               constraints.maxHeight*mobileListHeight :
                               constraints.maxHeight*desktopListHeight,

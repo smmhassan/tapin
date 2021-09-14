@@ -3,11 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../widgets/tabbedwindow/TabbedWindow.dart';
-import '../../widgets/tabbedwindow/TabbedWindowList.dart';
-import '../../widgets/tabbedwindow/TabbedWindowListOrganization.dart';
-import '../../widgets/tabbedwindow/TabbedWindowListCorrespondence.dart';
-import '../../widgets/DashHeader.dart';
+import 'package:customer_service/widgets/listtiles/organization.dart';
 import '../../widgets/NavigationDrawer.dart';
 import '../../widgets/AdaptiveAppBar.dart';
 
@@ -32,6 +28,22 @@ final Image headerLogo = new Image(
     alignment: FractionalOffset.center);
 
 class UserOrganizationList extends StatelessWidget {
+
+  List<Widget> listItems = [
+    OrganizationListTile(
+      image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+      name: 'popular owl',
+    ),
+    OrganizationListTile(
+      image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+      name: 'not popular owl',
+    ),
+    OrganizationListTile(
+      image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+      name: 'standard owl',
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     bool narrow = MediaQuery.of(context).size.width < 600;
@@ -47,6 +59,11 @@ class UserOrganizationList extends StatelessWidget {
             child: Container(
               constraints: BoxConstraints(
                 maxWidth: maxContentWidth,
+              ),
+              child: ListView(
+                children: [
+                  for (Widget item in listItems) item,
+                ],
               ),
             )
           );

@@ -15,6 +15,13 @@ class NavigationDrawer extends StatelessWidget {
     'Settings',
     'Logout'
   ];
+  final List<String> navRoutes = [
+    '/userdash',
+    '/userorganizations',
+    'Correspondences',
+    'Settings',
+    'Logout'
+  ];
 
   NavigationDrawer({
     Key? key,
