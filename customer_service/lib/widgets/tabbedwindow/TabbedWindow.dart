@@ -13,8 +13,9 @@ class TabbedWindow extends StatelessWidget {
   each list provided
    */
   final double padding = 7;
-  final double cornerRadius = 5;
+  final double cornerRadius = 8;
   final double maxTabHeight = 40;
+  final double minTabHeight = 30;
   final double buttonHeight = 28;
   final double buttonWidth = 150;
   final double buttonOffset = 11;
@@ -97,6 +98,7 @@ class TabbedWindow extends StatelessWidget {
                             Container(
                               constraints: BoxConstraints(
                                 maxHeight: maxTabHeight,
+                                minHeight: minTabHeight,
                               ),
                               height: tabHeight,
                               child: TabBar(

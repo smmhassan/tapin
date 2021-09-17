@@ -94,7 +94,7 @@ class _UserDashState extends State<UserDash> {
               child: Column(
                 children: [
                   // backend test --------------
-                  Query(
+                  /*Query(
                     options: QueryOptions(
                       document: gql(QueryMutation().getUser()),
                     ),
@@ -110,7 +110,7 @@ class _UserDashState extends State<UserDash> {
                         return Text('error');
                       }
                     }
-                  ),
+                  ),*/
                   // rewards and user info
                   DashHeader(
                     height: narrow ?

@@ -19,7 +19,7 @@ final double desktopListHeight = 0.6;
 
 final double desktopTitleHeight = 22;
 
-final double maxContentWidth = 1200;
+final double maxContentWidth = 1000;
 
 final Image headerLogo = new Image(
     image: new ExactAssetImage('assets/logo_text.png'),
@@ -29,29 +29,37 @@ final Image headerLogo = new Image(
 
 class UserOrganizationList extends StatelessWidget {
 
-  List<Widget> listItems = [
-    OrganizationListTile(
-      image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-      name: 'popular owl',
-    ),
-    OrganizationListTile(
-      image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-      name: 'not popular owl',
-    ),
-    OrganizationListTile(
-      image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-      name: 'standard owl',
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    bool narrow = MediaQuery.of(context).size.width < 600;
-    bool wide = MediaQuery.of(context).size.width > 1000;
+    double screenWidth = MediaQuery.of(context).size.width;
+    bool narrow = screenWidth < 600;
+    bool wide = screenWidth > 1000;
+
+    List<Widget> listItems = [
+      OrganizationListTile(
+        image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+        name: 'popular owl',
+        width: screenWidth,
+
+      ),
+      OrganizationListTile(
+        image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+        name: 'not popular owl',
+        width: screenWidth,
+      ),
+      OrganizationListTile(
+        image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
+        name: 'standard owl',
+        width: screenWidth,
+      ),
+    ];
 
     return Scaffold(
         appBar: AdaptiveAppBar(context),
         //appBar: AppBar(),
+        bottomNavigationBar: BottomAppBar(
+          color: Theme.of(context).accentColor,
+        ),
 
         endDrawer: wide ? null : NavigationDrawer(),
         body: LayoutBuilder(builder: (context, constraints) {
