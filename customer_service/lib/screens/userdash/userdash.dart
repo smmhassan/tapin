@@ -14,6 +14,7 @@ import '../../widgets/AdaptiveAppBar.dart';
 import 'package:customer_service/services/graphQLConf.dart';
 import "package:customer_service/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class UserDash extends StatefulWidget {
   @override
@@ -46,6 +47,31 @@ class _UserDashState extends State<UserDash> {
       alignment: FractionalOffset.center
   );
 
+  ParseUser user = ParseUser('','','');
+
+  @override
+  void initState() {
+    initData().then((bool success) {
+      ParseUser.currentUser().then((currentUser) {
+        setState(() {
+          user = currentUser;
+        });
+      });
+    }).catchError((dynamic _) {});
+    super.initState();
+  }
+
+  Future<bool> initData() async {
+    /*await Parse().initialize(
+      keyParseApplicationId,
+      keyParseServerUrl,
+      clientKey: keyParseClientKey,
+      debug: keyDebug,
+    );*/
+
+    return (await Parse().healthCheck()).success;
+  }
+
   @override
   Widget build(BuildContext context) {
     /*GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -67,6 +93,10 @@ class _UserDashState extends State<UserDash> {
 
     bool narrow = MediaQuery.of(context).size.width < 600;
     bool wide = MediaQuery.of(context).size.width > 1000;
+    //String name = 'missing';
+    //if (authUser.username != null) {
+    //  name = authUser.username.toString();
+    //}
 
     List<String> navList = [
       'Dashboard',
@@ -94,7 +124,7 @@ class _UserDashState extends State<UserDash> {
               child: Column(
                 children: [
                   // backend test --------------
-                  Query(
+                  /*Query(
                     options: QueryOptions(
                       document: gql(QueryMutation().getUser()),
                     ),
@@ -110,7 +140,7 @@ class _UserDashState extends State<UserDash> {
                         return Text('error');
                       }
                     }
-                  ),
+                  ),*/
                   // rewards and user info
                   DashHeader(
                     height: narrow ?
@@ -132,7 +162,7 @@ class _UserDashState extends State<UserDash> {
                         ]
                     ),
                     image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                    label: 'Place Holder',
+                    label: user.emailAddress.toString(),
                   ),
                   SizedBox(
                     height: narrow ?

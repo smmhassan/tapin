@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:customer_service/services/graphQLConf.dart';
 import "package:customer_service/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class OurLoginForm extends StatefulWidget {
   @override
@@ -107,7 +108,7 @@ class _OurLoginFormState extends State<OurLoginForm> {
               ),
             ),
             onPressed: () async {
-              GraphQLClient _client = graphQLConfiguration.clientToQuery();
+              /*GraphQLClient _client = graphQLConfiguration.clientToQuery();
               QueryResult result = await _client.mutate(
                 MutationOptions(
                   document: gql(
@@ -122,6 +123,20 @@ class _OurLoginFormState extends State<OurLoginForm> {
               print(result.data);
               if (!result.hasException) {
                 Navigator.pushNamed(context, '/userdash');
+              }*/
+              ParseUser user = ParseUser(username.text, password.text, '');
+              ParseResponse response = await user.login();
+
+              username.clear();
+              password.clear();
+
+              if (response.success) {
+                Navigator.pushNamed(context, '/userdash');
+              }
+              else {
+                if (response.error?.message != null){
+                  print(response.error?.message);
+                }
               }
             },
             style: ElevatedButton.styleFrom(
