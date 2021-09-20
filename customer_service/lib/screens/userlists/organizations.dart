@@ -59,6 +59,26 @@ class UserOrganizationList extends StatelessWidget {
         //appBar: AppBar(),
         bottomNavigationBar: BottomAppBar(
           color: Theme.of(context).accentColor,
+          child: Container(
+            height: AppBar().preferredSize.height,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                BottomBarButton(
+                  text: 'search',
+                  icon: Icons.search,
+                ),
+                BottomBarButton(
+                  text: 'filter',
+                  icon: Icons.filter_alt_outlined,
+                ),
+                BottomBarButton(
+                  text: 'sort',
+                  icon: Icons.sort,
+                ),
+              ],
+            ),
+          )
         ),
 
         endDrawer: wide ? null : NavigationDrawer(),
@@ -77,6 +97,52 @@ class UserOrganizationList extends StatelessWidget {
           );
         }
       )
+    );
+  }
+}
+
+class BottomBarButton extends StatelessWidget {
+  final String text;
+  final IconData icon;
+
+  final double iconSize = 25;
+  final double fontSize = 15;
+
+  const BottomBarButton({
+    Key? key,
+    required this.text,
+    required this.icon,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: TextButton(
+        onPressed: (){},
+        child: Container(
+          alignment: Alignment.center,
+          //height: AppBar().preferredSize.height,
+          child: Row(
+            children: [
+              Container(
+                padding: EdgeInsets.only(right: 5),
+                child: Icon(
+                  icon,
+                  color: Theme.of(context).canvasColor,
+                  size: iconSize,
+                ),
+              ),
+              Text(
+                text,
+                style: TextStyle(
+                  color: Theme.of(context).canvasColor,
+                  fontSize: fontSize,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
