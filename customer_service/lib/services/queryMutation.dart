@@ -31,6 +31,18 @@ class QueryMutation {
     ''';
   }
 
+  String getUserDP(String id) {
+    return '''
+    query GetDP {
+	    user(id: "$id") {
+		    displayPicture {
+          url
+        }
+	    }
+    }
+    ''';
+  }
+
   String signIn(String username, String password) {
     return '''
     mutation LogIn{

@@ -142,27 +142,44 @@ class _UserDashState extends State<UserDash> {
                     }
                   ),*/
                   // rewards and user info
-                  DashHeader(
-                    height: narrow ?
-                      constraints.maxHeight*mobileHeaderHeight:
-                      constraints.maxHeight*desktopHeaderHeight,
-                    leftItem: Row(
-                        children: [
-                          Icon(
-                            Icons.attach_money,
-                            size: constraints.maxHeight*mobileHeaderHeight*.55,
-                            color: Theme.of(context).accentColor,
-                          ),
-                          Text(
-                            '100',
-                            style: TextStyle(
-                              color: Theme.of(context).accentColor,
+                  Query(
+                      options: QueryOptions(
+                        document: gql(QueryMutation().getUserDP(user.objectId.toString())),
+                      ),
+                      builder: (result, {refetch, fetchMore}) {
+                        //print(result.data);
+                        //String username = result?.data?["user"]['username'] ?? 'error';
+                        if (result.data != null) {
+                          ImageProvider dp = NetworkImage(result.data?["user"]["displayPicture"]['url']);
+                          return DashHeader(
+                            height: narrow ?
+                            constraints.maxHeight*mobileHeaderHeight:
+                            constraints.maxHeight*desktopHeaderHeight,
+                            leftItem: Row(
+                                children: [
+                                  Icon(
+                                    Icons.attach_money,
+                                    size: constraints.maxHeight*mobileHeaderHeight*.55,
+                                    color: Theme.of(context).accentColor,
+                                  ),
+                                  Text(
+                                    '100',
+                                    style: TextStyle(
+                                      color: Theme.of(context).accentColor,
+                                    ),
+                                  ),
+                                ]
                             ),
-                          ),
-                        ]
-                    ),
-                    image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                    label: user.emailAddress.toString(),
+                            image: dp,
+                            label: user.username.toString(),
+                          );
+                        } else{
+                          if (result.hasException) {
+                            print(result.exception);
+                          }
+                          return Text('error');
+                        }
+                      }
                   ),
                   SizedBox(
                     height: narrow ?
