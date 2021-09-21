@@ -21,7 +21,7 @@ class TabbedWindow extends StatelessWidget {
 
   final String title;
   final List<String> tabNames;
-  final List<TabbedWindowList> lists;
+  final List<Widget> lists;
   final double height;
   final double titleSize;
 

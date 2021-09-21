@@ -123,24 +123,6 @@ class _UserDashState extends State<UserDash> {
               ),
               child: Column(
                 children: [
-                  // backend test --------------
-                  /*Query(
-                    options: QueryOptions(
-                      document: gql(QueryMutation().getUser()),
-                    ),
-                    builder: (result, {refetch, fetchMore}) {
-                      print(result.data);
-                      //String username = result?.data?["user"]['username'] ?? 'error';
-                      if (result.data != null) {
-                        return Text(result.data?["viewer"]["user"]['objectId']);
-                      } else{
-                        if (result.hasException) {
-                          print(result.exception);
-                        }
-                        return Text('error');
-                      }
-                    }
-                  ),*/
                   // rewards and user info
                   Query(
                       options: QueryOptions(
@@ -190,59 +172,83 @@ class _UserDashState extends State<UserDash> {
                         // organizations window
                         TabbedWindow(
                           height: narrow ?
-                            constraints.maxHeight*mobileListHeight :
-                            constraints.maxHeight*desktopListHeight,
+                          constraints.maxHeight*mobileListHeight :
+                          constraints.maxHeight*desktopListHeight,
                           title: 'Organizations',
                           titleSize: narrow ?
-                            mobileTitleHeight :
-                            desktopTitleHeight,
+                          mobileTitleHeight :
+                          desktopTitleHeight,
                           tabNames: [
-                            'favorites',
-                            'popular',
-                            'new',
+                            'all',
+                            'administration',
+                            'clubs',
                           ],
                           lists: [
-                            TabbedWindowList(
-                              listItems: [
-                                TabbedWindowListOrganization(
-                                  image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                  name: 'owl',
-                                  dense: narrow ? true : false,
-                                ),
-                                TabbedWindowListOrganization(
-                                  image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                  name: 'big owl',
-                                  dense: narrow ? true : false,
-                                ),
-                                TabbedWindowListOrganization(
-                                  image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                  name: 'smol owl',
-                                  dense: narrow ? true : false,
-                                ),
-                                TabbedWindowListOrganization(
-                                  image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                  name: 'cool owl',
-                                  dense: narrow ? true : false,
-                                ),
-                              ],
+                            Query(
+                              options: QueryOptions(
+                                document: gql(QueryMutation().getAllOrgs()),
+                              ),
+                              builder: (result, {refetch, fetchMore}) {
+                                if (result.data != null) {
+                                  int count = result.data?["organizations"]['count'];
+                                  return TabbedWindowList(
+                                      listItems: [
+                                        for (var i = 0; i < count; i++) TabbedWindowListOrganization(
+                                          name: result.data?["organizations"]["edges"][i]["node"]["name"],
+                                          image: NetworkImage(result.data?["organizations"]["edges"][i]["node"]["logo"]["url"]),
+                                          dense: narrow ? true : false,
+                                        ),
+                                      ]
+                                  );
+                                }
+                                else {
+                                  return Text('ERROR');
+                                }
+                              }
                             ),
-                            TabbedWindowList(
-                              listItems: [
-                                TabbedWindowListOrganization(
-                                  image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                  name: 'popular owl',
-                                  dense: narrow ? true : false,
+                            Query(
+                                options: QueryOptions(
+                                  document: gql(QueryMutation().getCategoryOrgs('administration')),
                                 ),
-                              ],
+                                builder: (result, {refetch, fetchMore}) {
+                                  if (result.data != null) {
+                                    int count = result.data?["organizations"]['count'];
+                                    return TabbedWindowList(
+                                        listItems: [
+                                          for (var i = 0; i < count; i++) TabbedWindowListOrganization(
+                                            name: result.data?["organizations"]["edges"][i]["node"]["name"],
+                                            image: NetworkImage(result.data?["organizations"]["edges"][i]["node"]["logo"]["url"]),
+                                            dense: narrow ? true : false,
+                                          ),
+                                        ]
+                                    );
+                                  }
+                                  else {
+                                    return Text('ERROR');
+                                  }
+                                }
                             ),
-                            TabbedWindowList(
-                              listItems: [
-                                TabbedWindowListOrganization(
-                                  image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                  name: 'new owl',
-                                  dense: narrow ? true : false,
+                            Query(
+                                options: QueryOptions(
+                                  document: gql(QueryMutation().getCategoryOrgs('clubs')),
                                 ),
-                              ],
+                                builder: (result, {refetch, fetchMore}) {
+                                  if (result.data != null) {
+                                    int count = result.data?["organizations"]['count'];
+                                    return TabbedWindowList(
+                                        listItems: [
+                                          for (var i = 0; i < count; i++) TabbedWindowListOrganization(
+                                            name: result.data?["organizations"]["edges"][i]["node"]["name"],
+                                            image: NetworkImage(result.data?["organizations"]["edges"][i]["node"]["logo"]["url"]),
+                                            dense: narrow ? true : false,
+                                          ),
+                                        ]
+                                    );
+                                  }
+                                  else {
+                                    return Text('ERROR');
+                                  }
+                                }
                             ),
                           ],
                         ),

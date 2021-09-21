@@ -63,4 +63,50 @@ class QueryMutation {
     }
     ''';
   }
+
+  String getAllOrgs() {
+    return '''
+    {
+	    organizations {
+		    count,
+        edges {
+          node {
+            objectId
+            name
+            logo{
+              url
+            }
+          }
+        }
+	    }
+    }
+    ''';
+  }
+
+  String getCategoryOrgs(String category) {
+    return '''
+    {
+      organizations (
+        where: {
+          categories: {
+            have: {
+              name: {equalTo: "$category"}
+            }
+          }
+        }
+      ) {
+		    count,
+        edges {
+          node {
+            objectId
+            name
+            logo{
+              url
+            }
+          }
+        }
+      }
+    }
+    ''';
+  }
 }
