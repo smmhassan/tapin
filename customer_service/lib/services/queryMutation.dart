@@ -109,4 +109,101 @@ class QueryMutation {
     }
     ''';
   }
+
+  String getAllCorrespondences(String userId) {
+    return '''
+{
+  chats(
+    where: {
+      members: {
+        have: {
+          customer: { equalTo: true }
+          user: { have: { objectId: { equalTo: "$userId" } } }
+        }
+      }
+      correspondence: { exists: true }
+    }
+  ) {
+    count
+    edges {
+      node {
+        members(where: { user: { have: { employee: { exists: true } } } }) {
+          edges {
+            node {
+              user {
+                username
+                employee {
+                  organization {
+                    name
+                    logo {
+                      url
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        correspondence {
+          summary
+        }
+      }
+    }
+  }
+}
+    ''';
+  }
+
+  String getCategoryCorrespondences(String userId, String category) {
+    return '''
+{
+  chats(
+    where: {
+      members: {
+        have: {
+          customer: { equalTo: true }
+          user: { have: { objectId: { equalTo: "dIDTiwfkz0" } } }
+        }
+      }
+      correspondence: {
+        exists: true 
+        have: {
+          categories: {
+            have: {
+              name: {equalTo: "$category"}
+            }
+          }
+        }
+      }
+    }
+  ) {
+    count
+    edges {
+      node {
+        members(where: { user: { have: { employee: { exists: true } } } }) {
+          edges {
+            node {
+              user {
+                username
+                employee {
+                  organization {
+                    name
+                    logo {
+                      url
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        correspondence {
+          summary
+        }
+      }
+    }
+  }
+}
+    ''';
+  }
 }

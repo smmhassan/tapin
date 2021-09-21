@@ -131,7 +131,7 @@ class _UserDashState extends State<UserDash> {
                       builder: (result, {refetch, fetchMore}) {
                         //print(result.data);
                         //String username = result?.data?["user"]['username'] ?? 'error';
-                        if (result.data != null) {
+                        if (result.data?["user"]["displayPicture"]['url'] != null) {
                           ImageProvider dp = NetworkImage(result.data?["user"]["displayPicture"]['url']);
                           return DashHeader(
                             height: narrow ?
@@ -156,9 +156,6 @@ class _UserDashState extends State<UserDash> {
                             label: user.username.toString(),
                           );
                         } else{
-                          if (result.hasException) {
-                            print(result.exception);
-                          }
                           return Text('error');
                         }
                       }
@@ -254,6 +251,127 @@ class _UserDashState extends State<UserDash> {
                         ),
                         // Correspondences window
                         TabbedWindow(
+                          height: narrow ?
+                          constraints.maxHeight*mobileListHeight :
+                          constraints.maxHeight*desktopListHeight,
+                          title: 'Requests',
+                          titleSize: narrow ?
+                          mobileTitleHeight :
+                          desktopTitleHeight,
+                          tabNames: [
+                            'all',
+                            'administration',
+                            'clubs',
+                          ],
+                          lists: [
+                            Query(
+                                options: QueryOptions(
+                                  document: gql(QueryMutation().getAllCorrespondences(user.objectId.toString())),
+                                ),
+                                builder: (result, {refetch, fetchMore}) {
+                                  if (result.data != null && result.data?["chats"]['count'] > 0) {
+                                    //print(result.data);
+                                    int count = result.data?["chats"]['count'];
+                                    return TabbedWindowList(
+                                        listItems: [
+                                          for (var i = 0; i < count; i++) TabbedWindowListCorrespondence(
+                                            name: result.data?["chats"]["edges"][i]["node"]
+                                              ["members"]["edges"][0]["node"]["user"]["employee"]
+                                              ["organization"]["name"],
+                                            description: result.data?["chats"]["edges"][i]["node"]["correspondence"]["summary"],
+                                            image: NetworkImage(result.data?["chats"]["edges"][i]["node"]
+                                              ["members"]["edges"][0]["node"]["user"]["employee"]
+                                              ["organization"]["logo"]["url"]),
+                                            dense: narrow ? true : false,
+                                          ),
+                                        ]
+                                    );
+                                  }
+                                  else {
+                                    return Center(
+                                      child: Text(
+                                        'could not find anything',
+                                        style: TextStyle(
+                                          color: Theme.of(context).accentColor
+                                        ),
+                                      )
+                                    );
+                                  }
+                                }
+                            ),
+                            Query(
+                                options: QueryOptions(
+                                  document: gql(QueryMutation().getCategoryCorrespondences(user.objectId.toString(), 'administration')),
+                                ),
+                                builder: (result, {refetch, fetchMore}) {
+                                  if (result.data != null && result.data?["chats"]['count'] > 0) {
+                                    //print(result.data);
+                                    int count = result.data?["chats"]['count'];
+                                    return TabbedWindowList(
+                                        listItems: [
+                                          for (var i = 0; i < count; i++) TabbedWindowListCorrespondence(
+                                            name: result.data?["chats"]["edges"][i]["node"]
+                                            ["members"]["edges"][0]["node"]["user"]["employee"]
+                                            ["organization"]["name"],
+                                            description: result.data?["chats"]["edges"][i]["node"]["correspondence"]["summary"],
+                                            image: NetworkImage(result.data?["chats"]["edges"][i]["node"]
+                                            ["members"]["edges"][0]["node"]["user"]["employee"]
+                                            ["organization"]["logo"]["url"]),
+                                            dense: narrow ? true : false,
+                                          ),
+                                        ]
+                                    );
+                                  }
+                                  else {
+                                    return Center(
+                                        child: Text(
+                                          'could not find anything',
+                                          style: TextStyle(
+                                              color: Theme.of(context).accentColor
+                                          ),
+                                        )
+                                    );
+                                  }
+                                }
+                            ),
+                            Query(
+                                options: QueryOptions(
+                                  document: gql(QueryMutation().getCategoryCorrespondences(user.objectId.toString(), 'clubs')),
+                                ),
+                                builder: (result, {refetch, fetchMore}) {
+                                  if (result.data != null && result.data?["chats"]['count'] > 0) {
+                                    //print(result.data);
+                                    int count = result.data?["chats"]['count'];
+                                    return TabbedWindowList(
+                                        listItems: [
+                                          for (var i = 0; i < count; i++) TabbedWindowListCorrespondence(
+                                            name: result.data?["chats"]["edges"][i]["node"]
+                                            ["members"]["edges"][0]["node"]["user"]["employee"]
+                                            ["organization"]["name"],
+                                            description: result.data?["chats"]["edges"][i]["node"]["correspondence"]["summary"],
+                                            image: NetworkImage(result.data?["chats"]["edges"][i]["node"]
+                                            ["members"]["edges"][0]["node"]["user"]["employee"]
+                                            ["organization"]["logo"]["url"]),
+                                            dense: narrow ? true : false,
+                                          ),
+                                        ]
+                                    );
+                                  }
+                                  else {
+                                    return Center(
+                                        child: Text(
+                                          'could not find anything',
+                                          style: TextStyle(
+                                              color: Theme.of(context).accentColor
+                                          ),
+                                        )
+                                    );
+                                  }
+                                }
+                            ),
+                          ],
+                        ),
+                        /*TabbedWindow(
                             height: narrow ?
                               constraints.maxHeight*mobileListHeight :
                               constraints.maxHeight*desktopListHeight,
@@ -298,7 +416,7 @@ class _UserDashState extends State<UserDash> {
                                 ],
                               ),
                             ]
-                        ),
+                        ),*/
                     ],
                       mainAxisAlignment: MainAxisAlignment.center,
                       direction: narrow ?
