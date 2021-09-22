@@ -252,6 +252,7 @@ class _UserDashState extends State<UserDash> {
                         ),
                         // Correspondences window
                         TabbedWindow(
+                          viewAllRoute: '/userorganizations',
                           height: narrow ?
                           constraints.maxHeight*mobileListHeight :
                           constraints.maxHeight*desktopListHeight,
@@ -351,52 +352,6 @@ class _UserDashState extends State<UserDash> {
                             ),
                           ],
                         ),
-                        /*TabbedWindow(
-                            height: narrow ?
-                              constraints.maxHeight*mobileListHeight :
-                              constraints.maxHeight*desktopListHeight,
-                            title: 'Correspondences',
-                            titleSize: narrow ?
-                              mobileTitleHeight :
-                              desktopTitleHeight,
-                            tabNames: [
-                              'prioritized',
-                              'recent',
-                              'new progress'
-                            ],
-                            lists: [
-                              TabbedWindowList(
-                                listItems: [
-                                  TabbedWindowListCorrespondence(
-                                    image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                    name: 'popular owl',
-                                    description: 'I am an owl',
-                                    dense: narrow ? true : false,
-                                  ),
-                                ],
-                              ),
-                              TabbedWindowList(
-                                listItems: [
-                                  TabbedWindowListCorrespondence(
-                                    image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                    name: 'recent owl',
-                                    description: 'I am an owl',
-                                    dense: narrow ? true : false,
-                                  ),
-                                ],
-                              ),
-                              TabbedWindowList(
-                                listItems: [
-                                  TabbedWindowListCorrespondence(
-                                    image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                    name: 'newly progressed owl',
-                                    description: 'I am an owl',
-                                    dense: narrow ? true : false,
-                                  ),
-                                ],
-                              ),
-                            ]
-                        ),*/
                     ],
                       mainAxisAlignment: MainAxisAlignment.center,
                       direction: narrow ?
