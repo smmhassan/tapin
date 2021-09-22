@@ -186,7 +186,7 @@ class _UserDashState extends State<UserDash> {
                                 document: gql(QueryMutation().getAllOrgs()),
                               ),
                               builder: (result, {refetch, fetchMore}) {
-                                if (result.data != null) {
+                                if (result.data != null && result.data?["organizations"]['count'] > 0) {
                                   int count = result.data?["organizations"]['count'];
                                   return TabbedWindowList(
                                       listItems: [
@@ -199,16 +199,16 @@ class _UserDashState extends State<UserDash> {
                                   );
                                 }
                                 else {
-                                  return Text('ERROR');
+                                  return TabbedWindowEmpty();
                                 }
                               }
                             ),
                             Query(
                                 options: QueryOptions(
-                                  document: gql(QueryMutation().getCategoryOrgs('administration')),
+                                  document: gql(QueryMutation().getCategoryOrgs(['administration'])),
                                 ),
                                 builder: (result, {refetch, fetchMore}) {
-                                  if (result.data != null) {
+                                  if (result.data != null && result.data?["organizations"]['count'] > 0) {
                                     int count = result.data?["organizations"]['count'];
                                     return TabbedWindowList(
                                         listItems: [
@@ -221,16 +221,16 @@ class _UserDashState extends State<UserDash> {
                                     );
                                   }
                                   else {
-                                    return Text('ERROR');
+                                    return TabbedWindowEmpty();
                                   }
                                 }
                             ),
                             Query(
                                 options: QueryOptions(
-                                  document: gql(QueryMutation().getCategoryOrgs('clubs')),
+                                  document: gql(QueryMutation().getCategoryOrgs(['clubs'])),
                                 ),
                                 builder: (result, {refetch, fetchMore}) {
-                                  if (result.data != null) {
+                                  if (result.data != null && result.data?["organizations"]['count'] > 0) {
                                     int count = result.data?["organizations"]['count'];
                                     return TabbedWindowList(
                                         listItems: [
@@ -243,7 +243,7 @@ class _UserDashState extends State<UserDash> {
                                     );
                                   }
                                   else {
-                                    return Text('ERROR');
+                                    return TabbedWindowEmpty();
                                   }
                                 }
                             ),
@@ -288,20 +288,13 @@ class _UserDashState extends State<UserDash> {
                                     );
                                   }
                                   else {
-                                    return Center(
-                                      child: Text(
-                                        'could not find anything',
-                                        style: TextStyle(
-                                          color: Theme.of(context).accentColor
-                                        ),
-                                      )
-                                    );
+                                    return TabbedWindowEmpty();
                                   }
                                 }
                             ),
                             Query(
                                 options: QueryOptions(
-                                  document: gql(QueryMutation().getCategoryCorrespondences(user.objectId.toString(), 'administration')),
+                                  document: gql(QueryMutation().getCategoryCorrespondences(user.objectId.toString(), ['administration'])),
                                 ),
                                 builder: (result, {refetch, fetchMore}) {
                                   if (result.data != null && result.data?["chats"]['count'] > 0) {
@@ -323,20 +316,13 @@ class _UserDashState extends State<UserDash> {
                                     );
                                   }
                                   else {
-                                    return Center(
-                                        child: Text(
-                                          'could not find anything',
-                                          style: TextStyle(
-                                              color: Theme.of(context).accentColor
-                                          ),
-                                        )
-                                    );
+                                    return TabbedWindowEmpty();
                                   }
                                 }
                             ),
                             Query(
                                 options: QueryOptions(
-                                  document: gql(QueryMutation().getCategoryCorrespondences(user.objectId.toString(), 'clubs')),
+                                  document: gql(QueryMutation().getCategoryCorrespondences(user.objectId.toString(), ['clubs'])),
                                 ),
                                 builder: (result, {refetch, fetchMore}) {
                                   if (result.data != null && result.data?["chats"]['count'] > 0) {
@@ -358,14 +344,7 @@ class _UserDashState extends State<UserDash> {
                                     );
                                   }
                                   else {
-                                    return Center(
-                                        child: Text(
-                                          'could not find anything',
-                                          style: TextStyle(
-                                              color: Theme.of(context).accentColor
-                                          ),
-                                        )
-                                    );
+                                    return TabbedWindowEmpty();
                                   }
                                 }
                             ),
@@ -430,6 +409,24 @@ class _UserDashState extends State<UserDash> {
           );
         }
       ),
+    );
+  }
+}
+
+class TabbedWindowEmpty extends StatelessWidget {
+  const TabbedWindowEmpty({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Text(
+          'could not find anything',
+          style: TextStyle(
+              color: Theme.of(context).accentColor
+          ),
+        )
     );
   }
 }

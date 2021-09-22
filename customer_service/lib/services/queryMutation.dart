@@ -83,14 +83,20 @@ class QueryMutation {
     ''';
   }
 
-  String getCategoryOrgs(String category) {
+  String getCategoryOrgs(List<String> categories) {
+    String insertion = "";
+    for (String category in categories) {
+      insertion += '''{name: {equalTo: "$category"}},''';
+    }
+    insertion = '''[$insertion]''';
+    print(insertion);
     return '''
     {
       organizations (
         where: {
           categories: {
             have: {
-              name: {equalTo: "$category"}
+              OR: $insertion
             }
           }
         }
@@ -154,7 +160,13 @@ class QueryMutation {
     ''';
   }
 
-  String getCategoryCorrespondences(String userId, String category) {
+  String getCategoryCorrespondences(String userId, List<String> categories) {
+    String insertion = "";
+    for (String category in categories) {
+      insertion += '''{name: {equalTo: "$category"}},''';
+    }
+    insertion = '''[$insertion]''';
+    print(insertion);
     return '''
 {
   chats(
@@ -162,7 +174,7 @@ class QueryMutation {
       members: {
         have: {
           customer: { equalTo: true }
-          user: { have: { objectId: { equalTo: "dIDTiwfkz0" } } }
+          user: { have: { objectId: { equalTo: "$userId" } } }
         }
       }
       correspondence: {
@@ -170,7 +182,7 @@ class QueryMutation {
         have: {
           categories: {
             have: {
-              name: {equalTo: "$category"}
+              OR: $insertion
             }
           }
         }
