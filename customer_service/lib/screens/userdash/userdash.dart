@@ -14,6 +14,7 @@ import '../../widgets/AdaptiveAppBar.dart';
 import 'package:customer_service/services/graphQLConf.dart';
 import "package:customer_service/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class UserDash extends StatefulWidget {
   @override
@@ -46,6 +47,31 @@ class _UserDashState extends State<UserDash> {
       alignment: FractionalOffset.center
   );
 
+  ParseUser user = ParseUser('','','');
+
+  @override
+  void initState() {
+    initData().then((bool success) {
+      ParseUser.currentUser().then((currentUser) {
+        setState(() {
+          user = currentUser;
+        });
+      });
+    }).catchError((dynamic _) {});
+    super.initState();
+  }
+
+  Future<bool> initData() async {
+    /*await Parse().initialize(
+      keyParseApplicationId,
+      keyParseServerUrl,
+      clientKey: keyParseClientKey,
+      debug: keyDebug,
+    );*/
+
+    return (await Parse().healthCheck()).success;
+  }
+
   @override
   Widget build(BuildContext context) {
     /*GraphQLClient _client = graphQLConfiguration.clientToQuery();
@@ -67,6 +93,10 @@ class _UserDashState extends State<UserDash> {
 
     bool narrow = MediaQuery.of(context).size.width < 600;
     bool wide = MediaQuery.of(context).size.width > 1000;
+    //String name = 'missing';
+    //if (authUser.username != null) {
+    //  name = authUser.username.toString();
+    //}
 
     List<String> navList = [
       'Dashboard',
@@ -93,46 +123,42 @@ class _UserDashState extends State<UserDash> {
               ),
               child: Column(
                 children: [
-                  // backend test --------------
-                  /*Query(
-                    options: QueryOptions(
-                      document: gql(QueryMutation().getUser()),
-                    ),
-                    builder: (result, {refetch, fetchMore}) {
-                      print(result.data);
-                      //String username = result?.data?["user"]['username'] ?? 'error';
-                      if (result.data != null) {
-                        return Text(result.data?["viewer"]["user"]['objectId']);
-                      } else{
-                        if (result.hasException) {
-                          print(result.exception);
-                        }
-                        return Text('error');
-                      }
-                    }
-                  ),*/
                   // rewards and user info
-                  DashHeader(
-                    height: narrow ?
-                      constraints.maxHeight*mobileHeaderHeight:
-                      constraints.maxHeight*desktopHeaderHeight,
-                    leftItem: Row(
-                        children: [
-                          Icon(
-                            Icons.attach_money,
-                            size: constraints.maxHeight*mobileHeaderHeight*.55,
-                            color: Theme.of(context).accentColor,
-                          ),
-                          Text(
-                            '100',
-                            style: TextStyle(
-                              color: Theme.of(context).accentColor,
+                  Query(
+                      options: QueryOptions(
+                        document: gql(QueryMutation().getUserDP(user.objectId.toString())),
+                      ),
+                      builder: (result, {refetch, fetchMore}) {
+                        //print(result.data);
+                        //String username = result?.data?["user"]['username'] ?? 'error';
+                        if (result.data?["user"]["displayPicture"]['url'] != null) {
+                          ImageProvider dp = NetworkImage(result.data?["user"]["displayPicture"]['url']);
+                          return DashHeader(
+                            height: narrow ?
+                            constraints.maxHeight*mobileHeaderHeight:
+                            constraints.maxHeight*desktopHeaderHeight,
+                            leftItem: Row(
+                                children: [
+                                  Icon(
+                                    Icons.attach_money,
+                                    size: constraints.maxHeight*mobileHeaderHeight*.55,
+                                    color: Theme.of(context).accentColor,
+                                  ),
+                                  Text(
+                                    '100',
+                                    style: TextStyle(
+                                      color: Theme.of(context).accentColor,
+                                    ),
+                                  ),
+                                ]
                             ),
-                          ),
-                        ]
-                    ),
-                    image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                    label: 'Place Holder',
+                            image: dp,
+                            label: user.username.toString(),
+                          );
+                        } else{
+                          return Text('error');
+                        }
+                      }
                   ),
                   SizedBox(
                     height: narrow ?
@@ -144,65 +170,188 @@ class _UserDashState extends State<UserDash> {
                         TabbedWindow(
                           viewAllRoute: '/userorganizations',
                           height: narrow ?
-                            constraints.maxHeight*mobileListHeight :
-                            constraints.maxHeight*desktopListHeight,
+                          constraints.maxHeight*mobileListHeight :
+                          constraints.maxHeight*desktopListHeight,
                           title: 'Organizations',
                           titleSize: narrow ?
-                            mobileTitleHeight :
-                            desktopTitleHeight,
+                          mobileTitleHeight :
+                          desktopTitleHeight,
                           tabNames: [
-                            'favorites',
-                            'popular',
-                            'new',
+                            'all',
+                            'administration',
+                            'clubs',
                           ],
                           lists: [
-                            TabbedWindowList(
-                              listItems: [
-                                TabbedWindowListOrganization(
-                                  image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                  name: 'owl',
-                                  dense: narrow ? true : false,
-                                ),
-                                TabbedWindowListOrganization(
-                                  image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                  name: 'big owl',
-                                  dense: narrow ? true : false,
-                                ),
-                                TabbedWindowListOrganization(
-                                  image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                  name: 'smol owl',
-                                  dense: narrow ? true : false,
-                                ),
-                                TabbedWindowListOrganization(
-                                  image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                  name: 'cool owl',
-                                  dense: narrow ? true : false,
-                                ),
-                              ],
+                            Query(
+                              options: QueryOptions(
+                                document: gql(QueryMutation().getAllOrgs()),
+                              ),
+                              builder: (result, {refetch, fetchMore}) {
+                                if (result.data != null && result.data?["organizations"]['count'] > 0) {
+                                  int count = result.data?["organizations"]['count'];
+                                  return TabbedWindowList(
+                                      listItems: [
+                                        for (var i = 0; i < count; i++) TabbedWindowListOrganization(
+                                          name: result.data?["organizations"]["edges"][i]["node"]["name"],
+                                          image: NetworkImage(result.data?["organizations"]["edges"][i]["node"]["logo"]["url"]),
+                                          dense: narrow ? true : false,
+                                        ),
+                                      ]
+                                  );
+                                }
+                                else {
+                                  return TabbedWindowEmpty();
+                                }
+                              }
                             ),
-                            TabbedWindowList(
-                              listItems: [
-                                TabbedWindowListOrganization(
-                                  image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                  name: 'popular owl',
-                                  dense: narrow ? true : false,
+                            Query(
+                                options: QueryOptions(
+                                  document: gql(QueryMutation().getCategoryOrgs(['administration'])),
                                 ),
-                              ],
+                                builder: (result, {refetch, fetchMore}) {
+                                  if (result.data != null && result.data?["organizations"]['count'] > 0) {
+                                    int count = result.data?["organizations"]['count'];
+                                    return TabbedWindowList(
+                                        listItems: [
+                                          for (var i = 0; i < count; i++) TabbedWindowListOrganization(
+                                            name: result.data?["organizations"]["edges"][i]["node"]["name"],
+                                            image: NetworkImage(result.data?["organizations"]["edges"][i]["node"]["logo"]["url"]),
+                                            dense: narrow ? true : false,
+                                          ),
+                                        ]
+                                    );
+                                  }
+                                  else {
+                                    return TabbedWindowEmpty();
+                                  }
+                                }
                             ),
-                            TabbedWindowList(
-                              listItems: [
-                                TabbedWindowListOrganization(
-                                  image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                                  name: 'new owl',
-                                  dense: narrow ? true : false,
+                            Query(
+                                options: QueryOptions(
+                                  document: gql(QueryMutation().getCategoryOrgs(['clubs'])),
                                 ),
-                              ],
+                                builder: (result, {refetch, fetchMore}) {
+                                  if (result.data != null && result.data?["organizations"]['count'] > 0) {
+                                    int count = result.data?["organizations"]['count'];
+                                    return TabbedWindowList(
+                                        listItems: [
+                                          for (var i = 0; i < count; i++) TabbedWindowListOrganization(
+                                            name: result.data?["organizations"]["edges"][i]["node"]["name"],
+                                            image: NetworkImage(result.data?["organizations"]["edges"][i]["node"]["logo"]["url"]),
+                                            dense: narrow ? true : false,
+                                          ),
+                                        ]
+                                    );
+                                  }
+                                  else {
+                                    return TabbedWindowEmpty();
+                                  }
+                                }
                             ),
                           ],
                         ),
                         // Correspondences window
                         TabbedWindow(
-                            viewAllRoute: '/userorganizations',
+                          height: narrow ?
+                          constraints.maxHeight*mobileListHeight :
+                          constraints.maxHeight*desktopListHeight,
+                          title: 'Requests',
+                          titleSize: narrow ?
+                          mobileTitleHeight :
+                          desktopTitleHeight,
+                          tabNames: [
+                            'all',
+                            'administration',
+                            'clubs',
+                          ],
+                          lists: [
+                            Query(
+                                options: QueryOptions(
+                                  document: gql(QueryMutation().getAllCorrespondences(user.objectId.toString())),
+                                ),
+                                builder: (result, {refetch, fetchMore}) {
+                                  if (result.data != null && result.data?["chats"]['count'] > 0) {
+                                    //print(result.data);
+                                    int count = result.data?["chats"]['count'];
+                                    return TabbedWindowList(
+                                        listItems: [
+                                          for (var i = 0; i < count; i++) TabbedWindowListCorrespondence(
+                                            name: result.data?["chats"]["edges"][i]["node"]
+                                              ["members"]["edges"][0]["node"]["user"]["employee"]
+                                              ["organization"]["name"],
+                                            description: result.data?["chats"]["edges"][i]["node"]["correspondence"]["summary"],
+                                            image: NetworkImage(result.data?["chats"]["edges"][i]["node"]
+                                              ["members"]["edges"][0]["node"]["user"]["employee"]
+                                              ["organization"]["logo"]["url"]),
+                                            dense: narrow ? true : false,
+                                          ),
+                                        ]
+                                    );
+                                  }
+                                  else {
+                                    return TabbedWindowEmpty();
+                                  }
+                                }
+                            ),
+                            Query(
+                                options: QueryOptions(
+                                  document: gql(QueryMutation().getCategoryCorrespondences(user.objectId.toString(), ['administration'])),
+                                ),
+                                builder: (result, {refetch, fetchMore}) {
+                                  if (result.data != null && result.data?["chats"]['count'] > 0) {
+                                    //print(result.data);
+                                    int count = result.data?["chats"]['count'];
+                                    return TabbedWindowList(
+                                        listItems: [
+                                          for (var i = 0; i < count; i++) TabbedWindowListCorrespondence(
+                                            name: result.data?["chats"]["edges"][i]["node"]
+                                            ["members"]["edges"][0]["node"]["user"]["employee"]
+                                            ["organization"]["name"],
+                                            description: result.data?["chats"]["edges"][i]["node"]["correspondence"]["summary"],
+                                            image: NetworkImage(result.data?["chats"]["edges"][i]["node"]
+                                            ["members"]["edges"][0]["node"]["user"]["employee"]
+                                            ["organization"]["logo"]["url"]),
+                                            dense: narrow ? true : false,
+                                          ),
+                                        ]
+                                    );
+                                  }
+                                  else {
+                                    return TabbedWindowEmpty();
+                                  }
+                                }
+                            ),
+                            Query(
+                                options: QueryOptions(
+                                  document: gql(QueryMutation().getCategoryCorrespondences(user.objectId.toString(), ['clubs'])),
+                                ),
+                                builder: (result, {refetch, fetchMore}) {
+                                  if (result.data != null && result.data?["chats"]['count'] > 0) {
+                                    //print(result.data);
+                                    int count = result.data?["chats"]['count'];
+                                    return TabbedWindowList(
+                                        listItems: [
+                                          for (var i = 0; i < count; i++) TabbedWindowListCorrespondence(
+                                            name: result.data?["chats"]["edges"][i]["node"]
+                                            ["members"]["edges"][0]["node"]["user"]["employee"]
+                                            ["organization"]["name"],
+                                            description: result.data?["chats"]["edges"][i]["node"]["correspondence"]["summary"],
+                                            image: NetworkImage(result.data?["chats"]["edges"][i]["node"]
+                                            ["members"]["edges"][0]["node"]["user"]["employee"]
+                                            ["organization"]["logo"]["url"]),
+                                            dense: narrow ? true : false,
+                                          ),
+                                        ]
+                                    );
+                                  }
+                                  else {
+                                    return TabbedWindowEmpty();
+                                  }
+                                }
+                            ),
+                          ],
+                        ),
+                        /*TabbedWindow(
                             height: narrow ?
                               constraints.maxHeight*mobileListHeight :
                               constraints.maxHeight*desktopListHeight,
@@ -247,7 +396,7 @@ class _UserDashState extends State<UserDash> {
                                 ],
                               ),
                             ]
-                        ),
+                        ),*/
                     ],
                       mainAxisAlignment: MainAxisAlignment.center,
                       direction: narrow ?
@@ -261,6 +410,24 @@ class _UserDashState extends State<UserDash> {
           );
         }
       ),
+    );
+  }
+}
+
+class TabbedWindowEmpty extends StatelessWidget {
+  const TabbedWindowEmpty({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: Text(
+          'could not find anything',
+          style: TextStyle(
+              color: Theme.of(context).accentColor
+          ),
+        )
     );
   }
 }
