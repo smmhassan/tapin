@@ -64,43 +64,25 @@ class QueryMutation {
     ''';
   }
 
-  String getAllOrgs() {
-    return '''
-    {
-	    organizations {
-		    count,
-        edges {
-          node {
-            objectId
-            name
-            logo{
-              url
-            }
-          }
-        }
-	    }
-    }
-    ''';
-  }
-
-  String getCategoryOrgs(List<String> categories) {
+  String getOrgs(List<String> categories, String search) {
+    String categoriesInsertion = "";
+    String searchInsertion = "";
     String insertion = "";
-    for (String category in categories) {
-      insertion += '''{name: {equalTo: "$category"}},''';
+    if (categories.isNotEmpty || search.isNotEmpty) {
+      if (categories.isNotEmpty) {
+        for (String category in categories) {
+          categoriesInsertion += '''{name: {equalTo: "$category"}},''';
+        }
+        categoriesInsertion = '''categories: {have: {OR: [$categoriesInsertion]}}''';
+      }
+      if (search.isNotEmpty) {
+        searchInsertion = '''name: {matchesRegex: '$search", options: "i"}"''';
+      }
+      insertion = '''(where: {$categoriesInsertion $searchInsertion})''';
     }
-    insertion = '''[$insertion]''';
-    print(insertion);
     return '''
     {
-      organizations (
-        where: {
-          categories: {
-            have: {
-              OR: $insertion
-            }
-          }
-        }
-      ) {
+      organizations $insertion {
 		    count,
         edges {
           node {
@@ -166,7 +148,6 @@ class QueryMutation {
       insertion += '''{name: {equalTo: "$category"}},''';
     }
     insertion = '''[$insertion]''';
-    print(insertion);
     return '''
 {
   chats(
@@ -186,6 +167,67 @@ class QueryMutation {
             }
           }
         }
+      }
+    }
+  ) {
+    count
+    edges {
+      node {
+        members(where: { user: { have: { employee: { exists: true } } } }) {
+          edges {
+            node {
+              user {
+                username
+                employee {
+                  organization {
+                    name
+                    logo {
+                      url
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        correspondence {
+          summary
+        }
+      }
+    }
+  }
+}
+    ''';
+  }
+  String getCorrespondences(String userId, List<String> categories, String search) {
+    String categoriesInsertion = "";
+    String searchInsertion = "";
+    String insertion = "";
+    if (categories.isNotEmpty || search.isNotEmpty) {
+      if (categories.isNotEmpty) {
+        for (String category in categories) {
+          categoriesInsertion += '''{name: {equalTo: "$category"}},''';
+        }
+      }
+      if (search.isNotEmpty) {
+        searchInsertion = '''summary: {matchesRegex: "$search", options: "i"}''';
+      }
+      categoriesInsertion = '''categories: {have: {OR: [$categoriesInsertion]}}''';
+      insertion = '''have: {$categoriesInsertion $searchInsertion}''';
+    }
+    return '''
+{
+  chats(
+    where: {
+      members: {
+        have: {
+          customer: { equalTo: true }
+          user: { have: { objectId: { equalTo: "$userId" } } }
+        }
+      }
+      correspondence: {
+        exists: true 
+        $insertion
       }
     }
   ) {

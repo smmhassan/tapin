@@ -184,7 +184,7 @@ class _UserDashState extends State<UserDash> {
                           lists: [
                             Query(
                               options: QueryOptions(
-                                document: gql(QueryMutation().getAllOrgs()),
+                                document: gql(QueryMutation().getOrgs([],"")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 if (result.data != null && result.data?["organizations"]['count'] > 0) {
@@ -206,7 +206,7 @@ class _UserDashState extends State<UserDash> {
                             ),
                             Query(
                                 options: QueryOptions(
-                                  document: gql(QueryMutation().getCategoryOrgs(['administration'])),
+                                  document: gql(QueryMutation().getOrgs(['administration'],"")),
                                 ),
                                 builder: (result, {refetch, fetchMore}) {
                                   if (result.data != null && result.data?["organizations"]['count'] > 0) {
@@ -228,7 +228,7 @@ class _UserDashState extends State<UserDash> {
                             ),
                             Query(
                                 options: QueryOptions(
-                                  document: gql(QueryMutation().getCategoryOrgs(['clubs'])),
+                                  document: gql(QueryMutation().getOrgs(['clubs'],"")),
                                 ),
                                 builder: (result, {refetch, fetchMore}) {
                                   if (result.data != null && result.data?["organizations"]['count'] > 0) {
@@ -268,7 +268,7 @@ class _UserDashState extends State<UserDash> {
                           lists: [
                             Query(
                                 options: QueryOptions(
-                                  document: gql(QueryMutation().getAllCorrespondences(user.objectId.toString())),
+                                  document: gql(QueryMutation().getCorrespondences(user.objectId.toString(), [], "")),
                                 ),
                                 builder: (result, {refetch, fetchMore}) {
                                   if (result.data != null && result.data?["chats"]['count'] > 0) {
@@ -296,7 +296,7 @@ class _UserDashState extends State<UserDash> {
                             ),
                             Query(
                                 options: QueryOptions(
-                                  document: gql(QueryMutation().getCategoryCorrespondences(user.objectId.toString(), ['administration'])),
+                                  document: gql(QueryMutation().getCorrespondences(user.objectId.toString(), ['administration'], "")),
                                 ),
                                 builder: (result, {refetch, fetchMore}) {
                                   if (result.data != null && result.data?["chats"]['count'] > 0) {
