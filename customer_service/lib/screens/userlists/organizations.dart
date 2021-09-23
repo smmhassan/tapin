@@ -7,6 +7,11 @@ import 'package:customer_service/widgets/listtiles/organization.dart';
 import '../../widgets/NavigationDrawer.dart';
 import '../../widgets/AdaptiveAppBar.dart';
 
+import 'package:customer_service/services/graphQLConf.dart';
+import "package:customer_service/services/queryMutation.dart";
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+
 final double mobileHeaderHeight = .12;
 
 final double mobileListHeight = .36;
@@ -27,7 +32,17 @@ final Image headerLogo = new Image(
     //width: 20.0,
     alignment: FractionalOffset.center);
 
-class UserOrganizationList extends StatelessWidget {
+class UserOrganizationList extends StatefulWidget {
+  @override
+  _UserOrganizationListState createState() => _UserOrganizationListState();
+}
+
+class _UserOrganizationListState extends State<UserOrganizationList> {
+  //List<String> filters = ['administration', 'health', 'whatever', 'clubs', 'test', 'working', 'organizations', 'trailblazer'];
+  List<String> filters = [];
+  List<String> selectedFilters = [];
+
+  Future<QueryResult?> Function()? refetchQuery;
 
   @override
   Widget build(BuildContext context) {
@@ -35,27 +50,6 @@ class UserOrganizationList extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
     bool narrow = screenWidth < 600;
     bool wide = screenWidth > 1000;
-
-    List<Widget> listItems = [
-      OrganizationListTile(
-        image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-        name: 'popular owl',
-        width: screenWidth,
-
-      ),
-      OrganizationListTile(
-        image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-        name: 'not popular owl',
-        width: screenWidth,
-      ),
-      OrganizationListTile(
-        image: NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-        name: 'standard owl',
-        width: screenWidth,
-      ),
-    ];
-
-    List<String> filters = ['administration', 'health', 'whatever', 'clubs', 'test', 'working', 'organizations', 'trailblazer'];
 
     return Scaffold(
         appBar: AdaptiveAppBar(context),
@@ -84,53 +78,67 @@ class UserOrganizationList extends StatelessWidget {
                       ),
                       context: context,
                       builder: (BuildContext context) {
-                        return ClipRRect(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(25),
-                          ),
-                          child: Container (
-                            padding: EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).accentColor,
-                              //borderRadius: BorderRadius.vertical(
-                              //  top: Radius.circular(25),
-                              //),
+                        return Query(
+                            options: QueryOptions(
+                              document: gql(QueryMutation().getAllCategories()),
                             ),
-                            constraints: BoxConstraints(
-                              maxHeight: screenHeight/3,
-                            ),
-                            //height: screenHeight/3,
-                            child: Column(
-                              children: [
-                                Container(
+                            builder: (result, {refetch, fetchMore}) {
+                              if (result.isLoading) {
+                                return Center(
+                                    child: Text(
+                                      "loading...",
+                                      style: TextStyle(
+                                        color: Theme.of(context).canvasColor,
+                                      ),
+                                    )
+                                );
+                              }
+                              if (result.data != null && result.data?["categories"]['count'] > 0) {
+                                int count = result.data?["categories"]['count'];
+                                //List<String> filters = [];
+                                for (int i = 0; i < count; i++) {
+                                  if (!filters.contains(result.data?["categories"]["edges"][i]["node"]["name"])) {
+                                    filters.add(result.data?["categories"]["edges"][i]["node"]["name"]);
+                                  }
+                                }
+                                return FilterPopup(
+                                  filters: filters,
+                                  selectedFilters: selectedFilters,
+                                  onFilterChanged: (selected) {
+                                    setState(() {
+                                      selectedFilters = selected;
+                                      refetchQuery;
+                                      //print(selectedFilters);
+                                    });
+                                  },
+                                  maxHeight: screenHeight/2,
+                                  height: 250,
+                                );
+                              }
+                              else {
+                                return Center(
                                   child: Text(
-                                    "filter",
+                                    "found nothing",
                                     style: TextStyle(
                                       color: Theme.of(context).canvasColor,
-                                      fontSize: 15,
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(bottom: 10),
-                                  child: Divider(
-                                    color: Theme.of(context).canvasColor,
-                                    thickness: 1,
-                                  ),
-                                ),
-                                Wrap(
-                                  spacing: 15,
-                                  runSpacing: 15,
-                                  alignment: WrapAlignment.spaceBetween,
-                                  direction: Axis.horizontal,
-                                  children: [
-                                    for (String filter in filters) FilterToggle(text: filter),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
+                                );
+                              }
+                            }
                         );
+
+                          /*FilterPopup(
+                            filters: filters,
+                            selectedFilters: selectedFilters,
+                            onFilterChanged: (selected) {
+                              setState(() {
+                                selectedFilters = selected;
+                                refetchQuery;
+                                print(selectedFilters);
+                              });
+                            },
+                          );*/
                       },
                     );
                   },
@@ -152,15 +160,156 @@ class UserOrganizationList extends StatelessWidget {
               constraints: BoxConstraints(
                 maxWidth: maxContentWidth,
               ),
-              child: ListView(
+              child: Query(
+                options: QueryOptions(
+                  document: gql(QueryMutation().getOrgs(selectedFilters,"")),
+                ),
+                builder: (result, {refetch, fetchMore}) {
+                  refetchQuery = refetch;
+                  if (result.isLoading) {
+                    return Center(
+                      child: Text("loading...")
+                    );
+                  }
+                  if (result.data != null && result.data?["organizations"]['count'] > 0) {
+                    int count = result.data?["organizations"]['count'];
+                    return ListView(
+                        children: [
+                          for (var i = 0; i < count; i++) OrganizationListTile(
+                            name: result.data?["organizations"]["edges"][i]["node"]["name"],
+                            image: NetworkImage(result.data?["organizations"]["edges"][i]["node"]["logo"]["url"]),
+                            width: screenWidth,
+                          ),
+                        ]
+                    );
+                  }
+                  else {
+                    return Center(
+                      child: Text("found nothing"),
+                    );
+                  }
+                }
+              ),
+              /*ListView(
                 children: [
                   for (Widget item in listItems) item,
                 ],
-              ),
+              ),*/
             )
           );
         }
       )
+    );
+  }
+}
+
+class FilterPopup extends StatefulWidget {
+  final List<String> filters;
+  final List<String> selectedFilters;
+  final double maxHeight;
+  final double height;
+  final ValueChanged<List<String>> onFilterChanged;
+
+  const FilterPopup({
+    Key? key,
+    required this.filters,
+    required this.selectedFilters,
+    required this.onFilterChanged,
+    required this.height,
+    required this.maxHeight,
+  }) : super(key: key);
+
+  @override
+  _FilterPopupState createState() => _FilterPopupState();
+}
+
+class _FilterPopupState extends State<FilterPopup> {
+  void onFilterPressed(bool selected, String filter) {
+    if (selected) {
+      setState(() {
+        widget.selectedFilters.add(filter);
+        //print(widget.selectedFilters);
+      });
+    }
+    else {
+      setState(() {
+        widget.selectedFilters.remove(filter);
+        //print(widget.selectedFilters);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.vertical(
+        top: Radius.circular(25),
+      ),
+      child: Container (
+        padding: EdgeInsets.only(
+          top: 15,
+          left: 15,
+          right: 15,
+        ),
+        decoration: BoxDecoration(
+          color: Theme.of(context).accentColor,
+          //borderRadius: BorderRadius.vertical(
+          //  top: Radius.circular(25),
+          //),
+        ),
+        constraints: BoxConstraints(
+          maxHeight: widget.maxHeight,
+        ),
+        height: widget.height,
+        child: Column(
+          children: [
+            Container(
+              child: Text(
+                "filter",
+                style: TextStyle(
+                  color: Theme.of(context).canvasColor,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(bottom: 10),
+              child: Divider(
+                color: Theme.of(context).canvasColor,
+                thickness: 1,
+              ),
+            ),
+            Container(
+              //decoration: BoxDecoration (
+              //  color: Colors.white,
+              //),
+              height: widget.height-60,
+
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Wrap(
+                  spacing: 20,
+                  runSpacing: 20,
+                  alignment: WrapAlignment.spaceAround,
+                  direction: Axis.horizontal,
+                  children: [
+                    for (String filter in widget.filters)
+                      FilterToggle(
+                        onChanged: (bool selected) {
+                          onFilterPressed(selected, filter);
+                          widget.onFilterChanged(widget.selectedFilters);
+                        },
+                        text: filter,
+                        // if the list of filters contains the filter then show it as selected
+                        isChecked: widget.selectedFilters.contains(filter)? true : false,
+                      ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
@@ -215,10 +364,16 @@ class BottomBarButton extends StatelessWidget {
 
 class FilterToggle extends StatefulWidget {
   final String text;
+  //final void Function() onPressed;
+  final ValueChanged<bool> onChanged;
+  final bool? isChecked;
 
   const FilterToggle({
     Key? key,
     required this.text,
+    //required this.onPressed,
+    required this.onChanged,
+    this.isChecked,
   }) : super(key: key);
 
   @override
@@ -231,8 +386,10 @@ class _FilterToggleState extends State<FilterToggle> {
 
   @override
   void initState() {
+    isSelected = widget.isChecked ?? false;
     super.initState();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -240,6 +397,8 @@ class _FilterToggleState extends State<FilterToggle> {
       onTap: () {
         setState(() {
           isSelected = !isSelected;
+          widget.onChanged(isSelected);
+          //widget.onPressed;
         });
       },
       child: AnimatedContainer(

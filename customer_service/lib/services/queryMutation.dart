@@ -199,6 +199,7 @@ class QueryMutation {
 }
     ''';
   }
+
   String getCorrespondences(String userId, List<String> categories, String search) {
     String categoriesInsertion = "";
     String searchInsertion = "";
@@ -254,6 +255,21 @@ class QueryMutation {
         correspondence {
           summary
         }
+      }
+    }
+  }
+}
+    ''';
+  }
+
+  String getAllCategories() {
+    return '''
+{
+  categories {
+    count
+    edges {
+      node {
+        name
       }
     }
   }
