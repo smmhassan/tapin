@@ -64,22 +64,30 @@ class QueryMutation {
     ''';
   }
 
-  String getOrgs(List<String> categories, String search) {
+  String getOrgs(List<String> categories, String sort, String search) {
     String categoriesInsertion = "";
     String searchInsertion = "";
+    String sortInsertion = "";
     String insertion = "";
-    if (categories.isNotEmpty || search.isNotEmpty) {
-      if (categories.isNotEmpty) {
-        for (String category in categories) {
-          categoriesInsertion += '''{name: {equalTo: "$category"}},''';
+    if (categories.isNotEmpty || search.isNotEmpty || sort.isNotEmpty) {
+      if (categories.isNotEmpty || search.isNotEmpty) {
+        if (categories.isNotEmpty) {
+          for (String category in categories) {
+            categoriesInsertion += '''{name: {equalTo: "$category"}},''';
+          }
+          categoriesInsertion = '''categories: {have: {OR: [$categoriesInsertion]}}''';
         }
-        categoriesInsertion = '''categories: {have: {OR: [$categoriesInsertion]}}''';
+        if (search.isNotEmpty) {
+          searchInsertion = '''name: {matchesRegex: '$search", options: "i"}"''';
+        }
+        insertion += '''where: {$categoriesInsertion $searchInsertion}''';
       }
-      if (search.isNotEmpty) {
-        searchInsertion = '''name: {matchesRegex: '$search", options: "i"}"''';
+      if (sort.isNotEmpty) {
+        insertion += '''order: $sort''';
       }
-      insertion = '''(where: {$categoriesInsertion $searchInsertion})''';
+      insertion = '''($insertion)''';
     }
+    //print(insertion);
     return '''
     {
       organizations $insertion {

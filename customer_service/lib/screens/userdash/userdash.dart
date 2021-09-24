@@ -184,7 +184,7 @@ class _UserDashState extends State<UserDash> {
                           lists: [
                             Query(
                               options: QueryOptions(
-                                document: gql(QueryMutation().getOrgs([],"")),
+                                document: gql(QueryMutation().getOrgs([],"","")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 if (result.data != null && result.data?["organizations"]['count'] > 0) {
@@ -206,7 +206,7 @@ class _UserDashState extends State<UserDash> {
                             ),
                             Query(
                                 options: QueryOptions(
-                                  document: gql(QueryMutation().getOrgs(['administration'],"")),
+                                  document: gql(QueryMutation().getOrgs(['administration'],"","")),
                                 ),
                                 builder: (result, {refetch, fetchMore}) {
                                   if (result.data != null && result.data?["organizations"]['count'] > 0) {
@@ -228,7 +228,7 @@ class _UserDashState extends State<UserDash> {
                             ),
                             Query(
                                 options: QueryOptions(
-                                  document: gql(QueryMutation().getOrgs(['clubs'],"")),
+                                  document: gql(QueryMutation().getOrgs(['clubs'],"","")),
                                 ),
                                 builder: (result, {refetch, fetchMore}) {
                                   if (result.data != null && result.data?["organizations"]['count'] > 0) {
