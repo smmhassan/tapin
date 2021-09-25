@@ -67,7 +67,6 @@ class QueryMutation {
   String getOrgs(List<String> categories, String sort, String search) {
     String categoriesInsertion = "";
     String searchInsertion = "";
-    String sortInsertion = "";
     String insertion = "";
     if (categories.isNotEmpty || search.isNotEmpty || sort.isNotEmpty) {
       if (categories.isNotEmpty || search.isNotEmpty) {

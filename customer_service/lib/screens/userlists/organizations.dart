@@ -55,6 +55,8 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
   Future<QueryResult?> Function()? refetchQuery;
   String selectedSortOption = "";
 
+  TextEditingController searchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -77,7 +79,47 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                 BottomBarButton(
                   text: 'search',
                   icon: Icons.search,
-                  onPressed: (){},
+                  onPressed: (){
+                    showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(10)
+                        ),
+                      ),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
+                          ),
+                          child:TextField(
+                            textInputAction: TextInputAction.search,
+                            onSubmitted: (value) {
+                              refetchQuery;
+                            },
+                            controller: searchController,
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: Theme.of(context).accentColor,
+                            ),
+                            cursorColor: Theme.of(context).selectedRowColor,
+                            decoration: InputDecoration(
+                              prefixIcon: Icon(Icons.search,
+                                  color: Theme.of(context).accentColor,
+                              ),
+                              //suffixIcon: IconButton(
+                              //  icon: Icon(
+                              //    Icons.search,
+                              //    color: Theme.of(context).accentColor,
+                              //  ),
+                              //  onPressed: refetchQuery,
+                              //)
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
                 // filter button opens filter popup
                 BottomBarButton(
@@ -190,7 +232,7 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
               // build organization list
               child: Query(
                 options: QueryOptions(
-                  document: gql(QueryMutation().getOrgs(selectedFilters,sortOptions[selectedSortOption]??defaultSort,"")),
+                  document: gql(QueryMutation().getOrgs(selectedFilters,sortOptions[selectedSortOption]??defaultSort,searchController.text)),
                 ),
                 builder: (result, {refetch, fetchMore}) {
                   refetchQuery = refetch;
@@ -199,6 +241,7 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                       child: Text("loading...")
                     );
                   }
+                  // check that data is returned
                   if (result.data != null && result.data?["organizations"]['count'] > 0) {
                     int count = result.data?["organizations"]['count'];
                     return ListView(
@@ -250,6 +293,7 @@ class BottomBarButton extends StatelessWidget {
           alignment: Alignment.center,
           //height: AppBar().preferredSize.height,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 padding: EdgeInsets.only(right: 5),
