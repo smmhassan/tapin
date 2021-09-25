@@ -77,9 +77,9 @@ class QueryMutation {
           categoriesInsertion = '''categories: {have: {OR: [$categoriesInsertion]}}''';
         }
         if (search.isNotEmpty) {
-          searchInsertion = '''name: {matchesRegex: '$search", options: "i"}"''';
+          searchInsertion = '''name: {matchesRegex: "$search", options: "i"}''';
         }
-        insertion += '''where: {$categoriesInsertion $searchInsertion}''';
+        insertion += '''where: {$categoriesInsertion$searchInsertion}''';
       }
       if (sort.isNotEmpty) {
         insertion += '''order: $sort''';

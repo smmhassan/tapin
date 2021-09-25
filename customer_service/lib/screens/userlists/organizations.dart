@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:customer_service/widgets/listtiles/organization.dart';
 import 'package:customer_service/widgets/lists/filterpopup.dart';
 import 'package:customer_service/widgets/lists/sortpopup.dart';
+import 'package:customer_service/widgets/lists/searchpopup.dart';
+import 'package:customer_service/widgets/lists/bottombarbutton.dart';
 import '../../widgets/NavigationDrawer.dart';
 import '../../widgets/AdaptiveAppBar.dart';
 
@@ -88,34 +90,9 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                       ),
                       context: context,
                       builder: (BuildContext context) {
-                        return Container(
-                          padding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewInsets.bottom,
-                          ),
-                          child:TextField(
-                            textInputAction: TextInputAction.search,
-                            onSubmitted: (value) {
-                              refetchQuery;
-                            },
-                            controller: searchController,
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              color: Theme.of(context).accentColor,
-                            ),
-                            cursorColor: Theme.of(context).selectedRowColor,
-                            decoration: InputDecoration(
-                              prefixIcon: Icon(Icons.search,
-                                  color: Theme.of(context).accentColor,
-                              ),
-                              //suffixIcon: IconButton(
-                              //  icon: Icon(
-                              //    Icons.search,
-                              //    color: Theme.of(context).accentColor,
-                              //  ),
-                              //  onPressed: refetchQuery,
-                              //)
-                            ),
-                          ),
+                        return BottomSearchBar(
+                            refetchQuery: refetchQuery,
+                            searchController: searchController
                         );
                       },
                     );
@@ -265,55 +242,6 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
           );
         }
       )
-    );
-  }
-}
-
-class BottomBarButton extends StatelessWidget {
-  final String text;
-  final IconData icon;
-  final void Function() onPressed;
-
-  final double iconSize = 25;
-  final double fontSize = 15;
-
-  const BottomBarButton({
-    Key? key,
-    required this.text,
-    required this.icon,
-    required this.onPressed,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: TextButton(
-        onPressed: onPressed,
-        child: Container(
-          alignment: Alignment.center,
-          //height: AppBar().preferredSize.height,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: EdgeInsets.only(right: 5),
-                child: Icon(
-                  icon,
-                  color: Theme.of(context).canvasColor,
-                  size: iconSize,
-                ),
-              ),
-              Text(
-                text,
-                style: TextStyle(
-                  color: Theme.of(context).canvasColor,
-                  fontSize: fontSize,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }
