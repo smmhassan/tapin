@@ -33,7 +33,11 @@ class BottomSearchBar extends StatelessWidget {
         ),
         cursorColor: Theme.of(context).selectedRowColor,
         decoration: InputDecoration(
-          prefixIcon: Icon(Icons.search,
+          prefixIcon: IconButton(
+            icon: Icon(Icons.search),
+            onPressed:(){
+              refetchQuery;
+              },
             color: Theme.of(context).accentColor,
           ),
         ),

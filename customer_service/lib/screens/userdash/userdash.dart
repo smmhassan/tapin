@@ -15,6 +15,8 @@ import 'package:customer_service/services/graphQLConf.dart';
 import "package:customer_service/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 
 class UserDash extends StatefulWidget {
   @override
@@ -22,6 +24,7 @@ class UserDash extends StatefulWidget {
 }
 
 class _UserDashState extends State<UserDash> {
+
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 
   QueryMutation addMutation = QueryMutation();

@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
+
 class QueryMutation {
 
-  String signUp(String username, String password) {
+  String signUp(String username, String password, String email, String googleID) {
     return '''
   mutation SignUp{
-  signUp(input: { fields: { username: "$username", password: "$password" } } 
+  signUp(input: { fields: { username: "$username", password: "$password", email: "$email", googleID: "$googleID"} } 
  ) {
    viewer{
     user{
@@ -16,7 +18,6 @@ class QueryMutation {
 }
 ''';
   }
-
   String getUser() {
     return '''
     query GetCurrentUser {
@@ -277,6 +278,20 @@ class QueryMutation {
     edges {
       node {
         name
+      }
+    }
+  }
+}
+    ''';
+  }
+  String getAllGoogleIDs() {
+    return '''
+{
+  user {
+    count
+    edges {
+      node {
+        googleID
       }
     }
   }
