@@ -1,13 +1,17 @@
+import 'package:http_parser/http_parser.dart' as http_parser;
+import 'dart:io';
 import 'package:customer_service/api/GoogleSignInAPI.dart';
 import 'package:customer_service/screens/userdash/userdash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:customer_service/services/graphQLConf.dart';
 import "package:customer_service/services/queryMutation.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:http/http.dart' as http;
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class OurSignUpForm extends StatefulWidget {
   @override
@@ -103,6 +107,8 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
                     ),
                   ),
                   onPressed: () async {
+                    ParseFileBase? parseFile2;
+                    parseFile2 = ParseFile(File("path"));
                     GraphQLClient _client = graphQLConfiguration.clientToQuery();
                     QueryResult result = await _client.mutate(
                       MutationOptions(
@@ -112,6 +118,7 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
                             password.text,
                             email.text,
                             "undefined",
+                             //parseFile2,
                           ),
                         ),
                       ),
@@ -145,6 +152,7 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
       ),
     );
   }
+
   Future signIn() async {
     final newUser = await GoogleSignInAPI.login();
     if(newUser == null){
@@ -152,6 +160,13 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
           .showSnackBar(SnackBar(content: Text('Sign up Failed')));
     }
     else {
+      //final picture = Image.network(newUser.photoUrl.toString());
+      String filePath = newUser.photoUrl.toString();
+      //ParseFileBase? parseFile;
+
+      //final file = http.MultipartFile.fromPath('displayPicture', filePath);
+
+      //parseFile = ParseFile(File(filePath));
       GraphQLClient _client = graphQLConfiguration.clientToQuery();
       QueryResult result = await _client.mutate(
         MutationOptions(
@@ -161,10 +176,12 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
               "Fall2021",
               newUser.email.toString(),
               newUser.id.toString(),
+              //parseFile,
             ),
           ),
         ),
       );
+      print (result.exception);
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Sign up Succeeded!')));
       /*Navigator.of(context).pushReplacement(MaterialPageRoute(
