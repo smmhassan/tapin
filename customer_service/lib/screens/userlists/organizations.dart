@@ -27,7 +27,7 @@ final double desktopListHeight = 0.6;
 
 final double desktopTitleHeight = 22;
 
-final double maxContentWidth = 1000;
+final double maxContentWidth = 800;
 
 final Map<String, String> sortOptions = {
   "ascending": "name_ASC",
@@ -60,6 +60,8 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
 
   TextEditingController searchController = TextEditingController();
 
+  bool searchBarVisible = false;
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -83,7 +85,16 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                   text: 'search',
                   icon: Icons.search,
                   onPressed: (){
+                    searchBarVisible = true;
+                    //BottomSearchBar(
+                    //  refetchQuery: refetchQuery,
+                    //  searchController: searchController,
+                    //  visible: searchBarVisible,
+                    //);
                     showModalBottomSheet(
+                      constraints: BoxConstraints(
+                        maxWidth: maxContentWidth,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(
                             top: Radius.circular(10)
@@ -92,8 +103,14 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                       context: context,
                       builder: (BuildContext context) {
                         return BottomSearchBar(
-                            refetchQuery: refetchQuery,
-                            searchController: searchController
+                          onEntry: (value) {
+                            setState(() {
+                              refetchQuery;
+                              //print(selectedFilters);
+                            });
+                          },
+                          searchController: searchController,
+                          visible: searchBarVisible,
                         );
                       },
                     );
@@ -105,6 +122,9 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                   icon: Icons.filter_alt_outlined,
                   onPressed: (){
                     showModalBottomSheet(
+                      constraints: BoxConstraints(
+                        maxWidth: maxContentWidth,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(
                           top: Radius.circular(25)
@@ -171,6 +191,9 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                   icon: Icons.sort,
                   onPressed: (){
                     showModalBottomSheet(
+                      constraints: BoxConstraints(
+                        maxWidth: maxContentWidth,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.vertical(
                             top: Radius.circular(25)
