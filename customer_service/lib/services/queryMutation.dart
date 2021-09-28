@@ -1,6 +1,7 @@
 
-
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class QueryMutation {
@@ -8,7 +9,12 @@ class QueryMutation {
   String signUp(String username, String password, String email, String googleID) {
     return '''
   mutation SignUp{
-  signUp(input: { fields: { username: "$username", password: "$password", email: "$email", googleID: "$googleID"} } 
+  signUp(input: { fields: 
+  { username: "$username", 
+  password: "$password", 
+  email: "$email", 
+  googleID: "$googleID", 
+  } } 
  ) {
    viewer{
     user{
@@ -21,7 +27,18 @@ class QueryMutation {
 }
 ''';
   }
-
+  String upDateDisplay(String displayUrl, String googleID) {
+    return '''mutation UpdateDisplay {
+  updateDisplayPicture(
+  googleID: "$googleID", 
+  fields: { 
+  displayPicture: {url: displayUrl} 
+  }) {
+  updatedAt
+  }
+}
+''';
+  }
   String getUser() {
     return '''
     query GetCurrentUser {

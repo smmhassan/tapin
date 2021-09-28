@@ -26,6 +26,7 @@ dependencies:
   graphql_flutter:
   parse_server_sdk_flutter:
   http:
+  image:
 
 
 

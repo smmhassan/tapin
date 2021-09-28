@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:http_parser/http_parser.dart' as http_parser;
 import 'dart:io';
 import 'package:customer_service/api/GoogleSignInAPI.dart';
-import 'package:customer_service/screens/userdash/userdash.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -12,7 +13,8 @@ import "package:customer_service/services/queryMutation.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-
+var uri = Uri.parse('https://trailblazer.b4a.io/users/MyCurrentUserId');
+var request = http.MultipartRequest('Put', uri);
 class OurSignUpForm extends StatefulWidget {
   @override
   _OurSignUpFormState createState() => _OurSignUpFormState();
@@ -28,6 +30,7 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 
   QueryMutation addMutation = QueryMutation();
+
 
   @override
   void initState() {
@@ -107,8 +110,14 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
                     ),
                   ),
                   onPressed: () async {
-                    ParseFileBase? parseFile2;
-                    parseFile2 = ParseFile(File("path"));
+                    //ParseFileBase? parseFile2;
+                    /* var multipartFile2 = http.MultipartFile.fromBytes(
+                        'file',
+                        (await rootBundle.load(
+                            '')).buffer.asUint8List(),
+                        contentType: http_parser.MediaType('image', 'jpg')
+                    ); */
+                    //parseFile2 = ParseFile(File("path"));
                     GraphQLClient _client = graphQLConfiguration.clientToQuery();
                     QueryResult result = await _client.mutate(
                       MutationOptions(
@@ -118,7 +127,6 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
                             password.text,
                             email.text,
                             "undefined",
-                             //parseFile2,
                           ),
                         ),
                       ),
@@ -152,7 +160,11 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
       ),
     );
   }
-
+  Future<String?> networkImageToBase64(String imageUrl) async {
+    http.Response response = await http.get(Uri.parse(imageUrl));
+    final bytes = response.bodyBytes;
+    return (bytes != null ? base64Encode(bytes) : null);
+  }
   Future signIn() async {
     final newUser = await GoogleSignInAPI.login();
     if(newUser == null){
@@ -163,25 +175,37 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
       //final picture = Image.network(newUser.photoUrl.toString());
       String filePath = newUser.photoUrl.toString();
       //ParseFileBase? parseFile;
-
-      //final file = http.MultipartFile.fromPath('displayPicture', filePath);
-
       //parseFile = ParseFile(File(filePath));
-      GraphQLClient _client = graphQLConfiguration.clientToQuery();
-      QueryResult result = await _client.mutate(
-        MutationOptions(
-          document: gql(
-            addMutation.signUp(
-              newUser.displayName.toString(),
-              "Fall2021",
-              newUser.email.toString(),
-              newUser.id.toString(),
-              //parseFile,
-            ),
+
+      final imgBase64Str = await networkImageToBase64(newUser.photoUrl.toString());
+      ParseFile file = new ParseFile(File(imgBase64Str!));
+     var multipartFile = http.MultipartFile.fromBytes(
+            'displayPicture',
+            (await NetworkAssetBundle(Uri.parse(filePath)).load(
+            filePath)).buffer.asUint8List(),
+            filename: '${DateTime.now().second}.jpg',
+        contentType: http_parser.MediaType('image', 'jpg')
+        );
+
+    GraphQLClient _client = graphQLConfiguration.clientToQuery();
+    QueryResult result = await _client.mutate(
+      MutationOptions(
+        document: gql(
+          addMutation.signUp(
+            newUser.displayName.toString(),
+            "Fall2021",
+            newUser.email.toString(),
+            newUser.id.toString(),
           ),
         ),
-      );
-      print (result.exception);
+      ),
+    );
+
+      //request.files.add(multipartFile);
+      //http.StreamedResponse response = await request.send();
+      //print(response.statusCode);
+      //final file = http.MultipartFile.fromPath('displayPicture', filePath);
+
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Sign up Succeeded!')));
       /*Navigator.of(context).pushReplacement(MaterialPageRoute(
