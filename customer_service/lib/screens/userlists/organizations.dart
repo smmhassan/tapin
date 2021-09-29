@@ -60,7 +60,7 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
 
   TextEditingController searchController = TextEditingController();
 
-  bool searchBarVisible = false;
+  //bool searchBarVisible = false;
 
   @override
   Widget build(BuildContext context) {
@@ -77,21 +77,42 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
         bottomNavigationBar: BottomAppBar(
           color: Theme.of(context).accentColor,
           child: Container(
+            constraints: BoxConstraints(
+              maxWidth: maxContentWidth,
+            ),
             height: AppBar().preferredSize.height,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                // opens the search popup
                 BottomBarButton(
                   text: 'search',
                   icon: Icons.search,
                   onPressed: (){
-                    searchBarVisible = true;
-                    //BottomSearchBar(
-                    //  refetchQuery: refetchQuery,
-                    //  searchController: searchController,
-                    //  visible: searchBarVisible,
-                    //);
-                    showModalBottomSheet(
+                    //searchBarVisible = true;
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Container(
+                          constraints: BoxConstraints(
+                            maxWidth: maxContentWidth,
+                          ),
+                          child: Dialog(
+                            child: SearchBar(
+                              onEntry: (value) {
+                                setState(() {
+                                  refetchQuery;
+                                  //print(selectedFilters);
+                                });
+                              },
+                              searchController: searchController,
+                              //visible: searchBarVisible,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                    /*showModalBottomSheet(
                       constraints: BoxConstraints(
                         maxWidth: maxContentWidth,
                       ),
@@ -113,7 +134,7 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                           visible: searchBarVisible,
                         );
                       },
-                    );
+                    );*/
                   },
                 ),
                 // filter button opens filter popup
