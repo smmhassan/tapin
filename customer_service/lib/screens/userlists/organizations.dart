@@ -69,205 +69,183 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
     bool narrow = screenWidth < 600;
     bool wide = screenWidth > 1000;
 
-
-
     return Scaffold(
         appBar: AdaptiveAppBar(context),
         //appBar: AppBar(),
         bottomNavigationBar: BottomAppBar(
-          color: Theme.of(context).accentColor,
-          child: Container(
-            height: AppBar().preferredSize.height,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                BottomBarButton(
-                  text: 'search',
-                  icon: Icons.search,
-                  onPressed: (){
-                    searchBarVisible = true;
-                    //BottomSearchBar(
-                    //  refetchQuery: refetchQuery,
-                    //  searchController: searchController,
-                    //  visible: searchBarVisible,
-                    //);
-                    showModalBottomSheet(
-                      constraints: BoxConstraints(
-                        maxWidth: maxContentWidth,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(10)
+            color: Theme.of(context).accentColor,
+            child: Container(
+              height: AppBar().preferredSize.height,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  BottomBarButton(
+                    text: 'search',
+                    icon: Icons.search,
+                    onPressed: () {
+                      searchBarVisible = true;
+                      showModalBottomSheet(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(10)),
                         ),
-                      ),
-                      context: context,
-                      builder: (BuildContext context) {
-                        return BottomSearchBar(
-                          onEntry: (value) {
-                            setState(() {
-                              refetchQuery;
-                              //print(selectedFilters);
-                            });
-                          },
-                          searchController: searchController,
-                          visible: searchBarVisible,
-                        );
-                      },
-                    );
-                  },
-                ),
-                // filter button opens filter popup
-                BottomBarButton(
-                  text: 'filter',
-                  icon: Icons.filter_alt_outlined,
-                  onPressed: (){
-                    showModalBottomSheet(
-                      constraints: BoxConstraints(
-                        maxWidth: maxContentWidth,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(25)
+                        context: context,
+                        builder: (BuildContext context) {
+                          return BottomSearchBar(
+                            onEntry: (value) {
+                              setState(() {
+                                refetchQuery;
+                                //print(selectedFilters);
+                              });
+                            },
+                            searchController: searchController,
+                            visible: searchBarVisible,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  // filter button opens filter popup
+                  BottomBarButton(
+                    text: 'filter',
+                    icon: Icons.filter_alt_outlined,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(25)),
                         ),
-                      ),
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Query(
-                            options: QueryOptions(
-                              document: gql(QueryMutation().getAllCategories()),
-                            ),
-                            builder: (result, {refetch, fetchMore}) {
-                              if (result.isLoading) {
-                                return Center(
-                                    child: Text(
-                                      "loading...",
-                                      style: TextStyle(
-                                        color: Theme.of(context).canvasColor,
-                                      ),
-                                    )
-                                );
-                              }
-                              if (result.data != null && result.data?["categories"]['count'] > 0) {
-                                int count = result.data?["categories"]['count'];
-                                //List<String> filters = [];
-                                for (int i = 0; i < count; i++) {
-                                  if (!filters.contains(result.data?["categories"]["edges"][i]["node"]["name"])) {
-                                    filters.add(result.data?["categories"]["edges"][i]["node"]["name"]);
-                                  }
-                                }
-                                return FilterPopup(
-                                  filters: filters,
-                                  selectedFilters: selectedFilters,
-                                  onFilterChanged: (selected) {
-                                    setState(() {
-                                      selectedFilters = selected;
-                                      refetchQuery;
-                                      //print(selectedFilters);
-                                    });
-                                  },
-                                  maxHeight: screenHeight/2,
-                                  height: 250,
-                                );
-                              }
-                              else {
-                                return Center(
-                                  child: Text(
-                                    "found nothing",
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Query(
+                              options: QueryOptions(
+                                document:
+                                    gql(QueryMutation().getAllCategories()),
+                              ),
+                              builder: (result, {refetch, fetchMore}) {
+                                if (result.isLoading) {
+                                  return Center(
+                                      child: Text(
+                                    "loading...",
                                     style: TextStyle(
                                       color: Theme.of(context).canvasColor,
                                     ),
-                                  ),
-                                );
-                              }
-                            }
-                        );
-                      },
-                    );
-                  },
-                ),
-                // sort button opens sort popup
-                BottomBarButton(
-                  text: 'sort',
-                  icon: Icons.sort,
-                  onPressed: (){
-                    showModalBottomSheet(
-                      constraints: BoxConstraints(
-                        maxWidth: maxContentWidth,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(25)
+                                  ));
+                                }
+                                if (result.data != null &&
+                                    result.data?["categories"]['count'] > 0) {
+                                  int count =
+                                      result.data?["categories"]['count'];
+                                  //List<String> filters = [];
+                                  for (int i = 0; i < count; i++) {
+                                    if (!filters.contains(
+                                        result.data?["categories"]["edges"][i]
+                                            ["node"]["name"])) {
+                                      filters.add(result.data?["categories"]
+                                          ["edges"][i]["node"]["name"]);
+                                    }
+                                  }
+                                  return FilterPopup(
+                                    filters: filters,
+                                    selectedFilters: selectedFilters,
+                                    onFilterChanged: (selected) {
+                                      setState(() {
+                                        selectedFilters = selected;
+                                        refetchQuery;
+                                        //print(selectedFilters);
+                                      });
+                                    },
+                                    maxHeight: screenHeight / 2,
+                                    height: 250,
+                                  );
+                                } else {
+                                  return Center(
+                                    child: Text(
+                                      "found nothing",
+                                      style: TextStyle(
+                                        color: Theme.of(context).canvasColor,
+                                      ),
+                                    ),
+                                  );
+                                }
+                              });
+                        },
+                      );
+                    },
+                  ),
+                  // sort button opens sort popup
+                  BottomBarButton(
+                    text: 'sort',
+                    icon: Icons.sort,
+                    onPressed: () {
+                      showModalBottomSheet(
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.vertical(top: Radius.circular(25)),
                         ),
-                      ),
-                      context: context,
-                      builder: (BuildContext context) {
-                        return SortPopup(
-                          sortOptions: sortOptionNames,
-                          selectedSortOption: selectedSortOption,
-                          onSortOptionChanged: (selected) {
-                            setState(() {
-                              selectedSortOption = selected;
-                              refetchQuery;
-                              //print(sortOptions[selectedSortOption]);
-                            });
-                          },
-                          maxHeight: screenHeight/2,
-                          height: 200,
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
-            ),
-          )
-        ),
-
+                        context: context,
+                        builder: (BuildContext context) {
+                          return SortPopup(
+                            sortOptions: sortOptionNames,
+                            selectedSortOption: selectedSortOption,
+                            onSortOptionChanged: (selected) {
+                              setState(() {
+                                selectedSortOption = selected;
+                                refetchQuery;
+                                //print(sortOptions[selectedSortOption]);
+                              });
+                            },
+                            maxHeight: screenHeight / 2,
+                            height: 200,
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
+            )),
         endDrawer: wide ? null : NavigationDrawer(),
         body: LayoutBuilder(builder: (context, constraints) {
           return Center(
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: maxContentWidth,
-              ),
-              // build organization list
-              child: Query(
+              child: Container(
+            constraints: BoxConstraints(
+              maxWidth: maxContentWidth,
+            ),
+            // build organization list
+            child: Query(
                 options: QueryOptions(
-                  document: gql(QueryMutation().getOrgs(selectedFilters,sortOptions[selectedSortOption]??defaultSort,searchController.text)),
+                  document: gql(QueryMutation().getOrgs(
+                      selectedFilters,
+                      sortOptions[selectedSortOption] ?? defaultSort,
+                      searchController.text)),
                 ),
                 builder: (result, {refetch, fetchMore}) {
                   refetchQuery = refetch;
                   if (result.isLoading) {
-                    return Center(
-                      child: Text("loading...")
-                    );
+                    return Center(child: Text("loading..."));
                   }
                   // check that data is returned
-                  if (result.data != null && result.data?["organizations"]['count'] > 0) {
+                  if (result.data != null &&
+                      result.data?["organizations"]['count'] > 0) {
                     int count = result.data?["organizations"]['count'];
-                    return ListView(
-                        children: [
-                          for (var i = 0; i < count; i++) OrganizationListTile(
-                            name: result.data?["organizations"]["edges"][i]["node"]["name"],
-                            image: NetworkImage(result.data?["organizations"]["edges"][i]["node"]["logo"]["url"]),
-                            width: screenWidth,
-                          ),
-                        ]
-                    );
-                  }
-                  else {
+                    return ListView(children: [
+                      for (var i = 0; i < count; i++)
+                        OrganizationListTile(
+                          name: result.data?["organizations"]["edges"][i]
+                              ["node"]["name"],
+                          image: NetworkImage(result.data?["organizations"]
+                              ["edges"][i]["node"]["logo"]["url"]),
+                          width: screenWidth,
+                        ),
+                    ]);
+                  } else {
                     return Center(
                       child: Text("found nothing"),
                     );
                   }
-                }
-              ),
-            )
-          );
-        }
-      )
-    );
+                }),
+          ));
+        }));
   }
 }
-
-
