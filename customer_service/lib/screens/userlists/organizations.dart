@@ -141,6 +141,9 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                     icon: Icons.filter_alt_outlined,
                     onPressed: () {
                       showModalBottomSheet(
+                        constraints: BoxConstraints(
+                          maxWidth: maxContentWidth,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.vertical(top: Radius.circular(25)),
@@ -209,6 +212,9 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                     icon: Icons.sort,
                     onPressed: () {
                       showModalBottomSheet(
+                        constraints: BoxConstraints(
+                          maxWidth: maxContentWidth,
+                        ),
                         shape: RoundedRectangleBorder(
                           borderRadius:
                               BorderRadius.vertical(top: Radius.circular(25)),
