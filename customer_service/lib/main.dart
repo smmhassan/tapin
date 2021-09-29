@@ -18,18 +18,19 @@ void main() async {
 
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
       clientKey: keyClientKey, autoSendSessionId: true);
-   /*var firstObject = ParseObject('FirstClass')
+  /*var firstObject = ParseObject('FirstClass')
     ..set(
         'message', 'Hey ! First message from Flutter. Parse is now connected');
   await firstObject.save();
 
   print('done');  */ //Uncomment to test connection
   runApp(
-      GraphQLProvider(
-        client: graphQLConfiguration.client,
-        child: CacheProvider(child: MyApp()),
-      ),
-  );}
+    GraphQLProvider(
+      client: graphQLConfiguration.client,
+      child: CacheProvider(child: MyApp()),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   //get typenameDataIdFromObject => null; //look into actual fix
@@ -42,8 +43,8 @@ class MyApp extends StatelessWidget {
       //home:
       // OurLogin(),
       routes: {
-        //'/': (context) => OurLogin(),
-        '/': (context) => UserOrganizationList(),
+        '/': (context) => OurLogin(),
+        //'/': (context) => UserOrganizationList(),
         '/userdash': (context) => UserDash(),
         '/userorganizations': (context) => UserOrganizationList(),
       },
