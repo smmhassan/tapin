@@ -5,25 +5,35 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 
-class SearchBar extends StatelessWidget {
-  //final bool visible;
-
-  final double fontSize = 18;
-
+class SearchBar extends StatefulWidget {
   const SearchBar({
     Key? key,
-    //required this.refetchQuery,
     required this.onEntry,
     required this.searchController,
-    //required this.visible,
   }) : super(key: key);
 
-  //final Function()? refetchQuery;
   final ValueChanged<String> onEntry;
   final TextEditingController searchController;
 
   @override
+  State<SearchBar> createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
+  final double fontSize = 18;
+
+  bool empty =  true;
+
+  @override
   Widget build(BuildContext context) {
+    setState(() {
+      if (widget.searchController.text.length > 0) {
+        empty = false;
+      }
+      else {
+        empty = true;
+      }
+    });
     return Visibility(
       //visible: visible,
       child: Container(
@@ -33,11 +43,21 @@ class SearchBar extends StatelessWidget {
         child:TextField(
           autofocus: true,
           textInputAction: TextInputAction.search,
+          onChanged: (text) {
+            setState(() {
+              if (text.length > 0) {
+                empty = false;
+              }
+              else {
+                empty = true;
+              }
+            });
+          },
           onSubmitted:(value) {
-            onEntry(searchController.text);
+            widget.onEntry(widget.searchController.text);
             Navigator.pop(context);
           },
-          controller: searchController,
+          controller: widget.searchController,
           style: TextStyle(
             fontSize: fontSize,
             color: Theme.of(context).accentColor,
@@ -48,8 +68,19 @@ class SearchBar extends StatelessWidget {
             prefixIcon: IconButton(
               icon: Icon(Icons.search),
               onPressed: () {
-                onEntry(searchController.text);
+                widget.onEntry(widget.searchController.text);
                 Navigator.pop(context);
+              },
+              color: Theme.of(context).accentColor,
+            ),
+            suffixIcon: empty? null : IconButton(
+              icon: Icon(Icons.clear),
+              onPressed: () {
+                widget.searchController.clear();
+                setState(() {
+                  empty = true;
+                });
+                widget.onEntry(widget.searchController.text);
               },
               color: Theme.of(context).accentColor,
             ),
