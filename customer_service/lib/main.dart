@@ -3,6 +3,8 @@ import 'package:customer_service/utils/OurTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'screens/login/login.dart';
+import 'screens/userdash/userdash.dart';
+import 'screens/userlists/organizations.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:customer_service/services/graphQLConf.dart';
 
@@ -16,18 +18,19 @@ void main() async {
 
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
       clientKey: keyClientKey, autoSendSessionId: true);
-   /*var firstObject = ParseObject('FirstClass')
+  /*var firstObject = ParseObject('FirstClass')
     ..set(
         'message', 'Hey ! First message from Flutter. Parse is now connected');
   await firstObject.save();
 
   print('done');  */ //Uncomment to test connection
   runApp(
-      GraphQLProvider(
-        client: graphQLConfiguration.client,
-        child: CacheProvider(child: MyApp()),
-      ),
-  );}
+    GraphQLProvider(
+      client: graphQLConfiguration.client,
+      child: CacheProvider(child: MyApp()),
+    ),
+  );
+}
 
 class MyApp extends StatelessWidget {
   //get typenameDataIdFromObject => null; //look into actual fix
@@ -37,8 +40,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: OurTheme().buildTheme(),
-      home:
-        OurLogin(),
+      //home:
+      // OurLogin(),
+      routes: {
+        '/': (context) => OurLogin(),
+        //'/': (context) => UserOrganizationList(),
+        '/userdash': (context) => UserDash(),
+        '/userorganizations': (context) => UserOrganizationList(),
+      },
     );
   }
 }
