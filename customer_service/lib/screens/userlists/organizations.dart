@@ -275,14 +275,19 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                               ["edges"][i]["node"]["logo"]["url"]),
                           width: screenWidth,
                         ),
-                    ]);
+                      ]
+                    );
                   } else {
                     return Center(
                       child: Text("found nothing"),
                     );
                   }
-                }),
-          ));
-        }));
+                }
+              ),
+            )
+          );
+        }
+      )
+    );
   }
 }
