@@ -64,6 +64,7 @@ class CorrespondenceListTile extends StatelessWidget {
                 ),
               ),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     padding: EdgeInsets.only(left: 10),
@@ -83,7 +84,7 @@ class CorrespondenceListTile extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.normal,
                         color: Theme.of(context).selectedRowColor,
-                        fontSize: 17,
+                        fontSize: 15,
                       ),
                     ),
                   ),
