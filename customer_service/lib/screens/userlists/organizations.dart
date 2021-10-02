@@ -13,6 +13,7 @@ import '../../widgets/AdaptiveAppBar.dart';
 
 import "package:customer_service/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 final double mobileHeaderHeight = .12;
@@ -62,6 +63,24 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
 
   //bool searchBarVisible = false;
 
+  ParseUser user = ParseUser('','','');
+
+  @override
+  void initState() {
+    initData().then((bool success) {
+      ParseUser.currentUser().then((currentUser) {
+        setState(() {
+          user = currentUser;
+        });
+      });
+    }).catchError((dynamic _) {});
+    super.initState();
+  }
+
+  Future<bool> initData() async {
+    return (await Parse().healthCheck()).success;
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -70,7 +89,7 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
     bool wide = screenWidth > 1000;
 
     return Scaffold(
-        appBar: AdaptiveAppBar(context),
+        appBar: AdaptiveAppBar(context, user,),
         //appBar: AppBar(),
         bottomNavigationBar: BottomAppBar(
           color: Theme.of(context).accentColor,
@@ -110,29 +129,6 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                         );
                       },
                     );
-                    /*showModalBottomSheet(
-                      constraints: BoxConstraints(
-                        maxWidth: maxContentWidth,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(10)
-                        ),
-                      ),
-                      context: context,
-                      builder: (BuildContext context) {
-                        return BottomSearchBar(
-                          onEntry: (value) {
-                            setState(() {
-                              refetchQuery;
-                              //print(selectedFilters);
-                            });
-                          },
-                          searchController: searchController,
-                          visible: searchBarVisible,
-                        );
-                      },
-                    );*/
                   },
                 ),
                 // filter button opens filter popup
@@ -242,7 +238,7 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
             ),
           )
         ),
-        endDrawer: wide ? null : NavigationDrawer(),
+        endDrawer: wide ? null : NavigationDrawer(user: user,),
         body: LayoutBuilder(builder: (context, constraints) {
           return Center(
               child: Container(

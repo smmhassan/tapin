@@ -65,41 +65,13 @@ class _UserDashState extends State<UserDash> {
   }
 
   Future<bool> initData() async {
-    /*await Parse().initialize(
-      keyParseApplicationId,
-      keyParseServerUrl,
-      clientKey: keyParseClientKey,
-      debug: keyDebug,
-    );*/
-
     return (await Parse().healthCheck()).success;
   }
 
   @override
   Widget build(BuildContext context) {
-    /*GraphQLClient _client = graphQLConfiguration.clientToQuery();
-    QueryResult result = await _client.query(
-      QueryOptions(
-        document: gql(
-          queryMutation.getUser(),
-        ),
-      ),
-    );
-    print(result.data);
-    if (!result.hasException) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => UserDash(),
-        ),
-      );
-    }*/
-
     bool narrow = MediaQuery.of(context).size.width < 600;
     bool wide = MediaQuery.of(context).size.width > 1000;
-    //String name = 'missing';
-    //if (authUser.username != null) {
-    //  name = authUser.username.toString();
-    //}
 
     List<String> navList = [
       'Dashboard',
@@ -110,12 +82,10 @@ class _UserDashState extends State<UserDash> {
     ];
 
     return Scaffold(
-      appBar: AdaptiveAppBar(context),
+      appBar: AdaptiveAppBar(context, user),
       //appBar: AppBar(),
 
-      endDrawer: wide ? null : NavigationDrawer(
-        //items: navList,
-      ),
+      endDrawer: wide ? null : NavigationDrawer(user: user,),
 
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -271,7 +241,7 @@ class _UserDashState extends State<UserDash> {
                           lists: [
                             Query(
                                 options: QueryOptions(
-                                  document: gql(QueryMutation().getCorrespondences(user.objectId.toString(), [], "")),
+                                  document: gql(QueryMutation().getCorrespondences(user.objectId.toString(), [], "", "")),
                                 ),
                                 builder: (result, {refetch, fetchMore}) {
                                   if (result.data != null && result.data?["chats"]['count'] > 0) {
@@ -299,7 +269,7 @@ class _UserDashState extends State<UserDash> {
                             ),
                             Query(
                                 options: QueryOptions(
-                                  document: gql(QueryMutation().getCorrespondences(user.objectId.toString(), ['administration'], "")),
+                                  document: gql(QueryMutation().getCorrespondences(user.objectId.toString(), ['administration'], "", "")),
                                 ),
                                 builder: (result, {refetch, fetchMore}) {
                                   if (result.data != null && result.data?["chats"]['count'] > 0) {

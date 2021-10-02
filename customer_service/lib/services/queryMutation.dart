@@ -229,7 +229,7 @@ class QueryMutation {
     ''';
   }
 
-  String getCorrespondences(String userId, List<String> categories, String search) {
+  String getCorrespondences(String userId, List<String> categories, String sort, String search) {
     String categoriesInsertion = "";
     String searchInsertion = "";
     String insertion = "";
