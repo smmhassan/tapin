@@ -15,7 +15,7 @@ class _SetPasswordState extends State<SetPassword> {
   TextEditingController confirmpassword = TextEditingController();
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
   TextEditingController password = TextEditingController();
-  ParseUser? user = ParseUser('', '', '');
+  ParseUser user = ParseUser('', '', '');
 
   @override
   void initState() {
@@ -85,10 +85,19 @@ class _SetPasswordState extends State<SetPassword> {
                       color: Color.fromARGB(255, 255, 251, 245), fontSize: 18),
                 ),
               ),
-              onPressed: () {
+              onPressed: () async {
                 if (password.text == confirmpassword.text) {
-                  user!.set("password", password.text);
-                  user!.save();
+                  final ParseCloudFunction function =
+                      ParseCloudFunction('setPasswordForUser');
+                  final Map<String, dynamic> params = <String, dynamic>{
+                    "username": "Mujtaba Hassan",
+                    "newPassword": password.text,
+                  };
+                  final ParseResponse parseResponse =
+                      await function.execute(parameters: params);
+                  if (parseResponse.success) {
+                    print(parseResponse.result);
+                  }
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text(
                           'Password set successfully! You may now sign in. Do not forget to confirm your email!')));

@@ -52,7 +52,25 @@ class QueryMutation {
     }
     ''';
   }
-
+String updatePassword(String username, String password) {
+    return '''
+     mutation UpdatePassword{
+  user(username: "$username" )(input: { fields: 
+  { 
+  password: "$password",
+  } } 
+ ) {
+   viewer{
+    user{
+      id
+      updatedAt
+  }
+  sessionToken
+  }
+ }
+}
+    ''';
+}
   String getUserDP(String id) {
     return '''
     query GetDP {
