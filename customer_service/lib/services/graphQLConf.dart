@@ -3,7 +3,7 @@ import "package:graphql_flutter/graphql_flutter.dart";
 import "package:customer_service/constants.dart";
 
 HttpLink httpLink = HttpLink(
-  'http://trailblazer.b4a.io/graphql',
+  'http://trailblazer.b4a.io/',
   defaultHeaders: {
     'X-Parse-Application-Id': kParseApplicationId,
     'X-Parse-Client-Key': kParseClientKey,
@@ -12,7 +12,6 @@ HttpLink httpLink = HttpLink(
 );
 
 class GraphQLConfiguration {
-
   ValueNotifier<GraphQLClient> client = ValueNotifier(
     GraphQLClient(
       cache: GraphQLCache(), //FIX!!!!!!
