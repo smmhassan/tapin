@@ -15,19 +15,12 @@ class OurLoginForm extends StatefulWidget {
 }
 
 class _OurLoginFormState extends State<OurLoginForm> {
-
-
-  TextEditingController username = TextEditingController();
-
-  TextEditingController password = TextEditingController();
-
-  TextEditingController email = TextEditingController();
-
-  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
-
   QueryMutation addMutation = QueryMutation();
-
+  TextEditingController email = TextEditingController();
+  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
   bool isChecked = false;
+  TextEditingController password = TextEditingController();
+  TextEditingController username = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -135,9 +128,8 @@ class _OurLoginFormState extends State<OurLoginForm> {
 
               if (response.success) {
                 Navigator.pushNamed(context, '/userdash');
-              }
-              else {
-                if (response.error?.message != null){
+              } else {
+                if (response.error?.message != null) {
                   print(response.error?.message);
                 }
               }

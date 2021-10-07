@@ -11,15 +11,11 @@ class SetPassword extends StatefulWidget {
 }
 
 class _SetPasswordState extends State<SetPassword> {
-  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
-
   QueryMutation addMutation = QueryMutation();
-
-  ParseUser? user = ParseUser('', '', '');
-
-  TextEditingController password = TextEditingController();
-
   TextEditingController confirmpassword = TextEditingController();
+  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
+  TextEditingController password = TextEditingController();
+  ParseUser? user = ParseUser('', '', '');
 
   @override
   void initState() {
@@ -90,7 +86,6 @@ class _SetPasswordState extends State<SetPassword> {
                 ),
               ),
               onPressed: () {
-                user = ParseUser("Mujtaba Hassan", "Fall2021", '');
                 if (password.text == confirmpassword.text) {
                   user!.set("password", password.text);
                   user!.save();

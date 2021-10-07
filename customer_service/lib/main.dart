@@ -1,4 +1,5 @@
 import 'package:customer_service/constants.dart';
+import 'package:customer_service/screens/signup/localwidgets/setpasswordScreen.dart';
 import 'package:customer_service/utils/OurTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         //'/': (context) => UserOrganizationList(),
         '/userdash': (context) => UserDash(),
         '/userorganizations': (context) => UserOrganizationList(),
+        '/setuppasswordscreen': (context) => OurSetupPasswordScreen(),
       },
     );
   }

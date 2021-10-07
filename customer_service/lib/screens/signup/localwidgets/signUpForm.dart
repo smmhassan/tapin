@@ -6,16 +6,11 @@ import 'package:customer_service/api/GoogleSignInAPI.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:customer_service/services/graphQLConf.dart';
 import "package:customer_service/services/queryMutation.dart";
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:http/http.dart' as http;
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-
-var uri = Uri.parse('https://trailblazer.b4a.io/users/MyCurrentUserId');
-var request = http.MultipartRequest('Put', uri);
 
 class OurSignUpForm extends StatefulWidget {
   @override
@@ -23,15 +18,11 @@ class OurSignUpForm extends StatefulWidget {
 }
 
 class _OurSignUpFormState extends State<OurSignUpForm> {
-  TextEditingController username = TextEditingController();
-
-  TextEditingController password = TextEditingController();
-
-  TextEditingController email = TextEditingController();
-
-  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
-
   QueryMutation addMutation = QueryMutation();
+  TextEditingController email = TextEditingController();
+  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
+  TextEditingController password = TextEditingController();
+  TextEditingController username = TextEditingController();
 
   @override
   void initState() {
@@ -39,6 +30,43 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
     password = TextEditingController();
     email = TextEditingController();
     super.initState();
+  }
+
+  Future signIn() async {
+    final newUser = await GoogleSignInAPI.login();
+    if (newUser == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Sign up Failed')));
+    } else {
+      //final picture = Image.network(newUser.photoUrl.toString());
+      //ParseFileBase? parseFile;
+      //parseFile = ParseFile(File(filePath));
+
+      GraphQLClient _client = graphQLConfiguration.clientToQuery();
+      QueryResult result = await _client.mutate(
+        MutationOptions(
+          document: gql(
+            addMutation.signUp(
+              newUser.displayName.toString(),
+              "Fall2021",
+              newUser.email.toString(),
+              newUser.id.toString(),
+            ),
+          ),
+        ),
+      );
+
+      //request.files.add(multipartFile);
+      //http.StreamedResponse response = await request.send();
+      //print(response.statusCode);
+      //final file = http.MultipartFile.fromPath('displayPicture', filePath);
+
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Sign up Succeeded!')));
+      ParseUser user = ParseUser(
+          newUser.displayName.toString(), "Fall2021", newUser.email.toString());
+      Navigator.pushNamed(context, '/setuppasswordscreen');
+    }
   }
 
   @override
@@ -160,43 +188,5 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
         ],
       ),
     );
-  }
-
-  Future signIn() async {
-    final newUser = await GoogleSignInAPI.login();
-    if (newUser == null) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Sign up Failed')));
-    } else {
-      //final picture = Image.network(newUser.photoUrl.toString());
-      String filePath = newUser.photoUrl.toString();
-      //ParseFileBase? parseFile;
-      //parseFile = ParseFile(File(filePath));
-
-      GraphQLClient _client = graphQLConfiguration.clientToQuery();
-      QueryResult result = await _client.mutate(
-        MutationOptions(
-          document: gql(
-            addMutation.signUp(
-              newUser.displayName.toString(),
-              "Fall2021",
-              newUser.email.toString(),
-              newUser.id.toString(),
-            ),
-          ),
-        ),
-      );
-
-      //request.files.add(multipartFile);
-      //http.StreamedResponse response = await request.send();
-      //print(response.statusCode);
-      //final file = http.MultipartFile.fromPath('displayPicture', filePath);
-
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Sign up Succeeded!')));
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => OurSetupPasswordScreen(),
-      ));
-    }
   }
 }
