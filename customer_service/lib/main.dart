@@ -2,10 +2,13 @@ import 'package:customer_service/constants.dart';
 import 'package:customer_service/utils/OurTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+
 import 'screens/login/login.dart';
 import 'screens/userdash/userdash.dart';
 import 'screens/userlists/organizations.dart';
 import 'screens/userlists/correspondences.dart';
+import 'screens/userorganization/userorganization.dart';
+
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:customer_service/services/graphQLConf.dart';
 
@@ -49,6 +52,7 @@ class MyApp extends StatelessWidget {
         '/userdash': (context) => UserDash(),
         '/userorganizations': (context) => UserOrganizationList(),
         '/usercorrespondences' : (context) => UserCorrespondenceList(),
+        '/userorganization' : (context) => UserOrganization(),
       },
     );
   }

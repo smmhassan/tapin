@@ -265,6 +265,8 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                     return ListView(children: [
                       for (var i = 0; i < count; i++)
                         OrganizationListTile(
+                          id: result.data?["organizations"]["edges"][i]
+                              ["node"]["objectId"],
                           name: result.data?["organizations"]["edges"][i]
                               ["node"]["name"],
                           image: NetworkImage(result.data?["organizations"]

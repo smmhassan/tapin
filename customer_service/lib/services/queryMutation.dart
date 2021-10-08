@@ -27,6 +27,7 @@ class QueryMutation {
 }
 ''';
   }
+
   String upDateDisplay(String displayUrl, String googleID) {
     return '''mutation UpdateDisplay {
   updateDisplayPicture(
@@ -39,6 +40,7 @@ class QueryMutation {
 }
 ''';
   }
+
   String getUser() {
     return '''
     query GetCurrentUser {
@@ -86,6 +88,8 @@ class QueryMutation {
     ''';
   }
 
+  // organizations -------------------------------------------------------------
+
   String getOrgs(List<String> categories, String sort, String search) {
     String categoriesInsertion = "";
     String searchInsertion = "";
@@ -127,6 +131,44 @@ class QueryMutation {
     ''';
   }
 
+  String getOrgByID(String id) {
+    return '''
+{
+  organization(id: "$id") {
+    name
+    logo {
+      url
+    }
+  }
+}
+    ''';
+  }
+
+  String getFAQS(String id) {
+    return '''
+{
+  organization(id: "$id") {
+    #name
+    #logo {
+    #  url
+    #}
+    faq {
+      edges {
+        node {
+          objectId
+        	question
+          shortAnswer
+          fullAnswer
+        }
+      }
+    }
+  }
+}
+    ''';
+  }
+
+  // correspondences -----------------------------------------------------------
+
   String getAllCorrespondences(String userId) {
     return '''
 {
@@ -162,6 +204,7 @@ class QueryMutation {
           }
         }
         correspondence {
+          objectId
           summary
         }
       }
@@ -290,6 +333,8 @@ class QueryMutation {
 }
     ''';
   }
+
+  // categories ----------------------------------------------------------------
 
   String getAllCategories() {
     return '''
