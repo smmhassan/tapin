@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class OurTheme{
-  ThemeData buildTheme(){
+class OurTheme {
+  ThemeData buildTheme() {
     Color _backgroundColor = Color.fromARGB(255, 255, 251, 244);
     Color _cardColor = Color.fromARGB(255, 255, 254, 250);
     Color _disabledColor = Color.fromARGB(255, 240, 236, 228);
@@ -21,6 +21,16 @@ class OurTheme{
       cardColor: _cardColor,
       disabledColor: _disabledColor,
       fontFamily: 'Roboto',
+      inputDecorationTheme: InputDecorationTheme(
+        focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Color.fromARGB(255, 96, 94, 92))),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 96, 94, 92)),
+        ),
+        border: UnderlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(255, 96, 94, 92)),
+        ),
+      ),
     );
   }
 }

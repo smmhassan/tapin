@@ -13,18 +13,20 @@ class TabbedWindowListCorrespondence extends StatelessWidget {
   final ImageProvider image;
   final String name;
   final String description;
+  final bool dense;
 
   const TabbedWindowListCorrespondence({
     Key? key,
     required this.image,
     required this.name,
     required this.description,
+    required this.dense,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      dense: true,
+      dense: dense,
       leading: RoundImage(
         image: image,
         size: 35,

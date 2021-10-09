@@ -24,31 +24,20 @@ class TabbedWindowList extends StatelessWidget {
         top: padding/3,
         bottom: padding,
       ),
-      child: ShaderMask(
-        shaderCallback: (Rect rect) {
-          return LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
-            stops: [0.0, 0.1, 0.9, 1.0], // 10% purple, 80% transparent, 10% purple
-          ).createShader(rect);
+      child: ListView.separated(
+        itemCount: listItems.length,
+        itemBuilder: (context, index) {
+          final item = listItems[index];
+          return item;
         },
-        blendMode: BlendMode.dstOut,
-        child: ListView.separated(
-          itemCount: listItems.length,
-          itemBuilder: (context, index) {
-            final item = listItems[index];
-            return item;
-          },
-          separatorBuilder: (context, index) {
-            return Divider(
-              height: 1,
-              thickness: 1,
-              indent: dividerPadding,
-              endIndent: dividerPadding,
-            );
-          },
-        ),
+        separatorBuilder: (context, index) {
+          return Divider(
+            height: 1,
+            thickness: 1,
+            indent: dividerPadding,
+            endIndent: dividerPadding,
+          );
+        },
       ),
     );
   }
