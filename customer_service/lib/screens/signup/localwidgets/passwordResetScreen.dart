@@ -1,8 +1,7 @@
-import 'package:customer_service/screens/login/localwidgets/loginform.dart';
+import 'package:customer_service/screens/signup/resetPasswordForm.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
-class OurLogin extends StatelessWidget {
+class OurPasswordResetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,17 +12,16 @@ class OurLogin extends StatelessWidget {
             child: ListView(
               padding: EdgeInsets.all(25.0),
               children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    BackButton(),
+                  ],
+                ),
                 SizedBox(
-                  height: 90.0,
+                  height: 40.0,
                 ),
-                Padding(
-                  padding: EdgeInsets.all(40.0),
-                  child: Image.asset("assets/logo.png"),
-                ),
-                SizedBox(
-                  height: 1.0,
-                ),
-                OurLoginForm(),
+                ResetPassword(),
               ],
             ), //ListView
           )

@@ -15,19 +15,12 @@ class OurLoginForm extends StatefulWidget {
 }
 
 class _OurLoginFormState extends State<OurLoginForm> {
-
-
-  TextEditingController username = TextEditingController();
-
-  TextEditingController password = TextEditingController();
-
-  TextEditingController email = TextEditingController();
-
-  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
-
   QueryMutation addMutation = QueryMutation();
-
+  TextEditingController email = TextEditingController();
+  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
   bool isChecked = false;
+  TextEditingController password = TextEditingController();
+  TextEditingController username = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +35,7 @@ class _OurLoginFormState extends State<OurLoginForm> {
             style: TextStyle(fontSize: 18.0),
             cursorColor: Colors.grey,
             decoration: InputDecoration(
-              prefixIcon: Icon(Icons.alternate_email,
+              prefixIcon: Icon(Icons.email_outlined,
                   color: const Color.fromARGB(255, 96, 94, 92)),
               hintText: "email",
               hintStyle: TextStyle(
@@ -132,13 +125,18 @@ class _OurLoginFormState extends State<OurLoginForm> {
 
               username.clear();
               password.clear();
+              if (user.emailVerified == false) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content:
+                        Text('Please verify your email before signing in')));
+              }
 
               if (response.success) {
                 Navigator.pushNamed(context, '/userdash');
-              }
-              else {
-                if (response.error?.message != null){
-                  print(response.error?.message);
+              } else {
+                if (response.error?.message != null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(response.error!.message)));
                 }
               }
             },
@@ -181,7 +179,9 @@ class _OurLoginFormState extends State<OurLoginForm> {
                   decoration: TextDecoration.underline,
                 ),
               ),
-              onPressed: () {})
+              onPressed: () {
+                Navigator.pushNamed(context, '/resetpasswordscreen');
+              })
         ],
       ),
     );
