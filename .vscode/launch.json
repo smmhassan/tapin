@@ -9,7 +9,8 @@
             "name": "customer_service",
             "cwd": "customer_service",
             "request": "launch",
-            "type": "dart"
+            "type": "dart", 
+            "flutterMode": "debug"
         }
     ]
 }

@@ -15,6 +15,7 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
   TextEditingController email = TextEditingController();
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
   TextEditingController password = TextEditingController();
+  TextEditingController confirmPassword = TextEditingController();
   TextEditingController displayName = TextEditingController();
 
   @override
@@ -71,6 +72,7 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
             ),
           ),
           TextFormField(
+            controller: confirmPassword,
             obscureText: true,
             style: TextStyle(fontSize: 18.0),
             cursorColor: Colors.grey,
@@ -103,22 +105,28 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
                         contentType: http_parser.MediaType('image', 'jpg')
                     ); */
                 //parseFile2 = ParseFile(File("path"));
-                GraphQLClient _client = graphQLConfiguration.clientToQuery();
-                QueryResult result = await _client.mutate(
-                  MutationOptions(
-                    document: gql(
-                      addMutation.signUp(
-                        email.text,
-                        password.text,
-                        email.text,
-                        displayName.text,
+                if (password.text == confirmPassword.text) {
+                  GraphQLClient _client = graphQLConfiguration.clientToQuery();
+                  QueryResult result = await _client.mutate(
+                    MutationOptions(
+                      document: gql(
+                        addMutation.signUp(
+                          email.text,
+                          password.text,
+                          email.text,
+                          displayName.text,
+                        ),
                       ),
                     ),
-                  ),
-                );
-                print(result.exception);
-                if (!result.hasException) {
-                  Navigator.of(context).pop();
+                  );
+                  print(result.exception);
+                  if (!result.hasException) {
+                    Navigator.of(context).pop();
+                  }
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content:
+                          Text('Passwords do not match, please try again')));
                 }
               },
               style: ElevatedButton.styleFrom(

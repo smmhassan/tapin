@@ -1,7 +1,7 @@
-import 'package:customer_service/screens/signup/setpassword.dart';
+import 'package:customer_service/screens/signup/resetPasswordForm.dart';
 import 'package:flutter/material.dart';
 
-class OurSetupPasswordScreen extends StatelessWidget {
+class OurPasswordResetScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +21,7 @@ class OurSetupPasswordScreen extends StatelessWidget {
                 SizedBox(
                   height: 40.0,
                 ),
-                SetPassword(),
+                ResetPassword(),
               ],
             ), //ListView
           )
