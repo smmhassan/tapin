@@ -15,12 +15,17 @@ class OurLoginForm extends StatefulWidget {
 }
 
 class _OurLoginFormState extends State<OurLoginForm> {
-  QueryMutation addMutation = QueryMutation();
-  TextEditingController email = TextEditingController();
-  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
-  bool isChecked = false;
-  TextEditingController password = TextEditingController();
   TextEditingController username = TextEditingController();
+
+  TextEditingController password = TextEditingController();
+
+  TextEditingController email = TextEditingController();
+
+  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
+
+  QueryMutation addMutation = QueryMutation();
+
+  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
