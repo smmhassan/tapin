@@ -1,19 +1,18 @@
-
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class QueryMutation {
-
-  String signUp(String username, String password, String email, String googleID) {
+  String signUp(
+      String username, String password, String email, String displayName) {
     return '''
   mutation SignUp{
   signUp(input: { fields: 
   { username: "$username", 
   password: "$password", 
   email: "$email", 
-  googleID: "$googleID", 
+  displayName: "$displayName",
   } } 
  ) {
    viewer{
@@ -27,6 +26,7 @@ class QueryMutation {
 }
 ''';
   }
+
   String upDateDisplay(String displayUrl, String googleID) {
     return '''mutation UpdateDisplay {
   updateDisplayPicture(
@@ -39,6 +39,7 @@ class QueryMutation {
 }
 ''';
   }
+
   String getUser() {
     return '''
     query GetCurrentUser {
@@ -50,6 +51,26 @@ class QueryMutation {
         }
       }
     }
+    ''';
+  }
+
+  String updatePassword(String username, String password) {
+    return '''
+     mutation UpdatePassword{
+  user(username: "$username" )(input: { fields: 
+  { 
+  password: "$password",
+  } } 
+ ) {
+   viewer{
+    user{
+      id
+      updatedAt
+  }
+  sessionToken
+  }
+ }
+}
     ''';
   }
 
@@ -96,7 +117,8 @@ class QueryMutation {
           for (String category in categories) {
             categoriesInsertion += '''{name: {equalTo: "$category"}},''';
           }
-          categoriesInsertion = '''categories: {have: {OR: [$categoriesInsertion]}}''';
+          categoriesInsertion =
+              '''categories: {have: {OR: [$categoriesInsertion]}}''';
         }
         if (search.isNotEmpty) {
           searchInsertion = '''name: {matchesRegex: "$search", options: "i"}''';
@@ -229,7 +251,8 @@ class QueryMutation {
     ''';
   }
 
-  String getCorrespondences(String userId, List<String> categories, String sort, String search) {
+  String getCorrespondences(
+      String userId, List<String> categories, String search) {
     String categoriesInsertion = "";
     String searchInsertion = "";
     String insertion = "";
@@ -240,9 +263,11 @@ class QueryMutation {
         }
       }
       if (search.isNotEmpty) {
-        searchInsertion = '''summary: {matchesRegex: "$search", options: "i"}''';
+        searchInsertion =
+            '''summary: {matchesRegex: "$search", options: "i"}''';
       }
-      categoriesInsertion = '''categories: {have: {OR: [$categoriesInsertion]}}''';
+      categoriesInsertion =
+          '''categories: {have: {OR: [$categoriesInsertion]}}''';
       insertion = '''have: {$categoriesInsertion $searchInsertion}''';
     }
     return '''
@@ -305,6 +330,7 @@ class QueryMutation {
 }
     ''';
   }
+
   String getAllGoogleIDs() {
     return '''
 {
