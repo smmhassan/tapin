@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:customer_service/widgets/listtiles/correspondence.dart';
 import 'package:customer_service/widgets/listtiles/organization.dart';
 import 'package:customer_service/widgets/lists/filterpopup.dart';
 import 'package:customer_service/widgets/lists/sortpopup.dart';
@@ -47,12 +48,12 @@ final Image headerLogo = new Image(
     //width: 20.0,
     alignment: FractionalOffset.center);
 
-class UserOrganizationList extends StatefulWidget {
+class UserCorrespondenceList extends StatefulWidget {
   @override
-  _UserOrganizationListState createState() => _UserOrganizationListState();
+  _UserCorrespondenceListState createState() => _UserCorrespondenceListState();
 }
 
-class _UserOrganizationListState extends State<UserOrganizationList> {
+class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
   List<String> filters = [];
   List<String> selectedFilters = [];
 
@@ -63,7 +64,7 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
 
   //bool searchBarVisible = false;
 
-  ParseUser user = ParseUser('','','');
+  ParseUser user = ParseUser('', '', '');
 
   @override
   void initState() {
@@ -89,50 +90,50 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
     bool wide = screenWidth > 1000;
 
     return Scaffold(
-        appBar: AdaptiveAppBar(context, user,),
+        appBar: AdaptiveAppBar(context, user),
         //appBar: AppBar(),
         bottomNavigationBar: BottomAppBar(
-          color: Theme.of(context).accentColor,
-          child: Container(
-            constraints: BoxConstraints(
-              maxWidth: maxContentWidth,
-            ),
-            height: AppBar().preferredSize.height,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                // opens the search popup
-                BottomBarButton(
-                  text: 'search',
-                  icon: Icons.search,
-                  onPressed: (){
-                    //searchBarVisible = true;
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Container(
-                          constraints: BoxConstraints(
-                            maxWidth: maxContentWidth,
-                          ),
-                          child: Dialog(
-                            child: SearchBar(
-                              onEntry: (value) {
-                                setState(() {
-                                  refetchQuery;
-                                  //print(selectedFilters);
-                                });
-                              },
-                              searchController: searchController,
-                              //visible: searchBarVisible,
+            color: Theme.of(context).accentColor,
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth: maxContentWidth,
+              ),
+              height: AppBar().preferredSize.height,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // opens the search popup
+                  BottomBarButton(
+                    text: 'search',
+                    icon: Icons.search,
+                    onPressed: () {
+                      //searchBarVisible = true;
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            constraints: BoxConstraints(
+                              maxWidth: maxContentWidth,
                             ),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-                // filter button opens filter popup
-                BottomBarButton(
+                            child: Dialog(
+                              child: SearchBar(
+                                onEntry: (value) {
+                                  setState(() {
+                                    refetchQuery;
+                                    //print(selectedFilters);
+                                  });
+                                },
+                                searchController: searchController,
+                                //visible: searchBarVisible,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                  // filter button opens filter popup
+                  BottomBarButton(
                     text: 'filter',
                     icon: Icons.filter_alt_outlined,
                     onPressed: () {
@@ -202,8 +203,8 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                       );
                     },
                   ),
-                // sort button opens sort popup
-                BottomBarButton(
+                  // sort button opens sort popup
+                  BottomBarButton(
                     text: 'sort',
                     icon: Icons.sort,
                     onPressed: () {
@@ -234,11 +235,14 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                       );
                     },
                   ),
-              ],
-            ),
-          )
-        ),
-        endDrawer: wide ? null : NavigationDrawer(user: user,),
+                ],
+              ),
+            )),
+        endDrawer: wide
+            ? null
+            : NavigationDrawer(
+                user: user,
+              ),
         body: LayoutBuilder(builder: (context, constraints) {
           return Center(
               child: Container(
@@ -248,7 +252,8 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
             // build organization list
             child: Query(
                 options: QueryOptions(
-                  document: gql(QueryMutation().getOrgs(
+                  document: gql(QueryMutation().getCorrespondences(
+                      user.objectId.toString(),
                       selectedFilters,
                       sortOptions[selectedSortOption] ?? defaultSort,
                       searchController.text)),
@@ -260,32 +265,32 @@ class _UserOrganizationListState extends State<UserOrganizationList> {
                   }
                   // check that data is returned
                   if (result.data != null &&
-                      result.data?["organizations"]['count'] > 0) {
-                    int count = result.data?["organizations"]['count'];
+                      result.data?["chats"]['count'] > 0) {
+                    int count = result.data?["chats"]['count'];
+                    //print(result.data?["chats"]["edges"][0]["node"]["correspondence"]["edges"][0]);
                     return ListView(children: [
                       for (var i = 0; i < count; i++)
-                        OrganizationListTile(
-                          id: result.data?["organizations"]["edges"][i]
-                              ["node"]["objectId"],
-                          name: result.data?["organizations"]["edges"][i]
-                              ["node"]["name"],
-                          image: NetworkImage(result.data?["organizations"]
-                              ["edges"][i]["node"]["logo"]["url"]),
+                        CorrespondenceListTile(
+                          name: result.data?["chats"]["edges"][i]["node"]
+                                  ["members"]["edges"][0]["node"]["user"]
+                              ["employee"]["organization"]["name"],
+                          description: result.data?["chats"]["edges"][i]["node"]
+                              ["correspondence"]["summary"],
+                          //description: "this is a test",
+                          image: NetworkImage(result.data?["chats"]["edges"][i]
+                                      ["node"]["members"]["edges"][0]["node"]
+                                  ["user"]["employee"]["organization"]["logo"]
+                              ["url"]),
                           width: screenWidth,
                         ),
-                      ]
-                    );
+                    ]);
                   } else {
                     return Center(
                       child: Text("found nothing"),
                     );
                   }
-                }
-              ),
-            )
-          );
-        }
-      )
-    );
+                }),
+          ));
+        }));
   }
 }
