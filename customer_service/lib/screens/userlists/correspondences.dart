@@ -64,7 +64,7 @@ class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
 
   //bool searchBarVisible = false;
 
-  ParseUser user = ParseUser('','','');
+  ParseUser user = ParseUser('', '', '');
 
   @override
   void initState() {
@@ -106,7 +106,7 @@ class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
                   BottomBarButton(
                     text: 'search',
                     icon: Icons.search,
-                    onPressed: (){
+                    onPressed: () {
                       //searchBarVisible = true;
                       showDialog(
                         context: context,
@@ -143,36 +143,36 @@ class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(25)),
+                              BorderRadius.vertical(top: Radius.circular(25)),
                         ),
                         context: context,
                         builder: (BuildContext context) {
                           return Query(
                               options: QueryOptions(
                                 document:
-                                gql(QueryMutation().getAllCategories()),
+                                    gql(QueryMutation().getAllCategories()),
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 if (result.isLoading) {
                                   return Center(
                                       child: Text(
-                                        "loading...",
-                                        style: TextStyle(
-                                          color: Theme.of(context).canvasColor,
-                                        ),
-                                      ));
+                                    "loading...",
+                                    style: TextStyle(
+                                      color: Theme.of(context).canvasColor,
+                                    ),
+                                  ));
                                 }
                                 if (result.data != null &&
                                     result.data?["categories"]['count'] > 0) {
                                   int count =
-                                  result.data?["categories"]['count'];
+                                      result.data?["categories"]['count'];
                                   //List<String> filters = [];
                                   for (int i = 0; i < count; i++) {
                                     if (!filters.contains(
                                         result.data?["categories"]["edges"][i]
-                                        ["node"]["name"])) {
+                                            ["node"]["name"])) {
                                       filters.add(result.data?["categories"]
-                                      ["edges"][i]["node"]["name"]);
+                                          ["edges"][i]["node"]["name"]);
                                     }
                                   }
                                   return FilterPopup(
@@ -214,7 +214,7 @@ class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius:
-                          BorderRadius.vertical(top: Radius.circular(25)),
+                              BorderRadius.vertical(top: Radius.circular(25)),
                         ),
                         context: context,
                         builder: (BuildContext context) {
@@ -237,61 +237,60 @@ class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
                   ),
                 ],
               ),
-            )
-        ),
-        endDrawer: wide ? null : NavigationDrawer(user: user,),
+            )),
+        endDrawer: wide
+            ? null
+            : NavigationDrawer(
+                user: user,
+              ),
         body: LayoutBuilder(builder: (context, constraints) {
           return Center(
               child: Container(
-                constraints: BoxConstraints(
-                  maxWidth: maxContentWidth,
+            constraints: BoxConstraints(
+              maxWidth: maxContentWidth,
+            ),
+            // build organization list
+            child: Query(
+                options: QueryOptions(
+                  document: gql(QueryMutation().getCorrespondences(
+                      user.objectId.toString(),
+                      selectedFilters,
+                      sortOptions[selectedSortOption] ?? defaultSort,
+                      searchController.text)),
                 ),
-                // build organization list
-                child: Query(
-                    options: QueryOptions(
-                      document: gql(QueryMutation().getCorrespondences(
-                          user.objectId.toString(),
-                          selectedFilters,
-                          sortOptions[selectedSortOption] ?? defaultSort,
-                          searchController.text)),
-                    ),
-                    builder: (result, {refetch, fetchMore}) {
-                      refetchQuery = refetch;
-                      if (result.isLoading) {
-                        return Center(child: Text("loading..."));
-                      }
-                      // check that data is returned
-                      if (result.data != null &&
-                          result.data?["chats"]['count'] > 0) {
-                        int count = result.data?["chats"]['count'];
-                        //print(result.data?["chats"]["edges"][0]["node"]["correspondence"]["edges"][0]);
-                        return ListView(children: [
-                          for (var i = 0; i < count; i++)
-                            CorrespondenceListTile(
-                              name: result.data?["chats"]["edges"][i]["node"]
-                                ["members"]["edges"][0]["node"]["user"]["employee"]
-                                ["organization"]["name"],
-                              description: result.data?["chats"]["edges"][i]["node"]
-                                ["correspondence"]["summary"],
-                              //description: "this is a test",
-                              image: NetworkImage(result.data?["chats"]["edges"][i]["node"]
-                                ["members"]["edges"][0]["node"]["user"]["employee"]
-                                ["organization"]["logo"]["url"]),
-                              width: screenWidth,
-                            ),
-                        ]
-                        );
-                      } else {
-                        return Center(
-                          child: Text("found nothing"),
-                        );
-                      }
-                    }
-                ),
-              )
-          );
-        }
-        )
-    );
+                builder: (result, {refetch, fetchMore}) {
+                  refetchQuery = refetch;
+                  if (result.isLoading) {
+                    return Center(child: Text("loading..."));
+                  }
+                  // check that data is returned
+                  if (result.data != null &&
+                      result.data?["chats"]['count'] > 0) {
+                    int count = result.data?["chats"]['count'];
+                    //print(result.data?["chats"]["edges"][0]["node"]["correspondence"]["edges"][0]);
+                    return ListView(children: [
+                      for (var i = 0; i < count; i++)
+                        CorrespondenceListTile(
+                          name: result.data?["chats"]["edges"][i]["node"]
+                                  ["members"]["edges"][0]["node"]["user"]
+                              ["employee"]["organization"]["name"],
+                          description: result.data?["chats"]["edges"][i]["node"]
+                              ["correspondence"]["summary"],
+                          //description: "this is a test",
+                          image: NetworkImage(result.data?["chats"]["edges"][i]
+                                      ["node"]["members"]["edges"][0]["node"]
+                                  ["user"]["employee"]["organization"]["logo"]
+                              ["url"]),
+                          width: screenWidth,
+                        ),
+                    ]);
+                  } else {
+                    return Center(
+                      child: Text("found nothing"),
+                    );
+                  }
+                }),
+          ));
+        }));
   }
 }

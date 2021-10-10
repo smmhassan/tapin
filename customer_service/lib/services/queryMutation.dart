@@ -293,7 +293,7 @@ class QueryMutation {
   }
 
   String getCorrespondences(
-      String userId, List<String> categories, String search) {
+      String userId, List<String> categories, String search, String text) {
     String categoriesInsertion = "";
     String searchInsertion = "";
     String insertion = "";

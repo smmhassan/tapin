@@ -246,7 +246,7 @@ class _UserDashState extends State<UserDash> {
                               options: QueryOptions(
                                 document: gql(QueryMutation()
                                     .getCorrespondences(
-                                        user.objectId.toString(), [], "")),
+                                        user.objectId.toString(), [], "", "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 if (result.data != null &&
@@ -283,6 +283,7 @@ class _UserDashState extends State<UserDash> {
                                     .getCorrespondences(
                                         user.objectId.toString(),
                                         ['administration'],
+                                        "",
                                         "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
