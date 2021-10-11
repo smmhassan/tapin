@@ -52,6 +52,8 @@ class MyApp extends StatelessWidget {
         //'/': (context) => UserOrganizationList(),
         '/userdash': (context) => UserDash(),
         '/userorganizations': (context) => UserOrganizationList(),
+        '/usercorrespondences': (context) => UserCorrespondenceList(),
+        '/userorganization' : (context) => UserOrganization(),
         '/resetpasswordscreen': (context) => OurPasswordResetScreen(),
       },
     );
