@@ -151,6 +151,38 @@ class QueryMutation {
     ''';
   }
 
+  String getOrgFAQs(String id, List<String> categories, String sort, String search) {
+    String insertion = '';
+    String categoryInsertion = '';
+    if (categories.isNotEmpty || sort.isNotEmpty || search.isNotEmpty) {
+      if (categories.isNotEmpty) {
+        for (String category in categories) {
+          categoryInsertion += '''$category,''';
+        }
+        categoryInsertion = '''categories:{have:{name:{in:["$categoryInsertion"]}}}''';
+      }
+      insertion = '''(where: {$categoryInsertion})''';
+    }
+
+    return '''
+{
+  organization(id: "$id") {
+    faq $insertion {
+      count
+      edges {
+        node {
+          id
+          question
+          shortAnswer
+          fullAnswer
+        }
+      }
+    }
+  }
+}
+    ''';
+  }
+
   String getOrgByID(String id) {
     return '''
 {

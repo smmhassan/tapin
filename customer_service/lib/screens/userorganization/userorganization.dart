@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'arguments.dart';
 
 import '../../widgets/tabbedwindow/TabbedWindow.dart';
-import '../../widgets/tabbedwindow/TabbedWindowList.dart';
-import '../../widgets/tabbedwindow/TabbedWindowListOrganization.dart';
-import '../../widgets/tabbedwindow/TabbedWindowListCorrespondence.dart';
+import 'package:customer_service/widgets/tabbedwindow/builders/CorrespondenceTabbedWindowListBuilder.dart';
+import 'package:customer_service/widgets/tabbedwindow/builders/FAQTabbedWindowListBuilder.dart';
+
 import '../../widgets/DashHeader.dart';
 import '../../widgets/NavigationDrawer.dart';
 import '../../widgets/AdaptiveAppBar.dart';
@@ -131,110 +131,15 @@ class _UserOrganizationState extends State<UserOrganization> {
                       : constraints.maxHeight * desktopListHeight,
                   child: Flex(
                     children: [
-                      // organizations window
-                      TabbedWindow(
-                        viewAllRoute: '/userorganizations',
-                        height: narrow
-                            ? constraints.maxHeight * mobileListHeight
-                            : constraints.maxHeight * desktopListHeight,
-                        title: 'Organizations',
-                        titleSize:
-                            narrow ? mobileTitleHeight : desktopTitleHeight,
-                        tabNames: [
-                          'all',
-                          'administration',
-                          'clubs',
-                        ],
-                        lists: [
-                          Query(
-                              options: QueryOptions(
-                                document:
-                                    gql(QueryMutation().getOrgs([], "", "")),
-                              ),
-                              builder: (result, {refetch, fetchMore}) {
-                                if (result.data != null &&
-                                    result.data?["organizations"]['count'] >
-                                        0) {
-                                  int count =
-                                      result.data?["organizations"]['count'];
-                                  return TabbedWindowList(listItems: [
-                                    for (var i = 0; i < count; i++)
-                                      TabbedWindowListOrganization(
-                                        name: result.data?["organizations"]
-                                            ["edges"][i]["node"]["name"],
-                                        image: NetworkImage(result
-                                                .data?["organizations"]["edges"]
-                                            [i]["node"]["logo"]["url"]),
-                                        dense: narrow ? true : false,
-                                      ),
-                                  ]);
-                                } else {
-                                  return TabbedWindowEmpty();
-                                }
-                              }),
-                          Query(
-                              options: QueryOptions(
-                                document: gql(QueryMutation()
-                                    .getOrgs(['administration'], "", "")),
-                              ),
-                              builder: (result, {refetch, fetchMore}) {
-                                if (result.data != null &&
-                                    result.data?["organizations"]['count'] >
-                                        0) {
-                                  int count =
-                                      result.data?["organizations"]['count'];
-                                  return TabbedWindowList(listItems: [
-                                    for (var i = 0; i < count; i++)
-                                      TabbedWindowListOrganization(
-                                        name: result.data?["organizations"]
-                                            ["edges"][i]["node"]["name"],
-                                        image: NetworkImage(result
-                                                .data?["organizations"]["edges"]
-                                            [i]["node"]["logo"]["url"]),
-                                        dense: narrow ? true : false,
-                                      ),
-                                  ]);
-                                } else {
-                                  return TabbedWindowEmpty();
-                                }
-                              }),
-                          Query(
-                              options: QueryOptions(
-                                document: gql(
-                                    QueryMutation().getOrgs(['clubs'], "", "")),
-                              ),
-                              builder: (result, {refetch, fetchMore}) {
-                                if (result.data != null &&
-                                    result.data?["organizations"]['count'] >
-                                        0) {
-                                  int count =
-                                      result.data?["organizations"]['count'];
-                                  return TabbedWindowList(listItems: [
-                                    for (var i = 0; i < count; i++)
-                                      TabbedWindowListOrganization(
-                                        name: result.data?["organizations"]
-                                            ["edges"][i]["node"]["name"],
-                                        image: NetworkImage(result
-                                                .data?["organizations"]["edges"]
-                                            [i]["node"]["logo"]["url"]),
-                                        dense: narrow ? true : false,
-                                      ),
-                                  ]);
-                                } else {
-                                  return TabbedWindowEmpty();
-                                }
-                              }),
-                        ],
-                      ),
                       // Correspondences window
                       TabbedWindow(
-                        viewAllRoute: '/userorganizations',
+                        viewAllRoute: '/usercorrespondences',
                         height: narrow
                             ? constraints.maxHeight * mobileListHeight
                             : constraints.maxHeight * desktopListHeight,
                         title: 'Requests',
                         titleSize:
-                            narrow ? mobileTitleHeight : desktopTitleHeight,
+                        narrow ? mobileTitleHeight : desktopTitleHeight,
                         tabNames: [
                           'all',
                           'administration',
@@ -245,109 +150,75 @@ class _UserOrganizationState extends State<UserOrganization> {
                               options: QueryOptions(
                                 document: gql(QueryMutation()
                                     .getCorrespondences(
-                                        user.objectId.toString(), [], "", "")),
+                                    user.objectId.toString(), [], "", "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
-                                if (result.data != null &&
-                                    result.data?["chats"]['count'] > 0) {
-                                  //print(result.data);
-                                  int count = result.data?["chats"]['count'];
-                                  return TabbedWindowList(listItems: [
-                                    for (var i = 0; i < count; i++)
-                                      TabbedWindowListCorrespondence(
-                                        name: result.data?["chats"]["edges"][i]
-                                                    ["node"]["members"]["edges"]
-                                                [0]["node"]["user"]["employee"]
-                                            ["organization"]["name"],
-                                        description: result.data?["chats"]
-                                                ["edges"][i]["node"]
-                                            ["correspondence"]["summary"],
-                                        image: NetworkImage(result
-                                                                .data?["chats"]
-                                                            ["edges"]
-                                                        [i]
-                                                    ["node"]["members"]["edges"]
-                                                [0]["node"]["user"]["employee"]
-                                            ["organization"]["logo"]["url"]),
-                                        dense: narrow ? true : false,
-                                      ),
-                                  ]);
-                                } else {
-                                  return TabbedWindowEmpty();
-                                }
+                                return CorrespondenceTabbedWindowListBuilder(result: result, narrow: narrow);
                               }),
                           Query(
                               options: QueryOptions(
                                 document: gql(QueryMutation()
                                     .getCorrespondences(
-                                        user.objectId.toString(),
-                                        ['administration'],
-                                        "",
-                                        "")),
+                                    user.objectId.toString(),
+                                    ['administration'],
+                                    "",
+                                    "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
-                                if (result.data != null &&
-                                    result.data?["chats"]['count'] > 0) {
-                                  //print(result.data);
-                                  int count = result.data?["chats"]['count'];
-                                  return TabbedWindowList(listItems: [
-                                    for (var i = 0; i < count; i++)
-                                      TabbedWindowListCorrespondence(
-                                        name: result.data?["chats"]["edges"][i]
-                                                    ["node"]["members"]["edges"]
-                                                [0]["node"]["user"]["employee"]
-                                            ["organization"]["name"],
-                                        description: result.data?["chats"]
-                                                ["edges"][i]["node"]
-                                            ["correspondence"]["summary"],
-                                        image: NetworkImage(result
-                                                                .data?["chats"]
-                                                            ["edges"]
-                                                        [i]
-                                                    ["node"]["members"]["edges"]
-                                                [0]["node"]["user"]["employee"]
-                                            ["organization"]["logo"]["url"]),
-                                        dense: narrow ? true : false,
-                                      ),
-                                  ]);
-                                } else {
-                                  return TabbedWindowEmpty();
-                                }
+                                return CorrespondenceTabbedWindowListBuilder(result: result, narrow: narrow);
                               }),
                           Query(
                               options: QueryOptions(
                                 document: gql(QueryMutation()
                                     .getCategoryCorrespondences(
-                                        user.objectId.toString(), ['clubs'])),
+                                    user.objectId.toString(), ['clubs'])),
                               ),
                               builder: (result, {refetch, fetchMore}) {
-                                if (result.data != null &&
-                                    result.data?["chats"]['count'] > 0) {
-                                  //print(result.data);
-                                  int count = result.data?["chats"]['count'];
-                                  return TabbedWindowList(listItems: [
-                                    for (var i = 0; i < count; i++)
-                                      TabbedWindowListCorrespondence(
-                                        name: result.data?["chats"]["edges"][i]
-                                                    ["node"]["members"]["edges"]
-                                                [0]["node"]["user"]["employee"]
-                                            ["organization"]["name"],
-                                        description: result.data?["chats"]
-                                                ["edges"][i]["node"]
-                                            ["correspondence"]["summary"],
-                                        image: NetworkImage(result
-                                                                .data?["chats"]
-                                                            ["edges"]
-                                                        [i]
-                                                    ["node"]["members"]["edges"]
-                                                [0]["node"]["user"]["employee"]
-                                            ["organization"]["logo"]["url"]),
-                                        dense: narrow ? true : false,
-                                      ),
-                                  ]);
-                                } else {
-                                  return TabbedWindowEmpty();
-                                }
+                                return CorrespondenceTabbedWindowListBuilder(result: result, narrow: narrow);
+                              }),
+                        ],
+                      ),
+                      // FAQ window
+                      TabbedWindow(
+                        viewAllRoute: '/usercorrespondences',
+                        height: narrow
+                            ? constraints.maxHeight * mobileListHeight
+                            : constraints.maxHeight * desktopListHeight,
+                        title: 'FAQs',
+                        titleSize:
+                        narrow ? mobileTitleHeight : desktopTitleHeight,
+                        tabNames: [
+                          'all',
+                          'administration',
+                          'clubs',
+                        ],
+                        lists: [
+                          Query(
+                              options: QueryOptions(
+                                document: gql(QueryMutation()
+                                    .getOrgFAQs(
+                                    organizationId, [], "", "")),
+                              ),
+                              builder: (result, {refetch, fetchMore}) {
+                                return FAQTabbedWindowListBuilder(result: result, narrow: narrow);
+                              }),
+                          Query(
+                              options: QueryOptions(
+                                document: gql(QueryMutation()
+                                    .getOrgFAQs(
+                                    organizationId,['administration'],"","")),
+                              ),
+                              builder: (result, {refetch, fetchMore}) {
+                                return FAQTabbedWindowListBuilder(result: result, narrow: narrow);
+                              }),
+                          Query(
+                              options: QueryOptions(
+                                document: gql(QueryMutation()
+                                    .getOrgFAQs(
+                                    organizationId, ['clubs'], '', '')),
+                              ),
+                              builder: (result, {refetch, fetchMore}) {
+                                return FAQTabbedWindowListBuilder(result: result, narrow: narrow);
                               }),
                         ],
                       ),
@@ -362,20 +233,5 @@ class _UserOrganizationState extends State<UserOrganization> {
         );
       }),
     );
-  }
-}
-
-class TabbedWindowEmpty extends StatelessWidget {
-  const TabbedWindowEmpty({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-        child: Text(
-      'could not find anything',
-      style: TextStyle(color: Theme.of(context).accentColor),
-    ));
   }
 }
