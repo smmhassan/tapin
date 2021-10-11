@@ -229,7 +229,7 @@ class _UserDashState extends State<UserDash> {
                       ),
                       // Correspondences window
                       TabbedWindow(
-                        viewAllRoute: '/userorganizations',
+                        viewAllRoute: '/usercorrespondences',
                         height: narrow
                             ? constraints.maxHeight * mobileListHeight
                             : constraints.maxHeight * desktopListHeight,
