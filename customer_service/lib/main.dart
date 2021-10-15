@@ -1,4 +1,5 @@
 import 'package:customer_service/constants.dart';
+import 'package:customer_service/screens/chats/localwidgets/ChatUI.dart';
 import 'package:customer_service/screens/signup/localwidgets/passwordResetScreen.dart';
 import 'package:customer_service/utils/OurTheme.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,7 @@ class MyApp extends StatelessWidget {
       //home:
       // OurLogin(),
       routes: {
-        '/': (context) => OurLogin(),
+        '/': (context) => ChatUI(),
         //'/': (context) => UserOrganizationList(),
         '/userdash': (context) => UserDash(),
         '/userorganizations': (context) => UserOrganizationList(),
