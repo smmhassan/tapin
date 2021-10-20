@@ -1,5 +1,9 @@
+import 'package:customer_service/services/graphQLConf.dart';
+import 'package:customer_service/services/queryMutation.dart';
 import 'package:customer_service/testModels/chatMessageModel.dart';
+import 'package:customer_service/widgets/AdaptiveAppBar.dart';
 import 'package:flutter/material.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class ChatDetailPage extends StatefulWidget {
   @override
@@ -7,6 +11,39 @@ class ChatDetailPage extends StatefulWidget {
 }
 
 class _ChatDetailPageState extends State<ChatDetailPage> {
+QueryMutation addMutation = QueryMutation();
+  final double desktopHeaderHeight = 0.15;
+  final double desktopListHeight = 0.6;
+  final double desktopTitleHeight = 22;
+  GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
+  final Image headerLogo = new Image(
+      image: new ExactAssetImage('assets/logo_text.png'),
+      height: AppBar().preferredSize.height - 30,
+      //width: 20.0,
+      alignment: FractionalOffset.center);
+
+  final double maxContentWidth = 1200;
+  final double mobileHeaderHeight = .12;
+  final double mobileListHeight = .36;
+  final double mobileTitleHeight = 18;
+  ParseUser user = ParseUser('', '', '');
+
+  @override
+  void initState() {
+    initData().then((bool success) {
+      ParseUser.currentUser().then((currentUser) {
+        setState(() {
+          user = currentUser;
+        });
+      });
+    }).catchError((dynamic _) {});
+    super.initState();
+  }
+
+  Future<bool> initData() async {
+    return (await Parse().healthCheck()).success;
+  }
+
   @override
   Widget build(BuildContext context) {
     List<ChatMessage> messages = [
@@ -21,65 +58,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           messageContent: "Is there any thing wrong?", messageType: "sender"),
     ];
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        flexibleSpace: SafeArea(
-          child: Container(
-            padding: EdgeInsets.only(right: 16),
-            child: Row(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(
-                  width: 2,
-                ),
-                CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      "<https://randomuser.me/api/portraits/men/5.jpg>"),
-                  maxRadius: 20,
-                ),
-                SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "Kriss Benwat",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        "Online",
-                        style: TextStyle(
-                            color: Colors.grey.shade600, fontSize: 13),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.settings,
-                  color: Colors.black54,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      appBar: AdaptiveAppBar( context, user),
       body: Stack(
         children: <Widget>[
           ListView.builder(
