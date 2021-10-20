@@ -2,10 +2,13 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'arguments.dart';
 
 import '../../widgets/tabbedwindow/TabbedWindow.dart';
+import 'package:customer_service/widgets/tabbedwindow/TabbedWindowList.dart';
+import 'package:customer_service/widgets/tabbedwindow/TabbedWindowListCorrespondence.dart';
 import 'package:customer_service/widgets/tabbedwindow/builders/CorrespondenceTabbedWindowListBuilder.dart';
 import 'package:customer_service/widgets/tabbedwindow/builders/FAQTabbedWindowListBuilder.dart';
 
@@ -16,7 +19,7 @@ import '../../widgets/AdaptiveAppBar.dart';
 import 'package:customer_service/services/graphQLConf.dart';
 import "package:customer_service/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as parse;
 
 class UserOrganization extends StatefulWidget {
   @override
@@ -24,6 +27,109 @@ class UserOrganization extends StatefulWidget {
 }
 
 class _UserOrganizationState extends State<UserOrganization> {
+  List<parse.ParseObject> results = <parse.ParseObject>[];
+  void getUserOrganizationCorrespondences(String organizationId, String userId) async {
+    //print((await parse.Parse().healthCheck()).success);
+    // get user memberships
+    final parse.QueryBuilder<parse.ParseObject> userQuery =
+      parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('User'));
+    //  ..whereEqualTo('username', 'owl');
+
+    //userQuery.whereContains('username', 'owl');
+
+    final parse.ParseResponse userResponse = await userQuery.query();
+    if (!userResponse.success) {
+      return;
+    }
+    if(userResponse.results == null) {
+      print("the user is null");
+    }
+
+    final users = userResponse.results?.first as List<parse.ParseObject>;
+
+    print(users.first.toString());
+    // get user memberships
+    final parse.QueryBuilder<parse.ParseObject> membershipQuery =
+    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('ChatMembership'))
+      ..whereRelatedTo('user', 'User', userId);
+
+    final parse.ParseResponse membershipResponse = await membershipQuery.query();
+    if (!membershipResponse.success) {
+      return;
+    }
+    if(membershipResponse.results == null) {
+      print("it is all null");
+    }
+
+    final userMemberships = membershipResponse.results?.first as List<parse.ParseObject>;
+
+    print(userMemberships.first.toString());
+
+    // get employees
+    final parse.QueryBuilder<parse.ParseObject> employeeQuery =
+    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Employee'))
+      ..whereRelatedTo('organization', 'Organization', organizationId);
+
+    final parse.ParseResponse employeeResponse = await employeeQuery.query();
+    if (!employeeResponse.success) {
+      return;
+    }
+    final employees = membershipResponse.result as List<parse.ParseObject>;
+
+    // get employee users
+    final parse.QueryBuilder<parse.ParseObject> employeeUserQuery =
+    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('User'))
+      ..whereContainedIn('employee', employees);
+
+    final parse.ParseResponse employeeUserResponse = await employeeUserQuery.query();
+    if (!employeeUserResponse.success) {
+      return;
+    }
+    final employeeUsers = employeeUserResponse.results as List<parse.ParseObject>;
+
+    // get employee memberships
+    final parse.QueryBuilder<parse.ParseObject> employeeMembershipQuery =
+    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('ChatMembership'))
+      ..whereContainedIn('user', employeeUsers);
+
+    final parse.ParseResponse employeeMembershipResponse = await employeeMembershipQuery.query();
+    if (!employeeUserResponse.success) {
+      return;
+    }
+    final employeeMemberships = employeeMembershipResponse.results as List<parse.ParseObject>;
+
+    // get chats with user memberships
+    final parse.QueryBuilder<parse.ParseObject> employeeChatQuery =
+    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Chat'))
+      ..whereContainedIn('members', employeeMemberships);
+
+    //final parse.ParseResponse employeeChatResponse = await employeeChatQuery.query();
+    //if (!employeeChatResponse.success) {
+    //  return;
+    //}
+    //final employeeChats = employeeChatResponse.results as List<parse.ParseObject>;
+
+    // get chats with employee memberships as well
+    final parse.QueryBuilder<parse.ParseObject> userChatQuery =
+    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Chat'))
+      ..whereContainedIn('members', userMemberships)
+      ..whereMatchesQuery('objectId', employeeChatQuery);
+
+    final parse.ParseResponse userChatResponse = await userChatQuery.query();
+    if (!userChatResponse.success) {
+      setState(() {
+        results.clear();
+      });
+    } else {
+      setState(() {
+        results = userChatResponse.results as List<parse.ParseObject>;
+      });
+    }
+    final userChats = userChatResponse.results as List<parse.ParseObject>;
+
+    // get correspondences
+  }
+
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 
   QueryMutation addMutation = QueryMutation();
@@ -42,12 +148,12 @@ class _UserOrganizationState extends State<UserOrganization> {
       //width: 20.0,
       alignment: FractionalOffset.center);
 
-  ParseUser user = ParseUser('', '', '');
+  parse.ParseUser user = parse.ParseUser('', '', '');
 
   @override
   void initState() {
     initData().then((bool success) {
-      ParseUser.currentUser().then((currentUser) {
+      parse.ParseUser.currentUser().then((currentUser) {
         setState(() {
           user = currentUser;
         });
@@ -57,7 +163,7 @@ class _UserOrganizationState extends State<UserOrganization> {
   }
 
   Future<bool> initData() async {
-    return (await Parse().healthCheck()).success;
+    return (await parse.Parse().healthCheck()).success;
   }
 
   @override
@@ -131,6 +237,12 @@ class _UserOrganizationState extends State<UserOrganization> {
                       : constraints.maxHeight * desktopListHeight,
                   child: Flex(
                     children: [
+                      FloatingActionButton(
+                        child: const Text('refresh'),
+                        onPressed: () {
+                          getUserOrganizationCorrespondences(organizationId, user.username.toString());
+                        }
+                      ),
                       // Correspondences window
                       TabbedWindow(
                         viewAllRoute: '/usercorrespondences',
@@ -146,15 +258,15 @@ class _UserOrganizationState extends State<UserOrganization> {
                           'clubs',
                         ],
                         lists: [
-                          Query(
-                              options: QueryOptions(
-                                document: gql(QueryMutation()
-                                    .getCorrespondences(
-                                    user.objectId.toString(), [], "", "")),
+                          TabbedWindowList(listItems: [
+                            for (var i = 0; i < results.length; i++)
+                              TabbedWindowListCorrespondence(
+                              name: results[i].toString(),
+                              description: 'test',
+                              image: NetworkImage('https://parsefiles.back4app.com/P8CudbQwTfa32Tc0rxXw3AXHmVPV9EPzIBh3alUB/affa519bc2cb3299ace1ba3ed10bf8ac_trailblazer%20fox%20white%20back.png'),
+                              dense: narrow ? true : false,
                               ),
-                              builder: (result, {refetch, fetchMore}) {
-                                return CorrespondenceTabbedWindowListBuilder(result: result, narrow: narrow);
-                              }),
+                          ]),
                           Query(
                               options: QueryOptions(
                                 document: gql(QueryMutation()
