@@ -67,6 +67,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     bool narrow = MediaQuery.of(context).size.width < 600;
     bool wide = MediaQuery.of(context).size.width > 1000;
+    bool showDrawer = MediaQuery.of(context).size.width < 1250;
 
     List<String> messages = [
       'hello',
@@ -112,11 +113,11 @@ class _ChatScreenState extends State<ChatScreen> {
         context,
         user,
         NetworkImage('https://parsefiles.back4app.com/P8CudbQwTfa32Tc0rxXw3AXHmVPV9EPzIBh3alUB/69044f2e59e31dd8a3bb84adbf8570e6_fox%20placeholder.png'),
-        'A test Correspondence'
+        'A test Correspondence with a longer name'
       ),
       //appBar: AppBar(),
 
-      endDrawer: wide
+      endDrawer: !showDrawer
           ? null
           : NavigationDrawer(
               user: user,

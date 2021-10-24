@@ -30,7 +30,7 @@ final List<String> navRoutes = [
 ];
 
 final double textSize = 18;
-final double wideBreakPoint = 1000;
+final double wideBreakPoint = 1250;
 
 class ChatAppBar extends AppBar{
   final PreferredSizeWidget? bottom;
@@ -52,9 +52,6 @@ class ChatAppBar extends AppBar{
         children: [
           // logo
           Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: (AppBar().preferredSize.height - textSize)/2
-            ),
             child: ChatInfo(
               image: image,
               chatName: chatName,
@@ -105,24 +102,30 @@ class ChatInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        RoundImage(
-          image: image,
-          color: Theme.of(context).buttonColor,
-          size: AppBar().preferredSize.height*.75,
-          borderSize: 2,
-        ),
-        Container(
-          padding: EdgeInsets.only(left: 10),
-          child: Text(
-            chatName,
-            style: TextStyle(
-              fontSize: 18,
+    return Expanded(
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.only(right: 10),
+            child: RoundImage(
+              image: image,
+              color: Theme.of(context).buttonColor,
+              size: AppBar().preferredSize.height*.75,
+              borderSize: 2,
             ),
           ),
-        ),
-      ],
+          Expanded(
+            child: Text(
+              chatName,
+              style: TextStyle(
+                fontSize: 16,
+              ),
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
