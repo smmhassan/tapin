@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -167,11 +168,15 @@ class _ChatScreenState extends State<ChatScreen> {
                     Expanded(
                       child: TextField(
                         onTap: () {
-                          scrollController.animateTo(
-                            scrollController.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 150),
-                            curve: Curves.fastOutSlowIn,
+                          Timer(
+                            Duration(milliseconds: 400),
+                              () => scrollController.jumpTo(scrollController.position.maxScrollExtent)
                           );
+                          //scrollController.animateTo(
+                          //  scrollController.position.maxScrollExtent,
+                          //  duration: Duration(milliseconds: 150),
+                          //  curve: Curves.fastOutSlowIn,
+                          //);
                         },
                         textInputAction: TextInputAction.send,
                         style: TextStyle(
