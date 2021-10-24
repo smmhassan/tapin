@@ -10,6 +10,7 @@ import 'screens/userdash/userdash.dart';
 import 'screens/userlists/organizations.dart';
 import 'screens/userlists/correspondences.dart';
 import 'screens/userorganization/userorganization.dart';
+import 'screens/chats/chatScreen.dart';
 
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:customer_service/services/graphQLConf.dart';
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
       //home:
       // OurLogin(),
       routes: {
-        '/': (context) => ChatUI(),
+        '/': (context) => ChatScreen(),
         //'/': (context) => UserOrganizationList(),
         '/userdash': (context) => UserDash(),
         '/userorganizations': (context) => UserOrganizationList(),
