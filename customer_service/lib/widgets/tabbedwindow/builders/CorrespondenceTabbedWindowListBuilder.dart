@@ -10,7 +10,7 @@ import 'package:customer_service/widgets/tabbedwindow/TabbedWindowListCorrespond
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'package:customer_service/services/resultparsers/correspondenceresult.dart';
+import 'package:customer_service/services/graphqlresultparsers/correspondenceresult.dart';
 
 class CorrespondenceTabbedWindowListBuilder extends StatelessWidget {
   final QueryResult result;

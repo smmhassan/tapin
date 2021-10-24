@@ -10,14 +10,14 @@ class TabbedWindowListCorrespondence extends StatelessWidget {
   list tile with logo/image, name and
   further description
    */
-  final ImageProvider image;
+  final ImageProvider? image;
   final String name;
   final String description;
   final bool dense;
 
   const TabbedWindowListCorrespondence({
     Key? key,
-    required this.image,
+    this.image,
     required this.name,
     required this.description,
     required this.dense,
@@ -25,14 +25,15 @@ class TabbedWindowListCorrespondence extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var finalImage = image ?? NetworkImage('https://parsefiles.back4app.com/P8CudbQwTfa32Tc0rxXw3AXHmVPV9EPzIBh3alUB/affa519bc2cb3299ace1ba3ed10bf8ac_trailblazer%20fox%20white%20back.png');
     return ListTile(
       dense: dense,
-      leading: RoundImage(
-        image: image,
+      leading: (image != null)? RoundImage(
+        image: finalImage,
         size: 35,
         borderSize: 0,
         color: Colors.white,
-      ),
+      ): null,
       title: Text(
         name,
         style: TextStyle(

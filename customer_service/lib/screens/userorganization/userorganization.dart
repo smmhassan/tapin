@@ -11,6 +11,9 @@ import 'package:customer_service/widgets/tabbedwindow/TabbedWindowList.dart';
 import 'package:customer_service/widgets/tabbedwindow/TabbedWindowListCorrespondence.dart';
 import 'package:customer_service/widgets/tabbedwindow/builders/CorrespondenceTabbedWindowListBuilder.dart';
 import 'package:customer_service/widgets/tabbedwindow/builders/FAQTabbedWindowListBuilder.dart';
+import 'package:customer_service/widgets/tabbedwindow/builders/TabbedWindowEmpty.dart';
+import 'package:customer_service/widgets/tabbedwindow/builders/TabbedWindowLoading.dart';
+
 
 import '../../widgets/DashHeader.dart';
 import '../../widgets/NavigationDrawer.dart';
@@ -21,70 +24,87 @@ import "package:customer_service/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as parse;
 
+import 'package:customer_service/services/parseresults/ChatResults.dart';
+import 'package:customer_service/services/parseresults/ResultStatus.dart';
+
 class UserOrganization extends StatefulWidget {
   @override
   _UserOrganizationState createState() => _UserOrganizationState();
 }
 
 class _UserOrganizationState extends State<UserOrganization> {
-  List<parse.ParseObject> results = <parse.ParseObject>[];
+  ChatResults results = ChatResults();
+
   void getUserOrganizationCorrespondences(String organizationId, String userId) async {
-    //print((await parse.Parse().healthCheck()).success);
-    // get user memberships
-    final parse.QueryBuilder<parse.ParseObject> userQuery =
-      parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('User'));
-    //  ..whereEqualTo('username', 'owl');
-
-    //userQuery.whereContains('username', 'owl');
-
-    final parse.ParseResponse userResponse = await userQuery.query();
-    if (!userResponse.success) {
-      return;
-    }
-    if(userResponse.results == null) {
-      print("the user is null");
-    }
-
-    final users = userResponse.results?.first as List<parse.ParseObject>;
-
-    print(users.first.toString());
+    var userObject = parse.ParseObject("_User")..set("objectId", userId);
     // get user memberships
     final parse.QueryBuilder<parse.ParseObject> membershipQuery =
     parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('ChatMembership'))
-      ..whereRelatedTo('user', 'User', userId);
+      ..whereEqualTo('user', userObject.toPointer());
 
     final parse.ParseResponse membershipResponse = await membershipQuery.query();
     if (!membershipResponse.success) {
+      setState(() {
+        results.fail();
+      });
       return;
     }
-    if(membershipResponse.results == null) {
-      print("it is all null");
+    else if(membershipResponse.results == null) {
+      print("no chat memberships found for the user");
+      setState(() {
+        results.fail();
+      });
+      return;
     }
 
-    final userMemberships = membershipResponse.results?.first as List<parse.ParseObject>;
-
-    print(userMemberships.first.toString());
+    final userMemberships = membershipResponse.results as List<parse.ParseObject>;
+    
+    //final organization = organizationResponse.result?.first as parse.ParseObject;
+    var organization = parse.ParseObject("Organization")..set("objectId", organizationId);
 
     // get employees
     final parse.QueryBuilder<parse.ParseObject> employeeQuery =
     parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Employee'))
-      ..whereRelatedTo('organization', 'Organization', organizationId);
+      ..whereEqualTo('organization', organization.toPointer());
 
     final parse.ParseResponse employeeResponse = await employeeQuery.query();
     if (!employeeResponse.success) {
+      setState(() {
+        results.fail();
+      });
       return;
     }
-    final employees = membershipResponse.result as List<parse.ParseObject>;
+    else if(employeeResponse.results == null) {
+      print("employees for the organization not found");
+      setState(() {
+        results.fail();
+      });
+      return;
+    }
+
+    final employees = employeeResponse.results as List<parse.ParseObject>;
+    //print(employees.toString());
 
     // get employee users
     final parse.QueryBuilder<parse.ParseObject> employeeUserQuery =
-    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('User'))
+    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('_User'))
       ..whereContainedIn('employee', employees);
 
     final parse.ParseResponse employeeUserResponse = await employeeUserQuery.query();
     if (!employeeUserResponse.success) {
+      setState(() {
+        results.fail();
+      });
       return;
     }
+    else if(employeeUserResponse.results == null) {
+      print("employee users for the organization not found");
+      setState(() {
+        results.fail();
+      });
+      return;
+    }
+
     final employeeUsers = employeeUserResponse.results as List<parse.ParseObject>;
 
     // get employee memberships
@@ -93,7 +113,17 @@ class _UserOrganizationState extends State<UserOrganization> {
       ..whereContainedIn('user', employeeUsers);
 
     final parse.ParseResponse employeeMembershipResponse = await employeeMembershipQuery.query();
-    if (!employeeUserResponse.success) {
+    if (!employeeMembershipResponse.success) {
+      setState(() {
+        results.fail();
+      });
+      return;
+    }
+    else if(employeeMembershipResponse.results == null) {
+      print("employee chat memberships not found");
+      setState(() {
+        results.fail();
+      });
       return;
     }
     final employeeMemberships = employeeMembershipResponse.results as List<parse.ParseObject>;
@@ -113,21 +143,30 @@ class _UserOrganizationState extends State<UserOrganization> {
     final parse.QueryBuilder<parse.ParseObject> userChatQuery =
     parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Chat'))
       ..whereContainedIn('members', userMemberships)
-      ..whereMatchesQuery('objectId', employeeChatQuery);
+      ..whereMatchesKeyInQuery('objectId', 'objectId', employeeChatQuery)
+      ..includeObject(['correspondence']);
 
     final parse.ParseResponse userChatResponse = await userChatQuery.query();
     if (!userChatResponse.success) {
       setState(() {
-        results.clear();
-      });
-    } else {
-      setState(() {
-        results = userChatResponse.results as List<parse.ParseObject>;
+        results.fail();
       });
     }
-    final userChats = userChatResponse.results as List<parse.ParseObject>;
+    else if (employeeMembershipResponse.results == null) {
+      setState(() {
+        results.fail();
+      });
+      print("employees for the organization not found");
+    }
+    else {
+      setState(() {
+        results.load(userChatResponse.results as List<parse.ParseObject>);
+        print(results);
+      });
+    }
 
     // get correspondences
+
   }
 
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
@@ -156,6 +195,8 @@ class _UserOrganizationState extends State<UserOrganization> {
       parse.ParseUser.currentUser().then((currentUser) {
         setState(() {
           user = currentUser;
+          getUserOrganizationCorrespondences((ModalRoute.of(context)!.settings.arguments
+          as UserOrganizationArguments).id, user.objectId.toString());
         });
       });
     }).catchError((dynamic _) {});
@@ -169,8 +210,7 @@ class _UserOrganizationState extends State<UserOrganization> {
   @override
   Widget build(BuildContext context) {
     final String organizationId = (ModalRoute.of(context)!.settings.arguments
-            as UserOrganizationArguments)
-        .id;
+            as UserOrganizationArguments).id;
 
     bool narrow = MediaQuery.of(context).size.width < 600;
     bool wide = MediaQuery.of(context).size.width > 1000;
@@ -237,12 +277,6 @@ class _UserOrganizationState extends State<UserOrganization> {
                       : constraints.maxHeight * desktopListHeight,
                   child: Flex(
                     children: [
-                      FloatingActionButton(
-                        child: const Text('refresh'),
-                        onPressed: () {
-                          getUserOrganizationCorrespondences(organizationId, user.username.toString());
-                        }
-                      ),
                       // Correspondences window
                       TabbedWindow(
                         viewAllRoute: '/usercorrespondences',
@@ -258,12 +292,13 @@ class _UserOrganizationState extends State<UserOrganization> {
                           'clubs',
                         ],
                         lists: [
+                          (results.status == ResultStatus.loading)? TabbedWindowLoading():
+                          (results.status == ResultStatus.failed)? TabbedWindowEmpty():
                           TabbedWindowList(listItems: [
-                            for (var i = 0; i < results.length; i++)
+                            for (var i = 0; i < results.list.length; i++)
                               TabbedWindowListCorrespondence(
-                              name: results[i].toString(),
-                              description: 'test',
-                              image: NetworkImage('https://parsefiles.back4app.com/P8CudbQwTfa32Tc0rxXw3AXHmVPV9EPzIBh3alUB/affa519bc2cb3299ace1ba3ed10bf8ac_trailblazer%20fox%20white%20back.png'),
+                              name: results.list[i].get('correspondence').get('summary'),
+                              description: results.list[i].get('correspondence').get('summary'),
                               dense: narrow ? true : false,
                               ),
                           ]),

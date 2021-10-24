@@ -10,7 +10,7 @@ import 'package:customer_service/widgets/tabbedwindow/TabbedWindowListFAQ.dart';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'package:customer_service/services/resultparsers/faqresult.dart';
+import 'package:customer_service/services/graphqlresultparsers/faqresult.dart';
 
 
 class FAQTabbedWindowListBuilder extends StatelessWidget {

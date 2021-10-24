@@ -10,7 +10,7 @@ import 'package:customer_service/widgets/tabbedwindow/TabbedWindowListOrganizati
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'package:customer_service/services/resultparsers/organizationresult.dart';
+import 'package:customer_service/services/graphqlresultparsers/organizationresult.dart';
 
 
 class OrganizationTabbedWindowListBuilder extends StatelessWidget {
