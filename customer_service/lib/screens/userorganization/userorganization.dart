@@ -26,6 +26,7 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as parse;
 
 import 'package:customer_service/services/parseresults/ChatResults.dart';
 import 'package:customer_service/services/parseresults/ResultStatus.dart';
+import 'package:customer_service/services/ParseQueries.dart';
 
 class UserOrganization extends StatefulWidget {
   @override
@@ -35,7 +36,7 @@ class UserOrganization extends StatefulWidget {
 class _UserOrganizationState extends State<UserOrganization> {
   ChatResults results = ChatResults();
 
-  void getUserOrganizationCorrespondences(String organizationId, String userId) async {
+  /*void getUserOrganizationCorrespondences(String organizationId, String userId, ChatResults results) async {
     var userObject = parse.ParseObject("_User")..set("objectId", userId);
     // get user memberships
     final parse.QueryBuilder<parse.ParseObject> membershipQuery =
@@ -167,7 +168,7 @@ class _UserOrganizationState extends State<UserOrganization> {
 
     // get correspondences
 
-  }
+  }*/
 
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 
@@ -195,8 +196,20 @@ class _UserOrganizationState extends State<UserOrganization> {
       parse.ParseUser.currentUser().then((currentUser) {
         setState(() {
           user = currentUser;
-          getUserOrganizationCorrespondences((ModalRoute.of(context)!.settings.arguments
-          as UserOrganizationArguments).id, user.objectId.toString());
+          ParseQueries().getUserOrganizationCorrespondences(
+            (ModalRoute.of(context)!.settings.arguments as UserOrganizationArguments).id,
+            user.objectId.toString(),
+            (list) {
+              setState(() {
+                results.load(list);
+              });
+            },
+            () {
+              setState(() {
+                results.fail();
+              });
+            }
+          );
         });
       });
     }).catchError((dynamic _) {});
