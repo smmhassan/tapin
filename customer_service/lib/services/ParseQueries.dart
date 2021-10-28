@@ -4,8 +4,9 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:customer_service/services/parseresults/ChatResults.dart';
 
 class ParseQueries {
+  // status = 1: all, status = 2: open, status = 3: closed
   void getUserOrganizationCorrespondences(
-      String organizationId, String userId, Function(List<ParseObject>) load, VoidCallback fail) async {
+      String organizationId, String userId, Function(List<ParseObject>) load, VoidCallback fail, int status) async {
     var userObject = ParseObject("_User")..set("objectId", userId);
     // get user memberships
     final QueryBuilder<ParseObject> membershipQuery =
@@ -92,15 +93,22 @@ class ParseQueries {
           ..whereContainedIn('members', userMemberships)
           ..whereMatchesKeyInQuery('objectId', 'objectId', employeeChatQuery)
           ..includeObject(['correspondence']);
+    if (status == 2) {
+      userChatQuery.whereEqualTo('closed', false);
+    }
+    else if (status == 3) {
+      userChatQuery.whereEqualTo('closed', true);
+    }
 
     final ParseResponse userChatResponse = await userChatQuery.query();
+    //print(userChatResponse.results);
     if (!userChatResponse.success) {
       fail();
-    } else if (employeeMembershipResponse.results == null) {
+      print("failure");
+    } else if (userChatResponse.results == null || userChatResponse.results!.isEmpty) {
       fail();
-      print("employees for the organization not found");
+      print("chats not found");
     } else {
-      load(userChatResponse.results as List<ParseObject>);
       load(userChatResponse.results as List<ParseObject>);
       print("loaded correspondences");
     }

@@ -34,141 +34,36 @@ class UserOrganization extends StatefulWidget {
 }
 
 class _UserOrganizationState extends State<UserOrganization> {
-  ChatResults results = ChatResults();
-
-  /*void getUserOrganizationCorrespondences(String organizationId, String userId, ChatResults results) async {
-    var userObject = parse.ParseObject("_User")..set("objectId", userId);
-    // get user memberships
-    final parse.QueryBuilder<parse.ParseObject> membershipQuery =
-    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('ChatMembership'))
-      ..whereEqualTo('user', userObject.toPointer());
-
-    final parse.ParseResponse membershipResponse = await membershipQuery.query();
-    if (!membershipResponse.success) {
-      setState(() {
-        results.fail();
-      });
-      return;
-    }
-    else if(membershipResponse.results == null) {
-      print("no chat memberships found for the user");
-      setState(() {
-        results.fail();
-      });
-      return;
-    }
-
-    final userMemberships = membershipResponse.results as List<parse.ParseObject>;
-    
-    //final organization = organizationResponse.result?.first as parse.ParseObject;
-    var organization = parse.ParseObject("Organization")..set("objectId", organizationId);
-
-    // get employees
-    final parse.QueryBuilder<parse.ParseObject> employeeQuery =
-    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Employee'))
-      ..whereEqualTo('organization', organization.toPointer());
-
-    final parse.ParseResponse employeeResponse = await employeeQuery.query();
-    if (!employeeResponse.success) {
-      setState(() {
-        results.fail();
-      });
-      return;
-    }
-    else if(employeeResponse.results == null) {
-      print("employees for the organization not found");
-      setState(() {
-        results.fail();
-      });
-      return;
-    }
-
-    final employees = employeeResponse.results as List<parse.ParseObject>;
-    //print(employees.toString());
-
-    // get employee users
-    final parse.QueryBuilder<parse.ParseObject> employeeUserQuery =
-    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('_User'))
-      ..whereContainedIn('employee', employees);
-
-    final parse.ParseResponse employeeUserResponse = await employeeUserQuery.query();
-    if (!employeeUserResponse.success) {
-      setState(() {
-        results.fail();
-      });
-      return;
-    }
-    else if(employeeUserResponse.results == null) {
-      print("employee users for the organization not found");
-      setState(() {
-        results.fail();
-      });
-      return;
-    }
-
-    final employeeUsers = employeeUserResponse.results as List<parse.ParseObject>;
-
-    // get employee memberships
-    final parse.QueryBuilder<parse.ParseObject> employeeMembershipQuery =
-    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('ChatMembership'))
-      ..whereContainedIn('user', employeeUsers);
-
-    final parse.ParseResponse employeeMembershipResponse = await employeeMembershipQuery.query();
-    if (!employeeMembershipResponse.success) {
-      setState(() {
-        results.fail();
-      });
-      return;
-    }
-    else if(employeeMembershipResponse.results == null) {
-      print("employee chat memberships not found");
-      setState(() {
-        results.fail();
-      });
-      return;
-    }
-    final employeeMemberships = employeeMembershipResponse.results as List<parse.ParseObject>;
-
-    // get chats with user memberships
-    final parse.QueryBuilder<parse.ParseObject> employeeChatQuery =
-    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Chat'))
-      ..whereContainedIn('members', employeeMemberships);
-
-    //final parse.ParseResponse employeeChatResponse = await employeeChatQuery.query();
-    //if (!employeeChatResponse.success) {
-    //  return;
-    //}
-    //final employeeChats = employeeChatResponse.results as List<parse.ParseObject>;
-
-    // get chats with employee memberships as well
-    final parse.QueryBuilder<parse.ParseObject> userChatQuery =
-    parse.QueryBuilder<parse.ParseObject>(parse.ParseObject('Chat'))
-      ..whereContainedIn('members', userMemberships)
-      ..whereMatchesKeyInQuery('objectId', 'objectId', employeeChatQuery)
-      ..includeObject(['correspondence']);
-
-    final parse.ParseResponse userChatResponse = await userChatQuery.query();
-    if (!userChatResponse.success) {
-      setState(() {
-        results.fail();
-      });
-    }
-    else if (employeeMembershipResponse.results == null) {
-      setState(() {
-        results.fail();
-      });
-      print("employees for the organization not found");
-    }
-    else {
-      setState(() {
-        results.load(userChatResponse.results as List<parse.ParseObject>);
-        print(results);
-      });
-    }
-
-    // get correspondences
-
-  }*/
+  ChatResults allCorrespondences = ChatResults();
+  void refreshAllCorrespondences() {
+    ParseQueries().getUserOrganizationCorrespondences(
+        (ModalRoute.of(context)!.settings.arguments as UserOrganizationArguments).id,
+        user.objectId.toString(),
+        (list) {setState(() {allCorrespondences.load(list);});},
+        () {setState(() {allCorrespondences.fail();});},
+        1,
+    );
+  }
+  ChatResults activeCorrespondences = ChatResults();
+  void refreshActiveCorrespondences() {
+    ParseQueries().getUserOrganizationCorrespondences(
+      (ModalRoute.of(context)!.settings.arguments as UserOrganizationArguments).id,
+      user.objectId.toString(),
+          (list) {setState(() {activeCorrespondences.load(list);});},
+          () {setState(() {activeCorrespondences.fail();});},
+      2,
+    );
+  }
+  ChatResults closedCorrespondences = ChatResults();
+  void refreshClosedCorrespondences() {
+    ParseQueries().getUserOrganizationCorrespondences(
+      (ModalRoute.of(context)!.settings.arguments as UserOrganizationArguments).id,
+      user.objectId.toString(),
+          (list) {setState(() {closedCorrespondences.load(list);});},
+          () {setState(() {closedCorrespondences.fail();});},
+      3,
+    );
+  }
 
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 
@@ -196,20 +91,9 @@ class _UserOrganizationState extends State<UserOrganization> {
       parse.ParseUser.currentUser().then((currentUser) {
         setState(() {
           user = currentUser;
-          ParseQueries().getUserOrganizationCorrespondences(
-            (ModalRoute.of(context)!.settings.arguments as UserOrganizationArguments).id,
-            user.objectId.toString(),
-            (list) {
-              setState(() {
-                results.load(list);
-              });
-            },
-            () {
-              setState(() {
-                results.fail();
-              });
-            }
-          );
+          refreshAllCorrespondences();
+          refreshActiveCorrespondences();
+          refreshClosedCorrespondences();
         });
       });
     }).catchError((dynamic _) {});
@@ -238,6 +122,15 @@ class _UserOrganizationState extends State<UserOrganization> {
               user: user,
             ),
 
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // Add your onPressed code here!
+        },
+        label: const Text('New Request'),
+        icon: const Icon(Icons.chat_rounded),
+        backgroundColor: Theme.of(context).buttonColor,
+      ),
+
       body: LayoutBuilder(builder: (context, constraints) {
         return Center(
           child: Container(
@@ -262,21 +155,7 @@ class _UserOrganizationState extends State<UserOrganization> {
                           height: narrow
                               ? constraints.maxHeight * mobileHeaderHeight
                               : constraints.maxHeight * desktopHeaderHeight,
-                          leftItem: Row(children: [
-                            Icon(
-                              Icons.attach_money,
-                              size: constraints.maxHeight *
-                                  mobileHeaderHeight *
-                                  .55,
-                              color: Theme.of(context).accentColor,
-                            ),
-                            Text(
-                              '100',
-                              style: TextStyle(
-                                color: Theme.of(context).accentColor,
-                              ),
-                            ),
-                          ]),
+                          leftItem: Container(),
                           image: dp,
                           label: name,
                         );
@@ -301,41 +180,43 @@ class _UserOrganizationState extends State<UserOrganization> {
                         narrow ? mobileTitleHeight : desktopTitleHeight,
                         tabNames: [
                           'all',
-                          'administration',
-                          'clubs',
+                          'active',
+                          'closed',
                         ],
                         lists: [
-                          (results.status == ResultStatus.loading)? TabbedWindowLoading():
-                          (results.status == ResultStatus.failed)? TabbedWindowEmpty():
+                          // all
+                          (allCorrespondences.status == ResultStatus.loading)? TabbedWindowLoading():
+                          (allCorrespondences.status == ResultStatus.failed)? TabbedWindowEmpty():
                           TabbedWindowList(listItems: [
-                            for (var i = 0; i < results.list.length; i++)
+                            for (var i = 0; i < allCorrespondences.list.length; i++)
                               TabbedWindowListCorrespondence(
-                              name: results.list[i].get('correspondence').get('summary'),
-                              description: results.list[i].get('correspondence').get('summary'),
+                              name: allCorrespondences.list[i].get('correspondence').get('summary'),
+                              description: allCorrespondences.list[i].get('correspondence').get('summary'),
                               dense: narrow ? true : false,
                               ),
                           ]),
-                          Query(
-                              options: QueryOptions(
-                                document: gql(QueryMutation()
-                                    .getCorrespondences(
-                                    user.objectId.toString(),
-                                    ['administration'],
-                                    "",
-                                    "")),
+                          // active
+                          (activeCorrespondences.status == ResultStatus.loading)? TabbedWindowLoading():
+                          (activeCorrespondences.status == ResultStatus.failed)? TabbedWindowEmpty():
+                          TabbedWindowList(listItems: [
+                            for (var i = 0; i < activeCorrespondences.list.length; i++)
+                              TabbedWindowListCorrespondence(
+                                name: activeCorrespondences.list[i].get('correspondence').get('summary'),
+                                description: activeCorrespondences.list[i].get('correspondence').get('summary'),
+                                dense: narrow ? true : false,
                               ),
-                              builder: (result, {refetch, fetchMore}) {
-                                return CorrespondenceTabbedWindowListBuilder(result: result, narrow: narrow);
-                              }),
-                          Query(
-                              options: QueryOptions(
-                                document: gql(QueryMutation()
-                                    .getCategoryCorrespondences(
-                                    user.objectId.toString(), ['clubs'])),
+                          ]),
+                          // closed
+                          (closedCorrespondences.status == ResultStatus.loading)? TabbedWindowLoading():
+                          (closedCorrespondences.status == ResultStatus.failed)? TabbedWindowEmpty():
+                          TabbedWindowList(listItems: [
+                            for (var i = 0; i < closedCorrespondences.list.length; i++)
+                              TabbedWindowListCorrespondence(
+                                name: closedCorrespondences.list[i].get('correspondence').get('summary'),
+                                description: closedCorrespondences.list[i].get('correspondence').get('summary'),
+                                dense: narrow ? true : false,
                               ),
-                              builder: (result, {refetch, fetchMore}) {
-                                return CorrespondenceTabbedWindowListBuilder(result: result, narrow: narrow);
-                              }),
+                          ]),
                         ],
                       ),
                       // FAQ window
