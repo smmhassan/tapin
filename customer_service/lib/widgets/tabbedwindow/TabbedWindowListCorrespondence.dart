@@ -48,7 +48,15 @@ class TabbedWindowListCorrespondence extends StatelessWidget {
           color: Theme.of(context).selectedRowColor,
         ),
       ),
-      trailing: OutlinedButton(
+      trailing: TextButton(
+        onPressed: () {
+        },
+        child: Icon(
+          Icons.more_vert,
+          color: Theme.of(context).accentColor,
+        ),
+      ),
+      /*trailing: OutlinedButton(
         child: Text('prioritize'),
         style: OutlinedButton.styleFrom(
             primary: Theme.of(context).buttonColor,
@@ -68,7 +76,7 @@ class TabbedWindowListCorrespondence extends StatelessWidget {
         ),
         onPressed: () {
         },
-      ),
+      ),*/
       //isThreeLine: true,
     );
   }

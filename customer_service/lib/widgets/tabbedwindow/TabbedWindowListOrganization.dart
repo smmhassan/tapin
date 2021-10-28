@@ -37,7 +37,14 @@ class TabbedWindowListOrganization extends StatelessWidget {
           color: Theme.of(context).accentColor,
         ),
       ),
-      trailing: Icon(Icons.more_vert),
+      trailing: TextButton(
+        onPressed: () {
+        },
+        child: Icon(
+          Icons.more_vert,
+          color: Theme.of(context).accentColor,
+        ),
+      ),
     );
   }
 }
