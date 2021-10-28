@@ -65,6 +65,8 @@ class _UserOrganizationState extends State<UserOrganization> {
     );
   }
 
+  String organizationName = '';
+
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
 
   QueryMutation addMutation = QueryMutation();
@@ -151,6 +153,8 @@ class _UserOrganizationState extends State<UserOrganization> {
                         ImageProvider dp = NetworkImage(
                             result.data?["organization"]["logo"]['url']);
                         String name = result.data?["organization"]["name"];
+                        //setState((){organizationName = name;});
+                        organizationName = name;
                         return DashHeader(
                           height: narrow
                               ? constraints.maxHeight * mobileHeaderHeight
@@ -191,7 +195,7 @@ class _UserOrganizationState extends State<UserOrganization> {
                             for (var i = 0; i < allCorrespondences.list.length; i++)
                               TabbedWindowListCorrespondence(
                               name: allCorrespondences.list[i].get('correspondence').get('summary'),
-                              description: allCorrespondences.list[i].get('correspondence').get('summary'),
+                              description: organizationName,
                               dense: narrow ? true : false,
                               ),
                           ]),
@@ -202,7 +206,7 @@ class _UserOrganizationState extends State<UserOrganization> {
                             for (var i = 0; i < activeCorrespondences.list.length; i++)
                               TabbedWindowListCorrespondence(
                                 name: activeCorrespondences.list[i].get('correspondence').get('summary'),
-                                description: activeCorrespondences.list[i].get('correspondence').get('summary'),
+                                description: organizationName,
                                 dense: narrow ? true : false,
                               ),
                           ]),
@@ -213,7 +217,7 @@ class _UserOrganizationState extends State<UserOrganization> {
                             for (var i = 0; i < closedCorrespondences.list.length; i++)
                               TabbedWindowListCorrespondence(
                                 name: closedCorrespondences.list[i].get('correspondence').get('summary'),
-                                description: closedCorrespondences.list[i].get('correspondence').get('summary'),
+                                description: organizationName,
                                 dense: narrow ? true : false,
                               ),
                           ]),
