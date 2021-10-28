@@ -22,27 +22,35 @@ class TabbedWindowListOrganization extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      dense: dense,
-      leading: RoundImage(
-        image: image,
-        size: 35,
-        borderSize: 0,
-        color: Colors.white,
+    return TextButton(
+      style: ButtonStyle(
+        padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
       ),
-      title: Text(
-        name,
-        style: TextStyle(
-          fontWeight: FontWeight.normal,
-          color: Theme.of(context).accentColor,
+      onPressed: () {
+
+      },
+      child: ListTile(
+        dense: dense,
+        leading: RoundImage(
+          image: image,
+          size: 35,
+          borderSize: 0,
+          color: Colors.white,
         ),
-      ),
-      trailing: TextButton(
-        onPressed: () {
-        },
-        child: Icon(
-          Icons.more_vert,
-          color: Theme.of(context).accentColor,
+        title: Text(
+          name,
+          style: TextStyle(
+            fontWeight: FontWeight.normal,
+            color: Theme.of(context).accentColor,
+          ),
+        ),
+        trailing: TextButton(
+          onPressed: () {
+          },
+          child: Icon(
+            Icons.more_vert,
+            color: Theme.of(context).accentColor,
+          ),
         ),
       ),
     );
