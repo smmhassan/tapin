@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:customer_service/widgets/listtiles/correspondence.dart';
-import 'package:customer_service/widgets/listtiles/organization.dart';
 import 'package:customer_service/widgets/lists/filterpopup.dart';
 import 'package:customer_service/widgets/lists/sortpopup.dart';
 import 'package:customer_service/widgets/lists/searchpopup.dart';
@@ -15,7 +14,6 @@ import '../../widgets/AdaptiveAppBar.dart';
 import "package:customer_service/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 final double mobileHeaderHeight = .12;
 
@@ -32,13 +30,13 @@ final double desktopTitleHeight = 22;
 final double maxContentWidth = 800;
 
 final Map<String, String> sortOptions = {
-  "ascending": "name_ASC",
-  "descending": "name_DESC",
+  "ascending": "title_ASC",
+  "descending": "title_DESC",
   "newest first": "createdAt_DESC",
   "oldest first": "createdAt_ASC",
 };
 
-final String defaultSort = "name_ASC";
+final String defaultSort = "title_ASC";
 
 final Iterable<String> sortOptionNames = sortOptions.keys;
 
@@ -225,7 +223,7 @@ class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
                               setState(() {
                                 selectedSortOption = selected;
                                 refetchQuery;
-                                //print(sortOptions[selectedSortOption]);
+                                print(sortOptions[selectedSortOption]);
                               });
                             },
                             maxHeight: screenHeight / 2,
@@ -249,7 +247,7 @@ class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
             constraints: BoxConstraints(
               maxWidth: maxContentWidth,
             ),
-            // build organization list
+            // build correspondence list
             child: Query(
                 options: QueryOptions(
                   document: gql(QueryMutation().getCorrespondences(
@@ -260,6 +258,7 @@ class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
                 ),
                 builder: (result, {refetch, fetchMore}) {
                   refetchQuery = refetch;
+                  print(result);
                   if (result.isLoading) {
                     return Center(child: Text("loading..."));
                   }

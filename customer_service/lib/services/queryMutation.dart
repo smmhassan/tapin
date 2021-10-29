@@ -325,23 +325,29 @@ class QueryMutation {
   }
 
   String getCorrespondences(
-      String userId, List<String> categories, String search, String text) {
+      String userId, List<String> categories, String sort, String search) {
     String categoriesInsertion = "";
     String searchInsertion = "";
+    String sortInsertion = "";
     String insertion = "";
-    if (categories.isNotEmpty || search.isNotEmpty) {
-      if (categories.isNotEmpty) {
-        for (String category in categories) {
-          categoriesInsertion += '''{name: {equalTo: "$category"}},''';
+    if (categories.isNotEmpty || search.isNotEmpty || sort.isNotEmpty) {
+      if (categories.isNotEmpty || search.isNotEmpty) {
+        if (categories.isNotEmpty) {
+          for (String category in categories) {
+            categoriesInsertion += '''{name: {equalTo: "$category"}},''';
+          }
+          categoriesInsertion = '''categories: {have: {OR: [$categoriesInsertion]}}''';
         }
+        if (search.isNotEmpty) {
+          searchInsertion =
+          '''summary: {matchesRegex: "$search", options: "i"}''';
+        }
+        insertion += '''have: {$categoriesInsertion $searchInsertion}''';
       }
-      if (search.isNotEmpty) {
-        searchInsertion =
-            '''summary: {matchesRegex: "$search", options: "i"}''';
+      if (sort.isNotEmpty) {
+        sortInsertion = '''order: $sort''';
       }
-      categoriesInsertion =
-          '''categories: {have: {OR: [$categoriesInsertion]}}''';
-      insertion = '''have: {$categoriesInsertion $searchInsertion}''';
+      //insertion = '''($insertion)''';
     }
     return '''
 {
@@ -358,6 +364,7 @@ class QueryMutation {
         $insertion
       }
     }
+    $sortInsertion
   ) {
     count
     edges {
