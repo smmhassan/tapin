@@ -223,7 +223,7 @@ class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
                               setState(() {
                                 selectedSortOption = selected;
                                 refetchQuery;
-                                print(sortOptions[selectedSortOption]);
+                                //print(sortOptions[selectedSortOption]);
                               });
                             },
                             maxHeight: screenHeight / 2,
@@ -258,7 +258,6 @@ class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
                 ),
                 builder: (result, {refetch, fetchMore}) {
                   refetchQuery = refetch;
-                  print(result);
                   if (result.isLoading) {
                     return Center(child: Text("loading..."));
                   }
