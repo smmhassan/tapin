@@ -22,9 +22,12 @@ void main() async {
   final keyApplicationId = kParseApplicationId;
   final keyClientKey = kParseClientKey;
   final keyParseServerUrl = kUrl;
+  final keyLiveQueryUrl = kLiveUrl;
 
   await Parse().initialize(keyApplicationId, keyParseServerUrl,
-      clientKey: keyClientKey, autoSendSessionId: true);
+      clientKey: keyClientKey,
+      liveQueryUrl: keyLiveQueryUrl,
+      autoSendSessionId: true);
   /*var firstObject = ParseObject('FirstClass')
     ..set(
         'message', 'Hey ! First message from Flutter. Parse is now connected');

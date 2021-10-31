@@ -28,11 +28,11 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   QueryMutation addMutation = QueryMutation();
+  late bool customer;
   final double desktopHeaderHeight = 0.15;
   final double desktopListHeight = 0.6;
   final double desktopTitleHeight = 22;
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
-
   final Image headerLogo = new Image(
       image: new ExactAssetImage('assets/logo_text.png'),
       height: AppBar().preferredSize.height - 30,
@@ -40,15 +40,16 @@ class _ChatScreenState extends State<ChatScreen> {
       alignment: FractionalOffset.center);
 
   final double maxContentWidth = 800;
+  late String message;
+  late List<bool> messageSide;
+  late List<Message> messages;
   final double mobileHeaderHeight = .12;
   final double mobileListHeight = .36;
   final double mobileTitleHeight = 18;
-  ParseServer.ParseUser user = ParseServer.ParseUser('', '', '');
-  late List<Message> messages;
-  late List<bool> messageSide;
-  late String message;
-  late bool customer;
   final scrollController = ScrollController();
+  ParseServer.ParseUser user = ParseServer.ParseUser('', '', '');
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -62,6 +63,7 @@ class _ChatScreenState extends State<ChatScreen> {
     }).catchError((dynamic _) {});
     messages = <Message>[];
     messageSide = <bool>[];
+    message = "";
     _handleLiveQuery();
     super.initState();
   }
@@ -70,14 +72,89 @@ class _ChatScreenState extends State<ChatScreen> {
     return (await ParseServer.Parse().healthCheck()).success;
   }
 
+  void _handleLiveQuery() async {
+    final ParseServer.LiveQuery liveQuery = ParseServer.LiveQuery(debug: true);
+    ParseServer.QueryBuilder<ParseServer.ParseObject> query =
+        ParseServer.QueryBuilder<ParseServer.ParseObject>(
+            ParseServer.ParseObject('Message'));
+
+    print('LiveQueryURL ${ParseServer.ParseCoreData().liveQueryURL}');
+
+    ParseServer.Subscription subscription =
+        await liveQuery.client.subscribe(query);
+    subscription.on(ParseServer.LiveQueryEvent.create, (value) {
+      print('*** CREATE ***: ${DateTime.now().toString()}\n $value ');
+      Message m = Message.clone().fromJson(jsonDecode(value.toString()));
+      messages.add(m);
+      messageSide.add(m.customer!);
+      setState(() {});
+    });
+
+    subscription.on(ParseServer.LiveQueryEvent.update, (value) {
+      print('*** UPDATE ***: ${DateTime.now().toString()}\n $value ');
+    });
+
+    subscription.on(ParseServer.LiveQueryEvent.delete, (value) {
+      print('*** DELETE ***: ${DateTime.now().toString()}\n $value ');
+    });
+
+    print('Subscribe done');
+  }
+
+  void _sendMessage() {
+    sendMessagePressed(message: message, customer: true);
+  }
+
+  Future<bool> sendMessage(
+      {required String message, required bool customer}) async {
+    var m = Message()
+      ..set('message', message)
+      ..set('customer', customer)
+      ..set('user', await ParseServer.ParseUser.currentUser());
+    var apiResponse = await m.save();
+    return apiResponse.success;
+  }
+
+  Future<void> sendMessagePressed(
+      {required String message, required bool customer}) async {
+    await this.sendMessage(
+      message: message,
+      customer: customer,
+    );
+  }
+
+  Future<List<Message>> loadAllMessages() async {
+    var apiResponse = await Message().getAll();
+    List<Message> messages = [];
+    if (apiResponse.success && apiResponse.result != null) {
+      for (Message m in apiResponse.result) {
+        messages.add(m);
+      }
+    }
+
+    return messages;
+  }
+
+  Future<List<bool>> loadAllCustomers() async {
+    var apiResponse = await Message().getAll();
+    List<bool> messageSide = [];
+    if (apiResponse.success && apiResponse.result != null) {
+      for (Message m in apiResponse.result) {
+        messageSide.add(m.customer!);
+      }
+    }
+
+    return messageSide;
+  }
+
   @override
   Widget build(BuildContext context) {
     bool narrow = MediaQuery.of(context).size.width < 600;
     bool wide = MediaQuery.of(context).size.width > 1000;
     bool showDrawer = MediaQuery.of(context).size.width < 1250;
 
-    List<Message> messages = this.loadAllMessages() as List<Message>;
-    List<bool> messageSide = this.loadAllCustomers() as List<bool>;
+    List<Message> messages = [];
+    List<bool> messageSide = [];
 
     return Scaffold(
       appBar: ChatAppBar(
@@ -180,7 +257,7 @@ class _ChatScreenState extends State<ChatScreen> {
                           //);
                         },
                         textInputAction: TextInputAction.send,
-                        onSubmitted: (value) => message = value!,
+                        onSubmitted: (value) => message = value,
                         style: TextStyle(
                           color: Theme.of(context).canvasColor,
                         ),
@@ -211,80 +288,6 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       }),
     );
-  }
-
-  void _handleLiveQuery() async {
-    final ParseServer.LiveQuery liveQuery = ParseServer.LiveQuery(debug: true);
-    ParseServer.QueryBuilder<ParseServer.ParseObject> query =
-        ParseServer.QueryBuilder<ParseServer.ParseObject>(
-            ParseServer.ParseObject('Message'));
-
-    print('LiveQueryURL ${ParseServer.ParseCoreData().liveQueryURL}');
-
-    ParseServer.Subscription subscription =
-        await liveQuery.client.subscribe(query);
-    subscription.on(ParseServer.LiveQueryEvent.create, (value) {
-      print('*** CREATE ***: ${DateTime.now().toString()}\n $value ');
-      Message m = Message.clone().fromJson(jsonDecode(value.toString()));
-      messages.add(m);
-      setState(() {});
-    });
-
-    subscription.on(ParseServer.LiveQueryEvent.update, (value) {
-      print('*** UPDATE ***: ${DateTime.now().toString()}\n $value ');
-    });
-
-    subscription.on(ParseServer.LiveQueryEvent.delete, (value) {
-      print('*** DELETE ***: ${DateTime.now().toString()}\n $value ');
-    });
-
-    print('Subscribe done');
-  }
-
-  void _sendMessage() {
-    sendMessagePressed(message: message, customer: true);
-  }
-
-  Future<bool> sendMessage(
-      {required String message, required bool customer}) async {
-    var m = Message()
-      ..set('message', message)
-      ..set('customer', customer)
-      ..set('user', await ParseServer.ParseUser.currentUser());
-    var apiResponse = await m.save();
-    return apiResponse.success;
-  }
-
-  Future<void> sendMessagePressed(
-      {required String message, required bool customer}) async {
-    await this.sendMessage(
-      message: message,
-      customer: customer,
-    );
-  }
-
-  Future<List> loadAllMessages() async {
-    var apiResponse = await Message().getAll();
-    List<Message> messages = [];
-    if (apiResponse.success && apiResponse.result != null) {
-      for (Message m in apiResponse.result) {
-        messages.add(m);
-      }
-    }
-
-    return messages;
-  }
-
-  Future<List> loadAllCustomers() async {
-    var apiResponse = await Message().getAll();
-    List<bool> messageSide = new List();
-    if (apiResponse.success && apiResponse.result != null) {
-      for (Message m in apiResponse.result) {
-        messageSide.add(m.customer!);
-      }
-    }
-
-    return messageSide;
   }
 }
 
@@ -344,14 +347,14 @@ class CorrespondenceResult {
 }
 
 class ChatBuilder extends StatelessWidget {
-  final QueryResult result;
-  final bool narrow;
-
   const ChatBuilder({
     Key? key,
     required this.result,
     required this.narrow,
   }) : super(key: key);
+
+  final bool narrow;
+  final QueryResult result;
 
   @override
   Widget build(BuildContext context) {
@@ -379,14 +382,14 @@ class ChatBuilder extends StatelessWidget {
 }
 
 class CorrespondenceTabbedWindowListBuilder extends StatelessWidget {
-  final QueryResult result;
-  final bool narrow;
-
   const CorrespondenceTabbedWindowListBuilder({
     Key? key,
     required this.result,
     required this.narrow,
   }) : super(key: key);
+
+  final bool narrow;
+  final QueryResult result;
 
   @override
   Widget build(BuildContext context) {
