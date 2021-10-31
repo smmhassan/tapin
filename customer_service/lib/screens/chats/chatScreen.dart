@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -17,7 +18,7 @@ import 'package:customer_service/widgets/chat/Message.dart';
 import 'package:customer_service/services/graphQLConf.dart';
 import "package:customer_service/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as ParseServer;
 import 'package:google_sign_in/google_sign_in.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -42,25 +43,31 @@ class _ChatScreenState extends State<ChatScreen> {
   final double mobileHeaderHeight = .12;
   final double mobileListHeight = .36;
   final double mobileTitleHeight = 18;
-  ParseUser user = ParseUser('', '', '');
-
+  ParseServer.ParseUser user = ParseServer.ParseUser('', '', '');
+  late List<Message> messages;
+  late List<bool> messageSide;
+  late String message;
+  late bool customer;
   final scrollController = ScrollController();
 
   @override
   void initState() {
     initData().then((bool success) {
       scrollController.jumpTo(scrollController.position.maxScrollExtent);
-      ParseUser.currentUser().then((currentUser) {
+      ParseServer.ParseUser.currentUser().then((currentUser) {
         setState(() {
           user = currentUser;
         });
       });
     }).catchError((dynamic _) {});
+    messages = <Message>[];
+    messageSide = <bool>[];
+    _handleLiveQuery();
     super.initState();
   }
 
   Future<bool> initData() async {
-    return (await Parse().healthCheck()).success;
+    return (await ParseServer.Parse().healthCheck()).success;
   }
 
   @override
@@ -69,52 +76,16 @@ class _ChatScreenState extends State<ChatScreen> {
     bool wide = MediaQuery.of(context).size.width > 1000;
     bool showDrawer = MediaQuery.of(context).size.width < 1250;
 
-    List<String> messages = [
-      'hello',
-      'how are you',
-      'I am doing fine',
-      'this is a very long message, blalblablab lal b al blablabl alb alb labl ablal bla bla blablblab lal  balbla blablalbla',
-      'no',
-      'ok',
-      'yes',
-      'ok',
-      'testing',
-      '123',
-      'owl',
-      'a',
-      'b',
-      'c',
-      'd',
-      'f',
-      'g',
-    ];
-    List<bool> messageSide = [
-      true,
-      true,
-      false,
-      false,
-      true,
-      false,
-      true,
-      false,
-      true,
-      true,
-      false,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-    ];
+    List<Message> messages = this.loadAllMessages() as List<Message>;
+    List<bool> messageSide = this.loadAllCustomers() as List<bool>;
 
     return Scaffold(
       appBar: ChatAppBar(
-        context,
-        user,
-        NetworkImage('https://parsefiles.back4app.com/P8CudbQwTfa32Tc0rxXw3AXHmVPV9EPzIBh3alUB/69044f2e59e31dd8a3bb84adbf8570e6_fox%20placeholder.png'),
-        'A test Correspondence with a longer name'
-      ),
+          context,
+          user,
+          NetworkImage(
+              'https://parsefiles.back4app.com/P8CudbQwTfa32Tc0rxXw3AXHmVPV9EPzIBh3alUB/69044f2e59e31dd8a3bb84adbf8570e6_fox%20placeholder.png'),
+          'A test Correspondence with a longer name'),
       //appBar: AppBar(),
 
       endDrawer: !showDrawer
@@ -134,22 +105,48 @@ class _ChatScreenState extends State<ChatScreen> {
                     maxWidth: maxContentWidth,
                   ),
                   child: ListView.builder(
-                    controller: scrollController,
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      return Message(
-                        author: 'test',
-                        text: messages[index],
-                        customer: messageSide[index],
-                      );
-                    }
-                  ),
+                      controller: scrollController,
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          alignment: messageSide[index]
+                              ? Alignment.topRight
+                              : Alignment.topLeft,
+                          child: Container(
+                            margin: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(10),
+                            constraints: BoxConstraints(
+                              maxWidth: 300,
+                            ),
+                            decoration: BoxDecoration(
+                              color: messageSide[index]
+                                  ? Theme.of(context).buttonColor
+                                  : Theme.of(context).accentColor,
+                              borderRadius: BorderRadius.circular(15),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  spreadRadius: 1,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Text(
+                              messages[index].message!,
+                              style: TextStyle(
+                                color: Theme.of(context).canvasColor,
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
                 ),
               ),
               // text entry field
               Container(
                 alignment: Alignment.bottomLeft,
-                padding: EdgeInsets.only(left: 10,bottom: 10,top: 10),
+                padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
                 height: 60,
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -165,14 +162,17 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 child: Row(
                   children: <Widget>[
-                    SizedBox(width: 15,),
+                    SizedBox(
+                      width: 15,
+                    ),
                     Expanded(
                       child: TextField(
+                        key: Key('Message'),
                         onTap: () {
                           Timer(
-                            Duration(milliseconds: 400),
-                              () => scrollController.jumpTo(scrollController.position.maxScrollExtent)
-                          );
+                              Duration(milliseconds: 400),
+                              () => scrollController.jumpTo(
+                                  scrollController.position.maxScrollExtent));
                           //scrollController.animateTo(
                           //  scrollController.position.maxScrollExtent,
                           //  duration: Duration(milliseconds: 150),
@@ -180,27 +180,30 @@ class _ChatScreenState extends State<ChatScreen> {
                           //);
                         },
                         textInputAction: TextInputAction.send,
+                        onSubmitted: (value) => message = value!,
                         style: TextStyle(
                           color: Theme.of(context).canvasColor,
                         ),
                         decoration: InputDecoration(
-                          hintStyle: TextStyle(
-                            color: Theme.of(context).selectedRowColor,
-                          ),
-                          hintText: "Write message...",
-                          border: InputBorder.none
-                        ),
+                            hintStyle: TextStyle(
+                              color: Theme.of(context).selectedRowColor,
+                            ),
+                            hintText: "Write message...",
+                            border: InputBorder.none),
                       ),
                     ),
                     SizedBox(width: 15),
                     FloatingActionButton(
-                      onPressed: (){},
-                      child: Icon(Icons.send,color: Theme.of(context).canvasColor,size: 18,),
+                      onPressed: _sendMessage,
+                      child: Icon(
+                        Icons.send,
+                        color: Theme.of(context).canvasColor,
+                        size: 18,
+                      ),
                       backgroundColor: Theme.of(context).buttonColor,
                       elevation: 0,
                     ),
                   ],
-
                 ),
               ),
             ],
@@ -208,6 +211,80 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       }),
     );
+  }
+
+  void _handleLiveQuery() async {
+    final ParseServer.LiveQuery liveQuery = ParseServer.LiveQuery(debug: true);
+    ParseServer.QueryBuilder<ParseServer.ParseObject> query =
+        ParseServer.QueryBuilder<ParseServer.ParseObject>(
+            ParseServer.ParseObject('Message'));
+
+    print('LiveQueryURL ${ParseServer.ParseCoreData().liveQueryURL}');
+
+    ParseServer.Subscription subscription =
+        await liveQuery.client.subscribe(query);
+    subscription.on(ParseServer.LiveQueryEvent.create, (value) {
+      print('*** CREATE ***: ${DateTime.now().toString()}\n $value ');
+      Message m = Message.clone().fromJson(jsonDecode(value.toString()));
+      messages.add(m);
+      setState(() {});
+    });
+
+    subscription.on(ParseServer.LiveQueryEvent.update, (value) {
+      print('*** UPDATE ***: ${DateTime.now().toString()}\n $value ');
+    });
+
+    subscription.on(ParseServer.LiveQueryEvent.delete, (value) {
+      print('*** DELETE ***: ${DateTime.now().toString()}\n $value ');
+    });
+
+    print('Subscribe done');
+  }
+
+  void _sendMessage() {
+    sendMessagePressed(message: message, customer: true);
+  }
+
+  Future<bool> sendMessage(
+      {required String message, required bool customer}) async {
+    var m = Message()
+      ..set('message', message)
+      ..set('customer', customer)
+      ..set('user', await ParseServer.ParseUser.currentUser());
+    var apiResponse = await m.save();
+    return apiResponse.success;
+  }
+
+  Future<void> sendMessagePressed(
+      {required String message, required bool customer}) async {
+    await this.sendMessage(
+      message: message,
+      customer: customer,
+    );
+  }
+
+  Future<List> loadAllMessages() async {
+    var apiResponse = await Message().getAll();
+    List<Message> messages = [];
+    if (apiResponse.success && apiResponse.result != null) {
+      for (Message m in apiResponse.result) {
+        messages.add(m);
+      }
+    }
+
+    return messages;
+  }
+
+  Future<List> loadAllCustomers() async {
+    var apiResponse = await Message().getAll();
+    List<bool> messageSide = new List();
+    if (apiResponse.success && apiResponse.result != null) {
+      for (Message m in apiResponse.result) {
+        messageSide.add(m.customer!);
+      }
+    }
+
+    return messageSide;
   }
 }
 

@@ -1,29 +1,39 @@
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 import '../../widgets/RoundImage.dart';
 
-class Message extends StatelessWidget {
-  /*
-  list tile with logo/image and name
-   */
-  final String author;
-  final String text;
-  final bool customer;
+const String _keyTableName = 'Message';
+const String text = 'message';
+const String author = 'user';
+const String isCustomer = 'customer';
 
-  const Message({
-    Key? key,
-    required this.author,
-    required this.text,
-    required this.customer,
-  }) : super(key: key);
+class Message extends ParseObject implements ParseCloneable {
+  Message() : super(_keyTableName);
+  Message.clone() : this();
 
+  /// Looks strangely hacky but due to Flutter not using reflection, we have to
+  /// mimic a clone
   @override
-  Widget build(BuildContext context) {
+  clone(Map<String, dynamic> map) => Message.clone()..fromJson(map);
+
+  String? get message => get<String>(text);
+  set message(String? message) => set<String>(text, message!);
+
+  ParseUser? get user => get<ParseUser>(author);
+  set user(ParseUser? user) => set<ParseUser>(author, user!);
+
+  bool? get customer => get<bool>(isCustomer);
+  set customer(bool? customer) => set<bool>(isCustomer, customer!);
+  bool customerCheck(bool customer) {
+    return customer;
+  }
+
+Widget build(BuildContext context) {
     return Container(
-      alignment: customer? Alignment.topRight: Alignment.topLeft,
+      alignment: customerCheck(customer!)? Alignment.topRight: Alignment.topLeft,
       child: Container(
         margin: EdgeInsets.all(10),
         padding: EdgeInsets.all(10),
@@ -31,7 +41,7 @@ class Message extends StatelessWidget {
           maxWidth: 300,
         ),
         decoration: BoxDecoration(
-          color: customer? Theme.of(context).buttonColor: Theme.of(context).accentColor,
+          color: customerCheck(customer!)? Theme.of(context).buttonColor: Theme.of(context).accentColor,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(

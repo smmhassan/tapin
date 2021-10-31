@@ -12,7 +12,7 @@ class HomeCubit extends Cubit<HomeState> {
         super(HomeLoading());
 
   Future<void> sendMessagePressed({required String message}) async {
-    emit(HomeLoading());
+    //emit(HomeLoading());
     try {
       bool result = await messageRepository.sendMessage(
         message: message,
