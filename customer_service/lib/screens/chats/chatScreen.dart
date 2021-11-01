@@ -85,9 +85,12 @@ class _ChatScreenState extends State<ChatScreen> {
     subscription.on(ParseServer.LiveQueryEvent.create, (value) {
       print('*** CREATE ***: ${DateTime.now().toString()}\n $value ');
       Message m = Message.clone().fromJson(jsonDecode(value.toString()));
-      messages.add(m);
-      messageSide.add(m.customer!);
-      setState(() {});
+      //print(m);
+      setState(() {
+        messages.add(m);
+        messageSide.add(m.customer!);
+      });
+      //print(messages);
     });
 
     subscription.on(ParseServer.LiveQueryEvent.update, (value) {
@@ -153,8 +156,8 @@ class _ChatScreenState extends State<ChatScreen> {
     bool wide = MediaQuery.of(context).size.width > 1000;
     bool showDrawer = MediaQuery.of(context).size.width < 1250;
 
-    List<Message> messages = [];
-    List<bool> messageSide = [];
+    List<Message> messagesBuild = messages;
+    List<bool> messageSideBuild = messageSide;
 
     return Scaffold(
       appBar: ChatAppBar(
@@ -186,7 +189,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       itemCount: messages.length,
                       itemBuilder: (context, index) {
                         return Container(
-                          alignment: messageSide[index]
+                          alignment: messageSideBuild[index]
                               ? Alignment.topRight
                               : Alignment.topLeft,
                           child: Container(
@@ -196,7 +199,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               maxWidth: 300,
                             ),
                             decoration: BoxDecoration(
-                              color: messageSide[index]
+                              color: messageSideBuild[index]
                                   ? Theme.of(context).buttonColor
                                   : Theme.of(context).accentColor,
                               borderRadius: BorderRadius.circular(15),
@@ -210,7 +213,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               ],
                             ),
                             child: Text(
-                              messages[index].message!,
+                              messagesBuild[index].message!,
                               style: TextStyle(
                                 color: Theme.of(context).canvasColor,
                               ),
