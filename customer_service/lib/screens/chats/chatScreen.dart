@@ -14,6 +14,7 @@ import '../../widgets/NavigationDrawer.dart';
 import '../../widgets/AdaptiveAppBar.dart';
 import 'package:customer_service/widgets/chat/ChatAppBar.dart';
 import 'package:customer_service/widgets/chat/Message.dart';
+import 'package:customer_service/widgets/chat/MessageBubble.dart';
 
 import 'package:customer_service/services/graphQLConf.dart';
 import "package:customer_service/services/queryMutation.dart";
@@ -188,37 +189,9 @@ class _ChatScreenState extends State<ChatScreen> {
                       controller: scrollController,
                       itemCount: messages.length,
                       itemBuilder: (context, index) {
-                        return Container(
-                          alignment: messageSideBuild[index]
-                              ? Alignment.topRight
-                              : Alignment.topLeft,
-                          child: Container(
-                            margin: EdgeInsets.all(10),
-                            padding: EdgeInsets.all(10),
-                            constraints: BoxConstraints(
-                              maxWidth: 300,
-                            ),
-                            decoration: BoxDecoration(
-                              color: messageSideBuild[index]
-                                  ? Theme.of(context).buttonColor
-                                  : Theme.of(context).accentColor,
-                              borderRadius: BorderRadius.circular(15),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.2),
-                                  spreadRadius: 1,
-                                  blurRadius: 2,
-                                  offset: Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            child: Text(
-                              messagesBuild[index].message!,
-                              style: TextStyle(
-                                color: Theme.of(context).canvasColor,
-                              ),
-                            ),
-                          ),
+                        return MessageBubble(
+                          message: messagesBuild[index].message!,
+                          customer: messageSideBuild[index],
                         );
                       }),
                 ),
