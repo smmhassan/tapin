@@ -40,14 +40,21 @@ class _ChatScreenState extends State<ChatScreen> {
       //width: 20.0,
       alignment: FractionalOffset.center);
 
-  final double maxContentWidth = 800;
+  // messages
   late String message;
   late List<bool> messageSide;
   late List<Message> messages;
+
+  // controllers
+  final textController = TextEditingController();
+  final scrollController = ScrollController();
+
+  // sizing parameters
+  final double maxContentWidth = 800;
+
   final double mobileHeaderHeight = .12;
   final double mobileListHeight = .36;
   final double mobileTitleHeight = 18;
-  final scrollController = ScrollController();
   ParseServer.ParseUser user = ParseServer.ParseUser('', '', '');
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -220,20 +227,23 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                     Expanded(
                       child: TextField(
+                        controller: textController,
+                        //focusNode: textFocusNode,
                         key: Key('Message'),
                         onTap: () {
                           Timer(
                               Duration(milliseconds: 400),
                               () => scrollController.jumpTo(
                                   scrollController.position.maxScrollExtent));
-                          //scrollController.animateTo(
-                          //  scrollController.position.maxScrollExtent,
-                          //  duration: Duration(milliseconds: 150),
-                          //  curve: Curves.fastOutSlowIn,
-                          //);
                         },
                         textInputAction: TextInputAction.send,
-                        onSubmitted: (value) => message = value,
+                        onSubmitted: (value) {
+                          if (textController.text.length > 0) {
+                            message = textController.text;
+                            _sendMessage();
+                            textController.clear();
+                          }
+                        },
                         style: TextStyle(
                           color: Theme.of(context).canvasColor,
                         ),
@@ -247,7 +257,15 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                     SizedBox(width: 15),
                     FloatingActionButton(
-                      onPressed: _sendMessage,
+                      onPressed: () {
+                        if (textController.text.length > 0) {
+                          message = textController.text;
+                          _sendMessage();
+                          textController.clear();
+                          FocusScope.of(context).unfocus();
+                        }
+                        FocusScope.of(context).unfocus();
+                      },
                       child: Icon(
                         Icons.send,
                         color: Theme.of(context).canvasColor,
