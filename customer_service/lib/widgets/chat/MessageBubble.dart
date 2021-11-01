@@ -5,11 +5,6 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 import '../../widgets/RoundImage.dart';
 
-const String _keyTableName = 'Message';
-const String text = 'message';
-const String author = 'user';
-const String isCustomer = 'customer';
-
 class MessageBubble extends StatelessWidget {
   final String message;
   final bool customer;
@@ -43,7 +38,7 @@ class MessageBubble extends StatelessWidget {
           ],
         ),
         child: Text(
-          text,
+          message,
           style: TextStyle(
             color: Theme.of(context).canvasColor,
           ),
