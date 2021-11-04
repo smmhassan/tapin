@@ -12,9 +12,9 @@ import '../../widgets/tabbedwindow/TabbedWindowListCorrespondence.dart';
 import '../../widgets/DashHeader.dart';
 import '../../widgets/NavigationDrawer.dart';
 import '../../widgets/AdaptiveAppBar.dart';
-import 'package:customer_service/widgets/chat/ChatAppBar.dart';
-import 'package:customer_service/widgets/chat/Message.dart';
-import 'package:customer_service/widgets/chat/MessageBubble.dart';
+import 'localwidgets/ChatAppBar.dart';
+import 'localwidgets/Message.dart';
+import 'localwidgets/MessageBubble.dart';
 
 import 'package:customer_service/services/graphQLConf.dart';
 import "package:customer_service/services/queryMutation.dart";
@@ -291,31 +291,31 @@ class OrganizationResult {
 
 class CorrespondenceResult {
   static int getCount(QueryResult result) {
-    return result.data?["chats"]['count'];
+    return result.data?["userchats"]['count'];
   }
 
   static String getSummary(QueryResult result, int i) {
-    return result.data?["chats"]["edges"][i]["node"]["correspondence"]
+    return result.data?["userchats"]["edges"][i]["node"]["correspondence"]
         ["summary"];
   }
 
   static String getId(QueryResult result, int i) {
-    return result.data?["chats"]["edges"][i]["node"]["correspondence"]
+    return result.data?["userchats"]["edges"][i]["node"]["correspondence"]
         ["objectId"];
   }
 
   static String getName(QueryResult result, int i) {
-    return result.data?["chats"]["edges"][i]["node"]["members"]["edges"][0]
+    return result.data?["userchats"]["edges"][i]["node"]["members"]["edges"][0]
         ["node"]["user"]["employee"]["organization"]["name"];
   }
 
   static String getImageURL(QueryResult result, int i) {
-    return result.data?["chats"]["edges"][i]["node"]["members"]["edges"][0]
+    return result.data?["userchats"]["edges"][i]["node"]["members"]["edges"][0]
         ["node"]["user"]["employee"]["organization"]["logo"]["url"];
   }
 
   static ImageProvider getImage(QueryResult result, int i) {
-    return NetworkImage(result.data?["chats"]["edges"][i]["node"]["members"]
+    return NetworkImage(result.data?["userchats"]["edges"][i]["node"]["members"]
             ["edges"][0]["node"]["user"]["employee"]["organization"]["logo"]
         ["url"]);
   }

@@ -192,7 +192,7 @@ class QueryMutation {
   String getAllCorrespondences(String userId) {
     return '''
 {
-  chats(
+  userchats(
     where: {
       members: {
         have: {
@@ -242,7 +242,7 @@ class QueryMutation {
     insertion = '''[$insertion]''';
     return '''
 {
-  chats(
+  userchats(
     where: {
       members: {
         have: {
@@ -313,7 +313,7 @@ class QueryMutation {
     }
     return '''
 {
-  chats(
+  userchats(
     where: {
       members: {
         have: {

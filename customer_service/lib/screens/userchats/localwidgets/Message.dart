@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
-import '../../widgets/RoundImage.dart';
-
 const String _keyTableName = 'Message';
 const String text = 'message';
 const String author = 'user';

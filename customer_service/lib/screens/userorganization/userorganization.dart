@@ -249,21 +249,21 @@ class _UserOrganizationState extends State<UserOrganization> {
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 if (result.data != null &&
-                                    result.data?["chats"]['count'] > 0) {
+                                    result.data?["userchats"]['count'] > 0) {
                                   //print(result.data);
-                                  int count = result.data?["chats"]['count'];
+                                  int count = result.data?["userchats"]['count'];
                                   return TabbedWindowList(listItems: [
                                     for (var i = 0; i < count; i++)
                                       TabbedWindowListCorrespondence(
-                                        name: result.data?["chats"]["edges"][i]
+                                        name: result.data?["userchats"]["edges"][i]
                                                     ["node"]["members"]["edges"]
                                                 [0]["node"]["user"]["employee"]
                                             ["organization"]["name"],
-                                        description: result.data?["chats"]
+                                        description: result.data?["userchats"]
                                                 ["edges"][i]["node"]
                                             ["correspondence"]["summary"],
                                         image: NetworkImage(result
-                                                                .data?["chats"]
+                                                                .data?["userchats"]
                                                             ["edges"]
                                                         [i]
                                                     ["node"]["members"]["edges"]
@@ -287,21 +287,21 @@ class _UserOrganizationState extends State<UserOrganization> {
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 if (result.data != null &&
-                                    result.data?["chats"]['count'] > 0) {
+                                    result.data?["userchats"]['count'] > 0) {
                                   //print(result.data);
-                                  int count = result.data?["chats"]['count'];
+                                  int count = result.data?["userchats"]['count'];
                                   return TabbedWindowList(listItems: [
                                     for (var i = 0; i < count; i++)
                                       TabbedWindowListCorrespondence(
-                                        name: result.data?["chats"]["edges"][i]
+                                        name: result.data?["userchats"]["edges"][i]
                                                     ["node"]["members"]["edges"]
                                                 [0]["node"]["user"]["employee"]
                                             ["organization"]["name"],
-                                        description: result.data?["chats"]
+                                        description: result.data?["userchats"]
                                                 ["edges"][i]["node"]
                                             ["correspondence"]["summary"],
                                         image: NetworkImage(result
-                                                                .data?["chats"]
+                                                                .data?["userchats"]
                                                             ["edges"]
                                                         [i]
                                                     ["node"]["members"]["edges"]
@@ -322,21 +322,21 @@ class _UserOrganizationState extends State<UserOrganization> {
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 if (result.data != null &&
-                                    result.data?["chats"]['count'] > 0) {
+                                    result.data?["userchats"]['count'] > 0) {
                                   //print(result.data);
-                                  int count = result.data?["chats"]['count'];
+                                  int count = result.data?["userchats"]['count'];
                                   return TabbedWindowList(listItems: [
                                     for (var i = 0; i < count; i++)
                                       TabbedWindowListCorrespondence(
-                                        name: result.data?["chats"]["edges"][i]
+                                        name: result.data?["userchats"]["edges"][i]
                                                     ["node"]["members"]["edges"]
                                                 [0]["node"]["user"]["employee"]
                                             ["organization"]["name"],
-                                        description: result.data?["chats"]
+                                        description: result.data?["userchats"]
                                                 ["edges"][i]["node"]
                                             ["correspondence"]["summary"],
                                         image: NetworkImage(result
-                                                                .data?["chats"]
+                                                                .data?["userchats"]
                                                             ["edges"]
                                                         [i]
                                                     ["node"]["members"]["edges"]

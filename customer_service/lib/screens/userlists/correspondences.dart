@@ -265,19 +265,19 @@ class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
                   }
                   // check that data is returned
                   if (result.data != null &&
-                      result.data?["chats"]['count'] > 0) {
-                    int count = result.data?["chats"]['count'];
-                    //print(result.data?["chats"]["edges"][0]["node"]["correspondence"]["edges"][0]);
+                      result.data?["userchats"]['count'] > 0) {
+                    int count = result.data?["userchats"]['count'];
+                    //print(result.data?["userchats"]["edges"][0]["node"]["correspondence"]["edges"][0]);
                     return ListView(children: [
                       for (var i = 0; i < count; i++)
                         CorrespondenceListTile(
-                          name: result.data?["chats"]["edges"][i]["node"]
+                          name: result.data?["userchats"]["edges"][i]["node"]
                                   ["members"]["edges"][0]["node"]["user"]
                               ["employee"]["organization"]["name"],
-                          description: result.data?["chats"]["edges"][i]["node"]
+                          description: result.data?["userchats"]["edges"][i]["node"]
                               ["correspondence"]["summary"],
                           //description: "this is a test",
-                          image: NetworkImage(result.data?["chats"]["edges"][i]
+                          image: NetworkImage(result.data?["userchats"]["edges"][i]
                                       ["node"]["members"]["edges"][0]["node"]
                                   ["user"]["employee"]["organization"]["logo"]
                               ["url"]),

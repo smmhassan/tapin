@@ -3,8 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
-import '../../widgets/RoundImage.dart';
-
 class MessageBubble extends StatelessWidget {
   final String message;
   final bool idFrom;
