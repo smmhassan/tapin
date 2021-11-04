@@ -8,7 +8,7 @@ import '../../widgets/RoundImage.dart';
 const String _keyTableName = 'Message';
 const String text = 'message';
 const String author = 'user';
-const String isCustomer = 'customer';
+const String fromID = 'idFrom';
 
 class Message extends ParseObject implements ParseCloneable {
   Message() : super(_keyTableName);
@@ -25,15 +25,19 @@ class Message extends ParseObject implements ParseCloneable {
   ParseUser? get user => get<ParseUser>(author);
   set user(ParseUser? user) => set<ParseUser>(author, user!);
 
-  bool? get customer => get<bool>(isCustomer);
-  set customer(bool? customer) => set<bool>(isCustomer, customer!);
-  bool customerCheck(bool customer) {
-    return customer;
+  String? get idFrom => get<String>(fromID);
+  set idFrom(String? idFrom) => set<String>(fromID, idFrom!);
+
+  bool toAndFromCheck(String idFrom) {
+    bool temp = false;
+    if (user!.objectId.toString() == idFrom) temp = true;
+    return temp;
   }
 
-Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Container(
-      alignment: customerCheck(customer!)? Alignment.topRight: Alignment.topLeft,
+      alignment:
+          toAndFromCheck(idFrom!) ? Alignment.topRight : Alignment.topLeft,
       child: Container(
         margin: EdgeInsets.all(10),
         padding: EdgeInsets.all(10),
@@ -41,7 +45,9 @@ Widget build(BuildContext context) {
           maxWidth: 300,
         ),
         decoration: BoxDecoration(
-          color: customerCheck(customer!)? Theme.of(context).buttonColor: Theme.of(context).accentColor,
+          color: toAndFromCheck(idFrom!)
+              ? Theme.of(context).buttonColor
+              : Theme.of(context).accentColor,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(

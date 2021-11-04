@@ -7,18 +7,17 @@ import '../../widgets/RoundImage.dart';
 
 class MessageBubble extends StatelessWidget {
   final String message;
-  final bool customer;
+  final bool idFrom;
 
   const MessageBubble({
     Key? key,
     required this.message,
-    required this.customer,
+    required this.idFrom,
   }) : super(key: key);
-
 
   Widget build(BuildContext context) {
     return Container(
-      alignment: customer? Alignment.topRight: Alignment.topLeft,
+      alignment: idFrom ? Alignment.topRight : Alignment.topLeft,
       child: Container(
         margin: EdgeInsets.all(10),
         padding: EdgeInsets.all(10),
@@ -26,7 +25,9 @@ class MessageBubble extends StatelessWidget {
           maxWidth: 300,
         ),
         decoration: BoxDecoration(
-          color: customer? Theme.of(context).buttonColor: Theme.of(context).accentColor,
+          color: idFrom
+              ? Theme.of(context).buttonColor
+              : Theme.of(context).accentColor,
           borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(

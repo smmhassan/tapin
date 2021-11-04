@@ -29,7 +29,6 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   QueryMutation addMutation = QueryMutation();
-  late bool customer;
   final double desktopHeaderHeight = 0.15;
   final double desktopListHeight = 0.6;
   final double desktopTitleHeight = 22;
@@ -42,7 +41,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // messages
   late String message;
-  late List<bool> messageSide;
   late List<Message> messages;
 
   // controllers
@@ -51,13 +49,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // sizing parameters
   final double maxContentWidth = 800;
-
   final double mobileHeaderHeight = .12;
   final double mobileListHeight = .36;
   final double mobileTitleHeight = 18;
   ParseServer.ParseUser user = ParseServer.ParseUser('', '', '');
-
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String idFrom = "";
 
   @override
   void initState() {
@@ -66,11 +62,11 @@ class _ChatScreenState extends State<ChatScreen> {
       ParseServer.ParseUser.currentUser().then((currentUser) {
         setState(() {
           user = currentUser;
+          idFrom = user.objectId.toString();
         });
       });
     }).catchError((dynamic _) {});
     messages = <Message>[];
-    messageSide = <bool>[];
     message = "";
     _handleLiveQuery();
     super.initState();
@@ -96,7 +92,6 @@ class _ChatScreenState extends State<ChatScreen> {
       //print(m);
       setState(() {
         messages.add(m);
-        messageSide.add(m.customer!);
       });
       //print(messages);
     });
@@ -113,24 +108,21 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _sendMessage() {
-    sendMessagePressed(message: message, customer: true);
+    sendMessagePressed(message: message);
   }
 
-  Future<bool> sendMessage(
-      {required String message, required bool customer}) async {
+  Future<bool> sendMessage({required String message}) async {
     var m = Message()
       ..set('message', message)
-      ..set('customer', customer)
+      ..set('idFrom', idFrom)
       ..set('user', await ParseServer.ParseUser.currentUser());
     var apiResponse = await m.save();
     return apiResponse.success;
   }
 
-  Future<void> sendMessagePressed(
-      {required String message, required bool customer}) async {
+  Future<void> sendMessagePressed({required String message}) async {
     await this.sendMessage(
       message: message,
-      customer: customer,
     );
   }
 
@@ -146,18 +138,6 @@ class _ChatScreenState extends State<ChatScreen> {
     return messages;
   }
 
-  Future<List<bool>> loadAllCustomers() async {
-    var apiResponse = await Message().getAll();
-    List<bool> messageSide = [];
-    if (apiResponse.success && apiResponse.result != null) {
-      for (Message m in apiResponse.result) {
-        messageSide.add(m.customer!);
-      }
-    }
-
-    return messageSide;
-  }
-
   @override
   Widget build(BuildContext context) {
     bool narrow = MediaQuery.of(context).size.width < 600;
@@ -165,7 +145,7 @@ class _ChatScreenState extends State<ChatScreen> {
     bool showDrawer = MediaQuery.of(context).size.width < 1250;
 
     List<Message> messagesBuild = messages;
-    List<bool> messageSideBuild = messageSide;
+    idFrom = idFrom;
 
     return Scaffold(
       appBar: ChatAppBar(
@@ -198,7 +178,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       itemBuilder: (context, index) {
                         return MessageBubble(
                           message: messagesBuild[index].message!,
-                          customer: messageSideBuild[index],
+                          idFrom: messagesBuild[index]
+                              .toAndFromCheck(idFrom),
                         );
                       }),
                 ),
