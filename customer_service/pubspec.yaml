@@ -23,7 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  graphql_flutter:
+  graphql_flutter: 5.0.0
+  graphql: 5.0.0
   parse_server_sdk_flutter:
   http:
   image:
@@ -36,12 +37,13 @@ dependencies:
   cupertino_icons: 
   google_sign_in: 
   font_awesome_flutter:
-  flutter_bloc: 
   equatable: 
   meta: 
   dio: 
-  bloc:
 
+dependency_overrides: 
+  platform: ^3.1.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
