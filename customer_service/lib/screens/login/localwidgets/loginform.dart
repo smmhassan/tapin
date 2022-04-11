@@ -36,10 +36,10 @@ class _OurLoginFormState extends State<OurLoginForm> {
             cursorColor: Colors.grey,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.email_outlined,
-                  color: const Color.fromARGB(255, 96, 94, 92)),
+                  color: const Color.fromARGB(255, 255, 246, 20)),
               hintText: "email",
               hintStyle: TextStyle(
-                  fontSize: 18.0, color: Color.fromARGB(255, 148, 144, 141)),
+                  fontSize: 18.0, color: Color.fromARGB(255, 255, 246, 20)),
             ),
           ),
           TextFormField(
@@ -49,10 +49,10 @@ class _OurLoginFormState extends State<OurLoginForm> {
             cursorColor: Colors.grey,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.lock_outline,
-                  color: const Color.fromARGB(255, 96, 94, 92)),
+                  color: const Color.fromARGB(255, 255, 246, 20)),
               hintText: "password",
               hintStyle: TextStyle(
-                  fontSize: 18.0, color: Color.fromARGB(255, 148, 144, 141)),
+                  fontSize: 18.0, color: Color.fromARGB(255, 255, 246, 20)),
             ),
           ),
           /*RadioListTile(
@@ -85,7 +85,7 @@ class _OurLoginFormState extends State<OurLoginForm> {
                 Text(
                   'remember me',
                   style: TextStyle(
-                    color: Theme.of(context).accentColor,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
               ],
@@ -100,7 +100,7 @@ class _OurLoginFormState extends State<OurLoginForm> {
               child: Text(
                 "login",
                 style: TextStyle(
-                    color: Color.fromARGB(255, 255, 251, 245), fontSize: 18),
+                    color: Theme.of(context).canvasColor, fontSize: 18),
               ),
             ),
             onPressed: () async {
@@ -141,7 +141,7 @@ class _OurLoginFormState extends State<OurLoginForm> {
               }
             },
             style: ElevatedButton.styleFrom(
-              primary: Color.fromARGB(255, 133, 201, 169),
+              primary: Theme.of(context).primaryColor,
               shape: StadiumBorder(),
             ),
           ),
@@ -154,7 +154,7 @@ class _OurLoginFormState extends State<OurLoginForm> {
               child: Text(
                 "register",
                 style: TextStyle(
-                    color: Color.fromARGB(255, 255, 251, 245), fontSize: 18),
+                    color: Theme.of(context).canvasColor, fontSize: 18),
               ),
             ),
             onPressed: () {
@@ -165,16 +165,16 @@ class _OurLoginFormState extends State<OurLoginForm> {
               );
             },
             style: ElevatedButton.styleFrom(
-              primary: Color.fromARGB(255, 133, 201, 169),
+              primary: Theme.of(context).primaryColor,
               shape: StadiumBorder(),
             ),
           ),
           TextButton(
               child: Text("forgot password"),
               style: TextButton.styleFrom(
-                primary: Color.fromARGB(255, 96, 94, 92),
+                primary: Theme.of(context).primaryColor,
                 textStyle: TextStyle(
-                  color: Color.fromARGB(255, 96, 94, 92),
+                  color: Theme.of(context).primaryColor,
                   fontSize: 14,
                   decoration: TextDecoration.underline,
                 ),

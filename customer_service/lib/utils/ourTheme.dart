@@ -10,17 +10,19 @@ class OurTheme {
     Color _bhookDarkGreen = Color.fromARGB(255, 115, 182, 147);
     Color _bhookLightGreen = Color.fromARGB(255, 152, 221, 163);
     Color _buttonsColor = Color.fromARGB(255, 133, 201, 169);
+    Color _gradientPink = Color.fromARGB(255, 255, 8, 126);
+    Color _gradientYellow = Color.fromARGB(255, 255, 246, 20);
 
     return ThemeData(
-      canvasColor: _backgroundColor,
-      primaryColor: _bhookLightGreen,
-      secondaryHeaderColor: _bhookDarkGreen,
-      accentColor: _bhookBrown,
-      selectedRowColor: _loginText,
-      buttonColor: _buttonsColor,
-      cardColor: _cardColor,
-      disabledColor: _disabledColor,
-      fontFamily: 'Roboto',
+      canvasColor: _gradientPink,
+      primaryColor: _gradientYellow,
+      secondaryHeaderColor: _gradientYellow,
+      accentColor: _gradientYellow,
+      selectedRowColor: _gradientYellow,
+      buttonColor: _gradientYellow,
+      cardColor: _gradientYellow,
+      disabledColor: _gradientYellow,
+      fontFamily: 'Open Sans',
       inputDecorationTheme: InputDecorationTheme(
         focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Color.fromARGB(255, 96, 94, 92))),
