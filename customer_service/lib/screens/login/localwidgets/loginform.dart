@@ -36,10 +36,10 @@ class _OurLoginFormState extends State<OurLoginForm> {
             cursorColor: Colors.grey,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.email_outlined,
-                  color: const Color.fromARGB(255, 255, 246, 20)),
+                  color: const Color.fromARGB(255, 255, 8, 126)),
               hintText: "email",
               hintStyle: TextStyle(
-                  fontSize: 18.0, color: Color.fromARGB(255, 255, 246, 20)),
+                  fontSize: 18.0, color: Color.fromARGB(255, 255, 8, 126)),
             ),
           ),
           TextFormField(
@@ -49,10 +49,10 @@ class _OurLoginFormState extends State<OurLoginForm> {
             cursorColor: Colors.grey,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.lock_outline,
-                  color: const Color.fromARGB(255, 255, 246, 20)),
+                  color: Color.fromARGB(255, 255, 8, 126)),
               hintText: "password",
               hintStyle: TextStyle(
-                  fontSize: 18.0, color: Color.fromARGB(255, 255, 246, 20)),
+                  fontSize: 18.0, color: Color.fromARGB(255, 255, 8, 126)),
             ),
           ),
           /*RadioListTile(
@@ -72,7 +72,7 @@ class _OurLoginFormState extends State<OurLoginForm> {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 4),
                   child: Checkbox(
-                    checkColor: Colors.white,
+                    checkColor: Theme.of(context).primaryColor,
                     value: isChecked,
                     shape: CircleBorder(),
                     onChanged: (bool? value) {

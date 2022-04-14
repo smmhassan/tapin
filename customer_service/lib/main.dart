@@ -3,6 +3,7 @@ import 'package:customer_service/screens/userchats/chatScreen.dart';
 import 'package:customer_service/screens/signup/localwidgets/passwordResetScreen.dart';
 import 'package:customer_service/utils/OurTheme.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'screens/login/login.dart';
