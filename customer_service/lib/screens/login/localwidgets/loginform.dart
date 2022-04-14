@@ -125,13 +125,14 @@ class _OurLoginFormState extends State<OurLoginForm> {
               ParseUser user = ParseUser(username.text, password.text, '');
               ParseResponse response = await user.login();
 
-              username.clear();
+              //username.clear();
               password.clear();
-              if (user.emailVerified == false) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content:
-                        Text('Please verify your email before signing in')));
-              }
+              // if (user.emailVerified == false) {
+              //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              //       content:
+              //           Text('Please verify your email before signing in')));
+              // //needs to wait here
+              // }
 
               if (response.success) {
                 Navigator.pushNamed(context, '/userdash');

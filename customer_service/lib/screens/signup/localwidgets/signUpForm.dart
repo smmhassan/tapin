@@ -1,3 +1,4 @@
+import 'package:customer_service/screens/login/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -17,6 +18,7 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
   TextEditingController password = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
   TextEditingController displayName = TextEditingController();
+  bool flag = false;
 
   @override
   void initState() {
@@ -105,7 +107,14 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
                         contentType: http_parser.MediaType('image', 'jpg')
                     ); */
                 //parseFile2 = ParseFile(File("path"));
-                if (password.text == confirmPassword.text) {
+
+                if (password.text == '' ||
+                    confirmPassword.text == '' ||
+                    displayName.text == '' ||
+                    email.text == '') {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Something is empty, you shit')));
+                } else if (password.text == confirmPassword.text) {
                   GraphQLClient _client = graphQLConfiguration.clientToQuery();
                   QueryResult result = await _client.mutate(
                     MutationOptions(
@@ -122,6 +131,15 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
                   print(result.exception);
                   if (!result.hasException) {
                     Navigator.of(context).pop();
+                  } else {
+                    //go back to login
+                    if (!flag) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => OurLogin(),
+                        ),
+                      );
+                    }
                   }
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
