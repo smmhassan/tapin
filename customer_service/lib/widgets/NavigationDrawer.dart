@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:customer_service/api/GoogleSignInAPI.dart';
+import 'package:tapin/api/GoogleSignInAPI.dart';
 
 class NavigationDrawer extends StatelessWidget {
   final ParseUser user;
@@ -36,9 +36,8 @@ class NavigationDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.horizontal(
-          left: Radius.circular(cornerRadius)
-      ),
+      borderRadius:
+          BorderRadius.horizontal(left: Radius.circular(cornerRadius)),
       child: Drawer(
         child: Container(
           decoration: BoxDecoration(
@@ -55,18 +54,21 @@ class NavigationDrawer extends StatelessWidget {
               return TextButton(
                 style: ButtonStyle(
                   //backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                  padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(0)),
-                  overlayColor: MaterialStateProperty.all<Color>(Theme.of(context).selectedRowColor),
+                  padding:
+                      MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(0)),
+                  overlayColor: MaterialStateProperty.all<Color>(
+                      Theme.of(context).selectedRowColor),
                 ),
                 onPressed: () async {
                   if (navRoutes[index] == "/") {
-                    ParseResponse response = await user.logout(deleteLocalUserData: true);
+                    ParseResponse response =
+                        await user.logout(deleteLocalUserData: true);
                     if (response.success) {
                       GoogleSignInAPI.logout();
-                      Navigator.of(context).pushNamedAndRemoveUntil('/', (Route<dynamic> route) => false);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                          '/', (Route<dynamic> route) => false);
                     }
-                  }
-                  else {
+                  } else {
                     Navigator.pushNamed(context, navRoutes[index]);
                   }
                 },

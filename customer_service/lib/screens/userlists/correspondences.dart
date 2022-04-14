@@ -3,16 +3,16 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:customer_service/widgets/listtiles/correspondence.dart';
-import 'package:customer_service/widgets/listtiles/organization.dart';
-import 'package:customer_service/widgets/lists/filterpopup.dart';
-import 'package:customer_service/widgets/lists/sortpopup.dart';
-import 'package:customer_service/widgets/lists/searchpopup.dart';
-import 'package:customer_service/widgets/lists/bottombarbutton.dart';
+import 'package:tapin/widgets/listtiles/correspondence.dart';
+import 'package:tapin/widgets/listtiles/organization.dart';
+import 'package:tapin/widgets/lists/filterpopup.dart';
+import 'package:tapin/widgets/lists/sortpopup.dart';
+import 'package:tapin/widgets/lists/searchpopup.dart';
+import 'package:tapin/widgets/lists/bottombarbutton.dart';
 import '../../widgets/NavigationDrawer.dart';
 import '../../widgets/AdaptiveAppBar.dart';
 
-import "package:customer_service/services/queryMutation.dart";
+import "package:tapin/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -43,7 +43,7 @@ final String defaultSort = "name_ASC";
 final Iterable<String> sortOptionNames = sortOptions.keys;
 
 final Image headerLogo = new Image(
-    image: new ExactAssetImage('assets/logo_text.png'),
+    image: new ExactAssetImage('assets/logo3.png'),
     height: AppBar().preferredSize.height - 30,
     //width: 20.0,
     alignment: FractionalOffset.center);
@@ -274,11 +274,11 @@ class _UserCorrespondenceListState extends State<UserCorrespondenceList> {
                           name: result.data?["userchats"]["edges"][i]["node"]
                                   ["members"]["edges"][0]["node"]["user"]
                               ["employee"]["organization"]["name"],
-                          description: result.data?["userchats"]["edges"][i]["node"]
-                              ["correspondence"]["summary"],
+                          description: result.data?["userchats"]["edges"][i]
+                              ["node"]["correspondence"]["summary"],
                           //description: "this is a test",
-                          image: NetworkImage(result.data?["userchats"]["edges"][i]
-                                      ["node"]["members"]["edges"][0]["node"]
+                          image: NetworkImage(result.data?["userchats"]["edges"]
+                                      [i]["node"]["members"]["edges"][0]["node"]
                                   ["user"]["employee"]["organization"]["logo"]
                               ["url"]),
                           width: screenWidth,

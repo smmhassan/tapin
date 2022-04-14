@@ -1,6 +1,6 @@
 {
-    "name": "customer_service",
-    "short_name": "customer_service",
+    "name": "tapin",
+    "short_name": "tapin",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

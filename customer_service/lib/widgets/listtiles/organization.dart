@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/RoundImage.dart';
-import 'package:customer_service/screens/userorganization/arguments.dart';
+import 'package:tapin/screens/userorganization/arguments.dart';
 
 class OrganizationListTile extends StatelessWidget {
   /*
@@ -71,7 +71,7 @@ class OrganizationListTile extends StatelessWidget {
                     ),
                     child: RoundImage(
                       image: image,
-                      size: width*.13,
+                      size: width * .13,
                       borderSize: 0,
                       color: Colors.white,
                     ),

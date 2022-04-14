@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:customer_service/services/graphQLConf.dart';
-import "package:customer_service/services/queryMutation.dart";
+import 'package:tapin/services/graphQLConf.dart';
+import "package:tapin/services/queryMutation.dart";
 
 class OurSignUpForm extends StatefulWidget {
   @override

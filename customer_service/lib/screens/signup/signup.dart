@@ -1,4 +1,4 @@
-import 'package:customer_service/screens/signup/localwidgets/signUpForm.dart';
+import 'package:tapin/screens/signup/localwidgets/signUpForm.dart';
 import 'package:flutter/material.dart';
 
 class OurSignup extends StatelessWidget {
@@ -18,7 +18,9 @@ class OurSignup extends StatelessWidget {
                     BackButton(),
                   ],
                 ),
-                SizedBox(height: 40.0,),
+                SizedBox(
+                  height: 40.0,
+                ),
                 OurSignUpForm(),
               ],
             ), //ListView

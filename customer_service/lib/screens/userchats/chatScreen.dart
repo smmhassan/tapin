@@ -16,8 +16,8 @@ import 'localwidgets/ChatAppBar.dart';
 import 'localwidgets/Message.dart';
 import 'localwidgets/MessageBubble.dart';
 
-import 'package:customer_service/services/graphQLConf.dart';
-import "package:customer_service/services/queryMutation.dart";
+import 'package:tapin/services/graphQLConf.dart';
+import "package:tapin/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart' as ParseServer;
 import 'package:google_sign_in/google_sign_in.dart';
@@ -34,7 +34,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final double desktopTitleHeight = 22;
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
   final Image headerLogo = new Image(
-      image: new ExactAssetImage('assets/logo_text.png'),
+      image: new ExactAssetImage('assets/logo3.png'),
       height: AppBar().preferredSize.height - 30,
       //width: 20.0,
       alignment: FractionalOffset.center);
@@ -178,8 +178,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       itemBuilder: (context, index) {
                         return MessageBubble(
                           message: messagesBuild[index].message!,
-                          idFrom: messagesBuild[index]
-                              .toAndFromCheck(idFrom),
+                          idFrom: messagesBuild[index].toAndFromCheck(idFrom),
                         );
                       }),
                 ),

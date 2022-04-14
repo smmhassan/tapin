@@ -3,14 +3,14 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:customer_service/widgets/tabbedwindow/TabbedWindowList.dart';
-import 'package:customer_service/widgets/tabbedwindow/builders/TabbedWindowLoading.dart';
-import 'package:customer_service/widgets/tabbedwindow/builders/TabbedWindowEmpty.dart';
-import 'package:customer_service/widgets/tabbedwindow/TabbedWindowListCorrespondence.dart';
+import 'package:tapin/widgets/tabbedwindow/TabbedWindowList.dart';
+import 'package:tapin/widgets/tabbedwindow/builders/TabbedWindowLoading.dart';
+import 'package:tapin/widgets/tabbedwindow/builders/TabbedWindowEmpty.dart';
+import 'package:tapin/widgets/tabbedwindow/TabbedWindowListCorrespondence.dart';
 
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-import 'package:customer_service/services/resultparsers/correspondenceresult.dart';
+import 'package:tapin/services/resultparsers/correspondenceresult.dart';
 
 class CorrespondenceTabbedWindowListBuilder extends StatelessWidget {
   final QueryResult result;

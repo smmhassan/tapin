@@ -3,16 +3,16 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:customer_service/widgets/tabbedwindow/TabbedWindow.dart';
-import 'package:customer_service/widgets/tabbedwindow/builders/OrganizationTabbedWindowListBuilder.dart';
-import 'package:customer_service/widgets/tabbedwindow/builders/CorrespondenceTabbedWindowListBuilder.dart';
+import 'package:tapin/widgets/tabbedwindow/TabbedWindow.dart';
+import 'package:tapin/widgets/tabbedwindow/builders/OrganizationTabbedWindowListBuilder.dart';
+import 'package:tapin/widgets/tabbedwindow/builders/CorrespondenceTabbedWindowListBuilder.dart';
 
-import 'package:customer_service/widgets/DashHeader.dart';
-import 'package:customer_service/widgets/NavigationDrawer.dart';
-import 'package:customer_service/widgets/AdaptiveAppBar.dart';
+import 'package:tapin/widgets/DashHeader.dart';
+import 'package:tapin/widgets/NavigationDrawer.dart';
+import 'package:tapin/widgets/AdaptiveAppBar.dart';
 
-import 'package:customer_service/services/graphQLConf.dart';
-import "package:customer_service/services/queryMutation.dart";
+import 'package:tapin/services/graphQLConf.dart';
+import "package:tapin/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -29,7 +29,7 @@ class _UserDashState extends State<UserDash> {
   final double desktopTitleHeight = 22;
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
   final Image headerLogo = new Image(
-      image: new ExactAssetImage('assets/logo_text.png'),
+      image: new ExactAssetImage('assets/logo3.png'),
       height: AppBar().preferredSize.height - 30,
       //width: 20.0,
       alignment: FractionalOffset.center);
@@ -153,7 +153,8 @@ class _UserDashState extends State<UserDash> {
                                     gql(QueryMutation().getOrgs([], "", "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
-                                return OrganizationTabbedWindowListBuilder(result: result, narrow: narrow);
+                                return OrganizationTabbedWindowListBuilder(
+                                    result: result, narrow: narrow);
                               }),
                           Query(
                               options: QueryOptions(
@@ -161,7 +162,8 @@ class _UserDashState extends State<UserDash> {
                                     .getOrgs(['administration'], "", "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
-                                return OrganizationTabbedWindowListBuilder(result: result, narrow: narrow);
+                                return OrganizationTabbedWindowListBuilder(
+                                    result: result, narrow: narrow);
                               }),
                           Query(
                               options: QueryOptions(
@@ -169,7 +171,8 @@ class _UserDashState extends State<UserDash> {
                                     QueryMutation().getOrgs(['clubs'], "", "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
-                                return OrganizationTabbedWindowListBuilder(result: result, narrow: narrow);
+                                return OrganizationTabbedWindowListBuilder(
+                                    result: result, narrow: narrow);
                               }),
                         ],
                       ),
@@ -195,7 +198,8 @@ class _UserDashState extends State<UserDash> {
                                         user.objectId.toString(), [], "", "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
-                                return CorrespondenceTabbedWindowListBuilder(result: result, narrow: narrow);
+                                return CorrespondenceTabbedWindowListBuilder(
+                                    result: result, narrow: narrow);
                               }),
                           Query(
                               options: QueryOptions(
@@ -207,7 +211,8 @@ class _UserDashState extends State<UserDash> {
                                         "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
-                                return CorrespondenceTabbedWindowListBuilder(result: result, narrow: narrow);
+                                return CorrespondenceTabbedWindowListBuilder(
+                                    result: result, narrow: narrow);
                               }),
                           Query(
                               options: QueryOptions(
@@ -216,7 +221,8 @@ class _UserDashState extends State<UserDash> {
                                         user.objectId.toString(), ['clubs'])),
                               ),
                               builder: (result, {refetch, fetchMore}) {
-                                return CorrespondenceTabbedWindowListBuilder(result: result, narrow: narrow);
+                                return CorrespondenceTabbedWindowListBuilder(
+                                    result: result, narrow: narrow);
                               }),
                         ],
                       ),
