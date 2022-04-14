@@ -6,8 +6,10 @@ import 'package:flutter/rendering.dart';
 import 'package:customer_service/services/graphQLConf.dart';
 import "package:customer_service/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:image/image.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class OurLoginForm extends StatefulWidget {
   @override
@@ -36,10 +38,10 @@ class _OurLoginFormState extends State<OurLoginForm> {
             cursorColor: Colors.grey,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.email_outlined,
-                  color: const Color.fromARGB(255, 255, 8, 126)),
+                  color: Theme.of(context).primaryColor),
               hintText: "email",
               hintStyle: TextStyle(
-                  fontSize: 18.0, color: Color.fromARGB(255, 255, 8, 126)),
+                  fontSize: 18.0, color: Theme.of(context).primaryColor),
             ),
           ),
           TextFormField(
@@ -49,10 +51,10 @@ class _OurLoginFormState extends State<OurLoginForm> {
             cursorColor: Colors.grey,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.lock_outline,
-                  color: Color.fromARGB(255, 255, 8, 126)),
+                  color: Theme.of(context).primaryColor),
               hintText: "password",
               hintStyle: TextStyle(
-                  fontSize: 18.0, color: Color.fromARGB(255, 255, 8, 126)),
+                  fontSize: 18.0, color: Theme.of(context).primaryColor),
             ),
           ),
           /*RadioListTile(
@@ -170,10 +172,9 @@ class _OurLoginFormState extends State<OurLoginForm> {
             ),
           ),
           TextButton(
-              child: Text("forgot password"),
-              style: TextButton.styleFrom(
-                primary: Theme.of(context).primaryColor,
-                textStyle: TextStyle(
+              child: Text(
+                'forgot password',
+                style: TextStyle(
                   color: Theme.of(context).primaryColor,
                   fontSize: 14,
                   decoration: TextDecoration.underline,
@@ -181,7 +182,7 @@ class _OurLoginFormState extends State<OurLoginForm> {
               ),
               onPressed: () {
                 Navigator.pushNamed(context, '/resetpasswordscreen');
-              })
+              }),
         ],
       ),
     );
