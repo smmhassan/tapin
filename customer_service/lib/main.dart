@@ -3,6 +3,7 @@ import 'package:tapin/screens/userchats/chatScreen.dart';
 import 'package:tapin/screens/signup/localwidgets/passwordResetScreen.dart';
 import 'package:tapin/utils/OurTheme.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'screens/login/login.dart';
