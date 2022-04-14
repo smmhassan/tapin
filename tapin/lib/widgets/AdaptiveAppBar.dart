@@ -7,7 +7,7 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 import 'package:tapin/api/GoogleSignInAPI.dart';
 
 final Image headerLogo = new Image(
-    image: new ExactAssetImage('assets/logo2.png'),
+    image: new ExactAssetImage('assets/logo3.png'),
     height: AppBar().preferredSize.height - 30,
     alignment: FractionalOffset.center);
 
