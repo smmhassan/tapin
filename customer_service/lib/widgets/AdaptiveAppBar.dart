@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
-import 'package:customer_service/api/GoogleSignInAPI.dart';
+import 'package:tapin/api/GoogleSignInAPI.dart';
 
 final Image headerLogo = new Image(
     image: new ExactAssetImage('assets/logo2.png'),

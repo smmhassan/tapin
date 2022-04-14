@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:customer_service/services/graphQLConf.dart';
-import "package:customer_service/services/queryMutation.dart";
+import 'package:tapin/services/graphQLConf.dart';
+import "package:tapin/services/queryMutation.dart";
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
 class ResetPassword extends StatefulWidget {

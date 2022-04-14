@@ -1,4 +1,4 @@
-import 'package:customer_service/screens/signup/resetPasswordForm.dart';
+import 'package:tapin/screens/signup/resetPasswordForm.dart';
 import 'package:flutter/material.dart';
 
 class OurPasswordResetScreen extends StatelessWidget {

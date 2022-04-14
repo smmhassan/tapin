@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
 import "package:graphql_flutter/graphql_flutter.dart";
-import "package:customer_service/constants.dart";
+import "package:tapin/constants.dart";
 
 HttpLink httpLink = HttpLink(
   'https://trailblazer.b4a.io/graphql',

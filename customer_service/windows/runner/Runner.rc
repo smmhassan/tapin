@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.Bhook" "\0"
-            VALUE "FileDescription", "customer_service" "\0"
+            VALUE "FileDescription", "tapin" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "customer_service" "\0"
+            VALUE "InternalName", "tapin" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.Bhook. All rights reserved." "\0"
-            VALUE "OriginalFilename", "customer_service.exe" "\0"
-            VALUE "ProductName", "customer_service" "\0"
+            VALUE "OriginalFilename", "tapin.exe" "\0"
+            VALUE "ProductName", "tapin" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

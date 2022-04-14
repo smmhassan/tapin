@@ -1,4 +1,4 @@
-import 'package:customer_service/screens/login/localwidgets/loginform.dart';
+import 'package:tapin/screens/login/localwidgets/loginform.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -18,7 +18,7 @@ class OurLogin extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.all(40.0),
-                  child: Image.asset("assets/logo.png"),
+                  child: Image.asset("assets/logo3.png"),
                 ),
                 SizedBox(
                   height: 1.0,

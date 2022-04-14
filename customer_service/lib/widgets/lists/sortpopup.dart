@@ -3,8 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:customer_service/widgets/lists/sorttoggle.dart';
-
+import 'package:tapin/widgets/lists/sorttoggle.dart';
 
 class SortPopup extends StatefulWidget {
   final Iterable<String> sortOptions;
@@ -27,15 +26,13 @@ class SortPopup extends StatefulWidget {
 }
 
 class _SortPopupState extends State<SortPopup> {
-
   void onSortOptionPressed(bool selected, String option) {
     if (selected) {
       setState(() {
         selectedOption = option;
         //print(widget.selectedFilters);
       });
-    }
-    else {
+    } else {
       setState(() {
         selectedOption = "";
         //print(widget.selectedFilters);
@@ -60,13 +57,14 @@ class _SortPopupState extends State<SortPopup> {
     double dividerBottomPadding = 10;
     double scrollViewSizeOffset = 60;
 
-    double height = (widget.height > widget.maxHeight)? widget.maxHeight:widget.height;
+    double height =
+        (widget.height > widget.maxHeight) ? widget.maxHeight : widget.height;
 
     return ClipRRect(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(cornerRadius),
       ),
-      child: Container (
+      child: Container(
         padding: EdgeInsets.only(
           top: padding,
           left: padding,
@@ -104,7 +102,7 @@ class _SortPopupState extends State<SortPopup> {
               //decoration: BoxDecoration (
               //  color: Colors.white,
               //),
-              height: height-scrollViewSizeOffset,
+              height: height - scrollViewSizeOffset,
 
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
@@ -120,8 +118,7 @@ class _SortPopupState extends State<SortPopup> {
                           setState(() {
                             if (selectedOption == option) {
                               selectedOption = "";
-                            }
-                            else {
+                            } else {
                               selectedOption = option;
                             }
                             widget.onSortOptionChanged(selectedOption);

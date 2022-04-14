@@ -13,8 +13,8 @@ import '../../widgets/DashHeader.dart';
 import '../../widgets/NavigationDrawer.dart';
 import '../../widgets/AdaptiveAppBar.dart';
 
-import 'package:customer_service/services/graphQLConf.dart';
-import "package:customer_service/services/queryMutation.dart";
+import 'package:tapin/services/graphQLConf.dart';
+import "package:tapin/services/queryMutation.dart";
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk.dart';
 
@@ -37,7 +37,7 @@ class _UserOrganizationState extends State<UserOrganization> {
   final double maxContentWidth = 1200;
 
   final Image headerLogo = new Image(
-      image: new ExactAssetImage('assets/logo_text.png'),
+      image: new ExactAssetImage('assets/logo3.png'),
       height: AppBar().preferredSize.height - 30,
       //width: 20.0,
       alignment: FractionalOffset.center);
@@ -251,21 +251,21 @@ class _UserOrganizationState extends State<UserOrganization> {
                                 if (result.data != null &&
                                     result.data?["userchats"]['count'] > 0) {
                                   //print(result.data);
-                                  int count = result.data?["userchats"]['count'];
+                                  int count =
+                                      result.data?["userchats"]['count'];
                                   return TabbedWindowList(listItems: [
                                     for (var i = 0; i < count; i++)
                                       TabbedWindowListCorrespondence(
-                                        name: result.data?["userchats"]["edges"][i]
-                                                    ["node"]["members"]["edges"]
-                                                [0]["node"]["user"]["employee"]
-                                            ["organization"]["name"],
+                                        name: result.data?["userchats"]["edges"]
+                                                        [i]["node"]["members"]
+                                                    ["edges"][0]["node"]["user"]
+                                                ["employee"]["organization"]
+                                            ["name"],
                                         description: result.data?["userchats"]
                                                 ["edges"][i]["node"]
                                             ["correspondence"]["summary"],
-                                        image: NetworkImage(result
-                                                                .data?["userchats"]
-                                                            ["edges"]
-                                                        [i]
+                                        image: NetworkImage(result.data?[
+                                                        "userchats"]["edges"][i]
                                                     ["node"]["members"]["edges"]
                                                 [0]["node"]["user"]["employee"]
                                             ["organization"]["logo"]["url"]),
@@ -289,21 +289,21 @@ class _UserOrganizationState extends State<UserOrganization> {
                                 if (result.data != null &&
                                     result.data?["userchats"]['count'] > 0) {
                                   //print(result.data);
-                                  int count = result.data?["userchats"]['count'];
+                                  int count =
+                                      result.data?["userchats"]['count'];
                                   return TabbedWindowList(listItems: [
                                     for (var i = 0; i < count; i++)
                                       TabbedWindowListCorrespondence(
-                                        name: result.data?["userchats"]["edges"][i]
-                                                    ["node"]["members"]["edges"]
-                                                [0]["node"]["user"]["employee"]
-                                            ["organization"]["name"],
+                                        name: result.data?["userchats"]["edges"]
+                                                        [i]["node"]["members"]
+                                                    ["edges"][0]["node"]["user"]
+                                                ["employee"]["organization"]
+                                            ["name"],
                                         description: result.data?["userchats"]
                                                 ["edges"][i]["node"]
                                             ["correspondence"]["summary"],
-                                        image: NetworkImage(result
-                                                                .data?["userchats"]
-                                                            ["edges"]
-                                                        [i]
+                                        image: NetworkImage(result.data?[
+                                                        "userchats"]["edges"][i]
                                                     ["node"]["members"]["edges"]
                                                 [0]["node"]["user"]["employee"]
                                             ["organization"]["logo"]["url"]),
@@ -324,21 +324,21 @@ class _UserOrganizationState extends State<UserOrganization> {
                                 if (result.data != null &&
                                     result.data?["userchats"]['count'] > 0) {
                                   //print(result.data);
-                                  int count = result.data?["userchats"]['count'];
+                                  int count =
+                                      result.data?["userchats"]['count'];
                                   return TabbedWindowList(listItems: [
                                     for (var i = 0; i < count; i++)
                                       TabbedWindowListCorrespondence(
-                                        name: result.data?["userchats"]["edges"][i]
-                                                    ["node"]["members"]["edges"]
-                                                [0]["node"]["user"]["employee"]
-                                            ["organization"]["name"],
+                                        name: result.data?["userchats"]["edges"]
+                                                        [i]["node"]["members"]
+                                                    ["edges"][0]["node"]["user"]
+                                                ["employee"]["organization"]
+                                            ["name"],
                                         description: result.data?["userchats"]
                                                 ["edges"][i]["node"]
                                             ["correspondence"]["summary"],
-                                        image: NetworkImage(result
-                                                                .data?["userchats"]
-                                                            ["edges"]
-                                                        [i]
+                                        image: NetworkImage(result.data?[
+                                                        "userchats"]["edges"][i]
                                                     ["node"]["members"]["edges"]
                                                 [0]["node"]["user"]["employee"]
                                             ["organization"]["logo"]["url"]),

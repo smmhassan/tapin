@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:customer_service/widgets/lists/filtertoggle.dart';
+import 'package:tapin/widgets/lists/filtertoggle.dart';
 
 class FilterPopup extends StatefulWidget {
   final List<String> filters;
@@ -32,8 +32,7 @@ class _FilterPopupState extends State<FilterPopup> {
         widget.selectedFilters.add(filter);
         //print(widget.selectedFilters);
       });
-    }
-    else {
+    } else {
       setState(() {
         widget.selectedFilters.remove(filter);
         //print(widget.selectedFilters);
@@ -50,13 +49,14 @@ class _FilterPopupState extends State<FilterPopup> {
     double dividerBottomPadding = 10;
     double scrollViewSizeOffset = 60;
 
-    double height = (widget.height > widget.maxHeight)? widget.maxHeight:widget.height;
+    double height =
+        (widget.height > widget.maxHeight) ? widget.maxHeight : widget.height;
 
     return ClipRRect(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(cornerRadius),
       ),
-      child: Container (
+      child: Container(
         padding: EdgeInsets.only(
           top: padding,
           left: padding,
@@ -94,7 +94,7 @@ class _FilterPopupState extends State<FilterPopup> {
               //decoration: BoxDecoration (
               //  color: Colors.white,
               //),
-              height: height-scrollViewSizeOffset,
+              height: height - scrollViewSizeOffset,
 
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
@@ -112,7 +112,9 @@ class _FilterPopupState extends State<FilterPopup> {
                         },
                         text: filter,
                         // if the list of filters contains the filter then show it as selected
-                        isChecked: widget.selectedFilters.contains(filter)? true : false,
+                        isChecked: widget.selectedFilters.contains(filter)
+                            ? true
+                            : false,
                       ),
                   ],
                 ),
