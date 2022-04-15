@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:tapin/screens/userchats/localwidgets/Message.dart';
 import 'package:tapin/services/graphQLConf.dart';
 import "package:tapin/services/queryMutation.dart";
 
@@ -19,6 +20,8 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
   TextEditingController confirmPassword = TextEditingController();
   TextEditingController displayName = TextEditingController();
   bool flag = false;
+  bool isEnabled = false;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -26,11 +29,38 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
     password = TextEditingController();
     email = TextEditingController();
     super.initState();
+    bool flag = false;
+    bool isEnabled = false;
+
+    // displayName.addListener(() {
+    //   setState(() {
+    //     isEnabled = displayName.text.isNotEmpty;
+    //   });
+    // });
+
+    // email.addListener(() {
+    //   setState(() {
+    //     isEnabled = email.text.isNotEmpty;
+    //   });
+    // });
+
+    // password.addListener(() {
+    //   setState(() {
+    //     isEnabled = password.text.isNotEmpty;
+    //   });
+    // });
+
+    // confirmPassword.addListener(() {
+    //   setState(() {
+    //     isEnabled = confirmPassword.text.isNotEmpty;
+    //   });
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Form(
+      key: _formKey,
       child: Column(
         children: <Widget>[
           Padding(
@@ -38,6 +68,10 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
           ),
           TextFormField(
             controller: displayName,
+            onChanged: (text) {
+              setState(() {});
+              validateButton();
+            },
             style: TextStyle(fontSize: 18.0),
             cursorColor: Colors.grey,
             decoration: InputDecoration(
@@ -50,6 +84,10 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
           ),
           TextFormField(
             controller: email,
+            onChanged: (text) {
+              setState(() {});
+              validateButton();
+            },
             style: TextStyle(fontSize: 18.0),
             cursorColor: Colors.grey,
             decoration: InputDecoration(
@@ -62,8 +100,26 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
           ),
           TextFormField(
             controller: password,
+            onChanged: (text) {
+              setState(() {});
+              validateButton();
+            },
             obscureText: true,
             style: TextStyle(fontSize: 18.0),
+            //autovalidateMode: AutovalidateMode.onUserInteraction,
+            // validator: (value) {
+            //   if (value == null || value.isEmpty) {
+            //     setState(() {
+            //       isEnabled = false;
+            //     });
+            //     print(isEnabled);
+            //   } else {
+            //     setState(() {
+            //       isEnabled = false;
+            //     });
+            //     print(isEnabled);
+            //   }
+            // },
             cursorColor: Colors.grey,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.lock_outline,
@@ -75,6 +131,10 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
           ),
           TextFormField(
             controller: confirmPassword,
+            onChanged: (text) {
+              setState(() {});
+              validateButton();
+            },
             obscureText: true,
             style: TextStyle(fontSize: 18.0),
             cursorColor: Colors.grey,
@@ -98,55 +158,7 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
                       color: Color.fromARGB(255, 255, 251, 245), fontSize: 18),
                 ),
               ),
-              onPressed: () async {
-                //ParseFileBase? parseFile2;
-                /* var multipartFile2 = http.MultipartFile.fromBytes(
-                        'file',
-                        (await rootBundle.load(
-                            '')).buffer.asUint8List(),
-                        contentType: http_parser.MediaType('image', 'jpg')
-                    ); */
-                //parseFile2 = ParseFile(File("path"));
-
-                if (password.text == '' ||
-                    confirmPassword.text == '' ||
-                    displayName.text == '' ||
-                    email.text == '') {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Something is empty, you shit')));
-                } else if (password.text == confirmPassword.text) {
-                  GraphQLClient _client = graphQLConfiguration.clientToQuery();
-                  QueryResult result = await _client.mutate(
-                    MutationOptions(
-                      document: gql(
-                        addMutation.signUp(
-                          email.text,
-                          password.text,
-                          email.text,
-                          displayName.text,
-                        ),
-                      ),
-                    ),
-                  );
-                  print(result.exception);
-                  if (!result.hasException) {
-                    Navigator.of(context).pop();
-                  } else {
-                    //go back to login
-                    if (!flag) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => OurLogin(),
-                        ),
-                      );
-                    }
-                  }
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content:
-                          Text('Passwords do not match, please try again')));
-                }
-              },
+              onPressed: isEnabled ? () => _signup() : null,
               style: ElevatedButton.styleFrom(
                 primary: Color.fromARGB(255, 133, 201, 169),
                 shape: StadiumBorder(),
@@ -157,5 +169,69 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
         ],
       ),
     );
+  }
+
+  void validateButton() {
+    if (password.text == '' ||
+        confirmPassword.text == '' ||
+        displayName.text == '' ||
+        email.text == '') {
+      isEnabled = false;
+    } else {
+      isEnabled = true;
+    }
+    // if (displayName.text == '')
+    //   isEnabled = false;
+    // else
+    //   isEnabled = true;
+  }
+
+  Future<void> _signup() async {
+    //ParseFileBase? parseFile2;
+    /* var multipartFile2 = http.MultipartFile.fromBytes(
+                          'file',
+                          (await rootBundle.load(
+                              '')).buffer.asUint8List(),
+                          contentType: http_parser.MediaType('image', 'jpg')
+                      ); */
+    //parseFile2 = ParseFile(File("path"));
+
+    if (password.text == '' ||
+        confirmPassword.text == '' ||
+        displayName.text == '' ||
+        email.text == '') {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Something is empty')));
+    } else if (password.text == confirmPassword.text) {
+      GraphQLClient _client = graphQLConfiguration.clientToQuery();
+      QueryResult result = await _client.mutate(
+        MutationOptions(
+          document: gql(
+            addMutation.signUp(
+              email.text,
+              password.text,
+              email.text,
+              displayName.text,
+            ),
+          ),
+        ),
+      );
+      print(result.exception);
+      if (!result.hasException) {
+        Navigator.of(context).pop();
+      } else {
+        //go back to login
+        if (!flag) {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => OurLogin(),
+            ),
+          );
+        }
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Passwords do not match, please try again')));
+    }
   }
 }
