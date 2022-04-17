@@ -7,9 +7,9 @@ class OurTheme {
     Color _cardColor = Color.fromARGB(255, 255, 254, 250);
     Color _disabledColor = Color.fromARGB(255, 240, 236, 228);
     Color _loginText = Color.fromARGB(255, 148, 144, 141);
-    Color _bhookBrown = Color.fromARGB(255, 96, 94, 92);
-    Color _bhookDarkGreen = Color.fromARGB(255, 115, 182, 147);
-    Color _bhookLightGreen = Color.fromARGB(255, 152, 221, 163);
+    Color _tapinBrown = Color.fromARGB(255, 96, 94, 92);
+    Color _tapinDarkGreen = Color.fromARGB(255, 115, 182, 147);
+    Color _tapinLightGreen = Color.fromARGB(255, 152, 221, 163);
     Color _buttonsColor = Color.fromARGB(255, 133, 201, 169);
     Color _gradientPink = Color.fromARGB(255, 255, 8, 126);
     Color _gradientYellow = Color.fromARGB(255, 255, 246, 20);
