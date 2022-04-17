@@ -29,7 +29,6 @@ dependencies:
   http:
   image:
   flutter_swipable:
-  
   google_fonts:
 
 
