@@ -143,8 +143,8 @@ class _UserDashState extends State<UserDash> {
                             narrow ? mobileTitleHeight : desktopTitleHeight,
                         tabNames: [
                           'all',
-                          'administration',
-                          'clubs',
+                          'engineering',
+                          'support',
                         ],
                         lists: [
                           Query(
@@ -159,7 +159,7 @@ class _UserDashState extends State<UserDash> {
                           Query(
                               options: QueryOptions(
                                 document: gql(QueryMutation()
-                                    .getOrgs(['administration'], "", "")),
+                                    .getOrgs(['engineering'], "", "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 return OrganizationTabbedWindowListBuilder(
@@ -167,8 +167,8 @@ class _UserDashState extends State<UserDash> {
                               }),
                           Query(
                               options: QueryOptions(
-                                document: gql(
-                                    QueryMutation().getOrgs(['clubs'], "", "")),
+                                document: gql(QueryMutation()
+                                    .getOrgs(['support'], "", "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 return OrganizationTabbedWindowListBuilder(
@@ -187,8 +187,8 @@ class _UserDashState extends State<UserDash> {
                             narrow ? mobileTitleHeight : desktopTitleHeight,
                         tabNames: [
                           'all',
-                          'administration',
-                          'clubs',
+                          'engineering',
+                          'support',
                         ],
                         lists: [
                           Query(
@@ -206,7 +206,7 @@ class _UserDashState extends State<UserDash> {
                                 document: gql(QueryMutation()
                                     .getCorrespondences(
                                         user.objectId.toString(),
-                                        ['administration'],
+                                        ['engineering'],
                                         "",
                                         "")),
                               ),
@@ -218,7 +218,7 @@ class _UserDashState extends State<UserDash> {
                               options: QueryOptions(
                                 document: gql(QueryMutation()
                                     .getCategoryCorrespondences(
-                                        user.objectId.toString(), ['clubs'])),
+                                        user.objectId.toString(), ['support'])),
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 return CorrespondenceTabbedWindowListBuilder(
