@@ -1,4 +1,4 @@
-package com.Bhook.tapin
+package com.TapIn.tapin
 
 import io.flutter.embedding.android.FlutterActivity
 
