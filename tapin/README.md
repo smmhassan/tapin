@@ -1,6 +1,6 @@
 # tapin
 
-A new Bhook Team project.
+A new TapIn Team project.
 
 ## Getting Started
 
