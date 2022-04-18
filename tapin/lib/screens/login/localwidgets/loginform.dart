@@ -123,6 +123,14 @@ class _OurLoginFormState extends State<OurLoginForm> {
                 Navigator.pushNamed(context, '/userdash');
               }*/
 
+              // bool emailvalid = RegExp(
+              //         r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+              //     .hasMatch(email.text);
+              // if (!emailvalid) {
+              //   ScaffoldMessenger.of(context).showSnackBar(
+              //       SnackBar(content: Text('Please enter a valid email')));
+              //   return;
+              // }
               ParseUser user = ParseUser(username.text, password.text, '');
               ParseResponse response = await user.login();
 

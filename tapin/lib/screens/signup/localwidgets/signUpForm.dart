@@ -158,7 +158,11 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
                       color: Color.fromARGB(255, 255, 251, 245), fontSize: 18),
                 ),
               ),
-              onPressed: isEnabled ? () => _signup() : null,
+              onPressed: isEnabled
+                  ? () async {
+                      _signup();
+                    }
+                  : null,
               style: ElevatedButton.styleFrom(
                 primary: Color.fromARGB(255, 133, 201, 169),
                 shape: StadiumBorder(),
@@ -186,7 +190,7 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
     //   isEnabled = true;
   }
 
-  Future<void> _signup() async {
+  void _signup() async {
     //ParseFileBase? parseFile2;
     /* var multipartFile2 = http.MultipartFile.fromBytes(
                           'file',
@@ -195,13 +199,18 @@ class _OurSignUpFormState extends State<OurSignUpForm> {
                           contentType: http_parser.MediaType('image', 'jpg')
                       ); */
     //parseFile2 = ParseFile(File("path"));
-
+    bool emailvalid = RegExp(
+            r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+        .hasMatch(email.text);
     if (password.text == '' ||
         confirmPassword.text == '' ||
         displayName.text == '' ||
         email.text == '') {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Something is empty')));
+    } else if (!emailvalid) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Please enter a valid email')));
     } else if (password.text == confirmPassword.text) {
       GraphQLClient _client = graphQLConfiguration.clientToQuery();
       QueryResult result = await _client.mutate(
