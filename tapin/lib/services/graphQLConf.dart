@@ -3,7 +3,7 @@ import "package:graphql_flutter/graphql_flutter.dart";
 import "package:tapin/constants.dart";
 
 HttpLink httpLink = HttpLink(
-  'https://trailblazer.b4a.io/graphql',
+  'https://tapin.b4a.io/graphql',
   defaultHeaders: {
     'X-Parse-Application-Id': kParseApplicationId,
     'X-Parse-Client-Key': kParseClientKey,

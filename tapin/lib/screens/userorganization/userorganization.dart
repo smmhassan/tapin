@@ -142,8 +142,8 @@ class _UserOrganizationState extends State<UserOrganization> {
                             narrow ? mobileTitleHeight : desktopTitleHeight,
                         tabNames: [
                           'all',
-                          'administration',
-                          'clubs',
+                          'engineering',
+                          'support',
                         ],
                         lists: [
                           Query(
@@ -175,7 +175,7 @@ class _UserOrganizationState extends State<UserOrganization> {
                           Query(
                               options: QueryOptions(
                                 document: gql(QueryMutation()
-                                    .getOrgs(['administration'], "", "")),
+                                    .getOrgs(['engineering'], "", "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 if (result.data != null &&
@@ -200,8 +200,8 @@ class _UserOrganizationState extends State<UserOrganization> {
                               }),
                           Query(
                               options: QueryOptions(
-                                document: gql(
-                                    QueryMutation().getOrgs(['clubs'], "", "")),
+                                document: gql(QueryMutation()
+                                    .getOrgs(['support'], "", "")),
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 if (result.data != null &&
@@ -237,8 +237,8 @@ class _UserOrganizationState extends State<UserOrganization> {
                             narrow ? mobileTitleHeight : desktopTitleHeight,
                         tabNames: [
                           'all',
-                          'administration',
-                          'clubs',
+                          'engineering',
+                          'support',
                         ],
                         lists: [
                           Query(
@@ -281,7 +281,7 @@ class _UserOrganizationState extends State<UserOrganization> {
                                 document: gql(QueryMutation()
                                     .getCorrespondences(
                                         user.objectId.toString(),
-                                        ['administration'],
+                                        ['engineering'],
                                         "",
                                         "")),
                               ),
@@ -318,7 +318,7 @@ class _UserOrganizationState extends State<UserOrganization> {
                               options: QueryOptions(
                                 document: gql(QueryMutation()
                                     .getCategoryCorrespondences(
-                                        user.objectId.toString(), ['clubs'])),
+                                        user.objectId.toString(), ['support'])),
                               ),
                               builder: (result, {refetch, fetchMore}) {
                                 if (result.data != null &&

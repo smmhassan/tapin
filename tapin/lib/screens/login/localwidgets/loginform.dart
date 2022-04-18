@@ -144,7 +144,7 @@ class _OurLoginFormState extends State<OurLoginForm> {
               // }
 
               if (response.success) {
-                Navigator.pushNamed(context, '/userfeed');
+                Navigator.pushNamed(context, '/userdash');
               } else {
                 if (response.error?.message != null) {
                   ScaffoldMessenger.of(context).showSnackBar(
