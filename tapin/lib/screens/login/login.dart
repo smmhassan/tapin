@@ -11,6 +11,8 @@ class OurLogin extends StatelessWidget {
         children: <Widget>[
           Expanded(
             child: ListView(
+              physics:
+                  const NeverScrollableScrollPhysics(), //make login screen unscrollable
               padding: EdgeInsets.all(25.0),
               children: <Widget>[
                 SizedBox(
