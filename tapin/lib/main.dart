@@ -2,6 +2,7 @@ import 'package:tapin/constants.dart';
 import 'package:tapin/screens/userchats/chatScreen.dart';
 import 'package:tapin/screens/signup/localwidgets/passwordResetScreen.dart';
 import 'package:tapin/screens/userfeed/feed.dart';
+import 'package:tapin/screens/userprofile/profile.dart';
 import 'package:tapin/utils/OurTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
       // OurLogin(),
       routes: {
         '/': (context) => OurLogin(),
+        '/profileapp': (context) => ProfileApp(),
         '/userfeed': (context) => Feed(),
         '/usersettings': (context) => UserSettings(),
         '/userdash': (context) => UserDash(),
