@@ -57,9 +57,10 @@ class MyApp extends StatelessWidget {
       //home:
       // OurLogin(),
       routes: {
-        '/': (context) => OurLogin(),
+        '/': (context) => Feed(),
+        //'/': (context) => OurLogin(),
         '/profileapp': (context) => ProfileApp(),
-        '/userfeed': (context) => Feed(),
+        //'/userfeed': (context) => Feed(),
         '/usersettings': (context) => UserSettings(),
         '/userdash': (context) => UserDash(),
         '/userorganizations': (context) => UserOrganizationList(),

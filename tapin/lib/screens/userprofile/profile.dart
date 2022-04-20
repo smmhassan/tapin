@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tapin/widgets/tabbedwindow/UserSettingsTabbed.dart';
 
 void main() => runApp(MaterialApp(
   home:ProfileApp(),
@@ -175,7 +176,12 @@ class ProfileApp extends StatelessWidget {
             width: 300.00,
 
             child: RaisedButton(
-                onPressed: (){},
+                onPressed: (){
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => UserSettings())
+                  );
+                },
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(80.0)
                 ),
@@ -193,7 +199,7 @@ class ProfileApp extends StatelessWidget {
                   child: Container(
                     constraints: BoxConstraints(maxWidth: 300.0, minHeight: 50.0),
                     alignment: Alignment.center,
-                    child: Text("Placeholder button",
+                    child: Text("Settings",
                       style: TextStyle(color: Colors.white, fontSize: 26.0, fontWeight:FontWeight.w300),
                     ),
                   ),
